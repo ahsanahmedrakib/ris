@@ -152,6 +152,7 @@
                             ['label' => 'হোম', 'route' => 'home'],
                             ['label' => 'আমাদের সম্পর্কে', 'route' => 'about'],
                             ['label' => 'ভর্তি প্রক্রিয়া', 'route' => 'admission'],
+                            ['label' => 'মেধাবৃত্তি', 'route' => 'scholarship'],
                             ['label' => 'নোটিশ', 'route' => 'notices'],
                             ['label' => 'যোগাযোগ', 'route' => 'contact'],
                         ];
@@ -169,7 +170,7 @@
                 <div class="flex items-center gap-2 sm:gap-3">
 
                     <a href="{{ route('admission') }}" class="hidden sm:inline-flex btn-primary text-sm py-2 px-4">
-                        ভর্তি হন
+                        ভর্তি
                     </a>
 
                     {{-- Mobile Hamburger --}}
@@ -207,7 +208,7 @@
                 @endforeach
                 <div class="pt-3 border-t border-gray-100 mt-3">
                     <a href="{{ route('admission') }}" class="btn-primary w-full text-center text-sm">
-                        ভর্তি হন
+                        ভর্তি
                     </a>
                 </div>
 
@@ -286,6 +287,9 @@
                                 সম্পর্কে</a></li>
                         <li><a href="{{ route('admission') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">ভর্তি</a></li>
+                        <li><a href="{{ route('scholarship') }}"
+                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">মেধাবৃত্তি</a>
+                        </li>
                         <li><a href="{{ route('notices') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">নোটিশ</a></li>
                         <li><a href="{{ route('contact') }}"

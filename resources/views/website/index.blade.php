@@ -262,7 +262,7 @@
     <section class="py-16 sm:py-20 relative overflow-hidden">
         <div class="absolute inset-0 bg-linear-to-r from-ris-dark via-ris-accent to-ris-light"></div>
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
-            <h2 class="font-heading font-bold text-3xl sm:text-4xl text-white">আজই ভর্তি হন</h2>
+            <h2 class="font-heading font-bold text-3xl sm:text-4xl text-white">আজই ভর্তি করুন</h2>
             <p class="mt-4 text-white/70 text-lg max-w-2xl mx-auto">আপনার সন্তানের উজ্জ্বল ভবিষ্যতের জন্য রেশমা
                 ইন্টারন্যাশনাল স্কুলে ভর্তি প্রক্রিয়া চলমান। আজই যোগাযোগ করুন!</p>
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">

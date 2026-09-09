@@ -118,7 +118,7 @@
             </p>
             <a href="{{ route('admission') }}"
                 class="btn-primary mt-8 bg-white text-ris-primary hover:bg-gray-100 shadow-lg shadow-black/20 px-8 py-3">
-                ভর্তি হন
+                ভর্তি
             </a>
         </div>
     </section>

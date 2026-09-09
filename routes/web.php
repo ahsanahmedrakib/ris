@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\PayrollController;
 use App\Http\Controllers\Admin\QrCodeController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ScholarshipController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\SubjectController;
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [WebsiteController::class, 'index'])->name('home');
 Route::get('/about', [WebsiteController::class, 'about'])->name('about');
 Route::get('/admission', [WebsiteController::class, 'admission'])->name('admission');
+Route::get('/scholarship', [WebsiteController::class, 'scholarship'])->name('scholarship');
 Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
 Route::post('/contact', [WebsiteController::class, 'sendContact'])->name('contact.send');
 Route::get('/notices', [WebsiteController::class, 'notices'])->name('notices');
@@ -46,6 +48,12 @@ Route::middleware(['auth', 'role:admin,teacher'])->prefix('admin')->group(functi
     Route::resource('subjects', SubjectController::class)->names('admin.subjects');
     Route::resource('teachers', TeacherController::class)->names('admin.teachers');
     Route::resource('notices', NoticeController::class)->names('admin.notices');
+
+    // Scholarship (custom routes before anything else)
+    Route::get('/scholarship', [ScholarshipController::class, 'index'])->name('admin.scholarship.index');
+    Route::get('/scholarship/create', [ScholarshipController::class, 'create'])->name('admin.scholarship.create');
+    Route::get('/scholarship/{scholarshipRegistration}', [ScholarshipController::class, 'show'])->name('admin.scholarship.show');
+    Route::delete('/scholarship/{scholarshipRegistration}', [ScholarshipController::class, 'destroy'])->name('admin.scholarship.destroy');
 
     // Library (custom routes before resource)
     Route::get('/library/borrowings', [LibraryController::class, 'borrowings'])->name('admin.library.borrowings');

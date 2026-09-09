@@ -43,6 +43,11 @@ class WebsiteController extends Controller
         return view('website.admission', compact('classes'));
     }
 
+    public function scholarship(): View
+    {
+        return view('website.scholarship');
+    }
+
     public function contact(): View
     {
         return view('website.contact');
