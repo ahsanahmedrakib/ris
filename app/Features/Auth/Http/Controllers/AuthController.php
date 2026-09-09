@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -43,7 +44,7 @@ class AuthController extends Controller
         }
 
         try {
-            $token = auth()->guard('api')->login($user);
+            $token = JWTAuth::fromUser($user);
         } catch (JWTException) {
             return back()->withErrors([
                 'email' => 'লগইন সেশন তৈরি করা যায়নি, আবার চেষ্টা করুন।',
@@ -59,7 +60,7 @@ class AuthController extends Controller
     public function logout(Request $request): RedirectResponse
     {
         try {
-            auth()->guard('api')->invalidate(true);
+            JWTAuth::invalidate(true);
         } catch (JWTException) {
             // JWT token may not exist on web logout
         }
@@ -105,7 +106,7 @@ class AuthController extends Controller
     public function apiLogout(Request $request): JsonResponse
     {
         try {
-            auth()->guard('api')->invalidate(true);
+            JWTAuth::invalidate(true);
         } catch (JWTException) {
             return response()->json([
                 'message' => 'লগআউট ব্যর্থ হয়েছে বা টোকেন ইতিমধ্যে অবৈধ।',
@@ -120,7 +121,7 @@ class AuthController extends Controller
     public function apiRefresh(Request $request): JsonResponse
     {
         try {
-            $token = auth()->guard('api')->refresh();
+            $token = JWTAuth::refresh();
         } catch (JWTException) {
             return response()->json([
                 'message' => 'টোকেন রিফ্রেশ করা যায়নি, পুনরায় লগইন করুন।',

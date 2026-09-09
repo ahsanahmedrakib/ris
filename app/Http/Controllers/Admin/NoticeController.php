@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Notice;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class NoticeController extends Controller
@@ -46,7 +47,7 @@ class NoticeController extends Controller
         ]);
 
         try {
-            $validated['published_by'] = auth()->id();
+            $validated['published_by'] = Auth::id();
             $validated['published_at'] = $validated['published_at'] ?? now();
             $validated['is_active'] = $validated['is_active'] ?? true;
 
@@ -60,21 +61,21 @@ class NoticeController extends Controller
         }
     }
 
-    public function show($id): View
+    public function show(int $id): View
     {
         $notice = Notice::with('publisher')->findOrFail($id);
 
         return view('admin.notices.show', compact('notice'));
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $notice = Notice::findOrFail($id);
 
         return view('admin.notices.edit', compact('notice'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $notice = Notice::findOrFail($id);
 
@@ -104,7 +105,7 @@ class NoticeController extends Controller
         }
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             Notice::findOrFail($id)->delete();

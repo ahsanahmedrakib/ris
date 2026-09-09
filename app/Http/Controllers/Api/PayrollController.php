@@ -73,14 +73,14 @@ class PayrollController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         $payroll = Payroll::with('staff.user')->findOrFail($id);
 
         return response()->json($payroll);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $payroll = Payroll::findOrFail($id);
 
@@ -105,7 +105,7 @@ class PayrollController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             Payroll::findOrFail($id)->delete();

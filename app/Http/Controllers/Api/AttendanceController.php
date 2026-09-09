@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
@@ -39,7 +40,7 @@ class AttendanceController extends Controller
         try {
             $attendance = Attendance::updateOrCreate(
                 ['student_id' => $validated['student_id'], 'class_id' => $validated['class_id'], 'date' => $validated['date']],
-                ['status' => $validated['status'], 'remarks' => $validated['remarks'] ?? null, 'marked_by' => auth()->id()]
+                ['status' => $validated['status'], 'remarks' => $validated['remarks'] ?? null, 'marked_by' => Auth::id()]
             );
 
             return response()->json([
@@ -51,14 +52,14 @@ class AttendanceController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         $attendance = Attendance::with(['student.user', 'classRoom', 'marker'])->findOrFail($id);
 
         return response()->json($attendance);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $attendance = Attendance::findOrFail($id);
 
@@ -79,7 +80,7 @@ class AttendanceController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             Attendance::findOrFail($id)->delete();

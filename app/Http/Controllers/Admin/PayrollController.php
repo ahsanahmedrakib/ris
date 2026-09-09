@@ -112,14 +112,14 @@ class PayrollController extends Controller
         }
     }
 
-    public function show($id): View
+    public function show(int $id): View
     {
         $payroll = Payroll::with(['staff.user'])->findOrFail($id);
 
         return view('admin.payroll.show', compact('payroll'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $payroll = Payroll::findOrFail($id);
 

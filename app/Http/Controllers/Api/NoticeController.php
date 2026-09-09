@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Notice;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NoticeController extends Controller
 {
@@ -33,7 +34,7 @@ class NoticeController extends Controller
         ]);
 
         try {
-            $validated['published_by'] = auth()->id();
+            $validated['published_by'] = Auth::id();
             $validated['published_at'] = $validated['published_at'] ?? now();
             $validated['is_active'] = $validated['is_active'] ?? true;
 
@@ -48,14 +49,14 @@ class NoticeController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         $notice = Notice::with('publisher')->findOrFail($id);
 
         return response()->json($notice);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int  $id): JsonResponse
     {
         $notice = Notice::findOrFail($id);
 
@@ -77,7 +78,7 @@ class NoticeController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             Notice::findOrFail($id)->delete();

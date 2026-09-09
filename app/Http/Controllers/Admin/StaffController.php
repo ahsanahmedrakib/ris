@@ -96,7 +96,7 @@ class StaffController extends Controller
         }
     }
 
-    public function show($id): View
+    public function show(int $id): View
     {
         $staff = Staff::with([
             'user',
@@ -107,14 +107,14 @@ class StaffController extends Controller
         return view('admin.staff.show', compact('staff'));
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $staff = Staff::with('user')->findOrFail($id);
 
         return view('admin.staff.edit', compact('staff'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $staff = Staff::findOrFail($id);
 
@@ -165,7 +165,7 @@ class StaffController extends Controller
         }
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             $staff = Staff::findOrFail($id);

@@ -68,27 +68,27 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বই যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'বই যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function show($id): View
+    public function show(int $id): View
     {
         $book = Book::with([
-            'bookBorrowings' => fn ($q) => $q->with('student.user')->latest('borrowed_at'),
+            'bookBorrowings' => fn($q) => $q->with('student.user')->latest('borrowed_at'),
         ])->withCount('bookBorrowings')->findOrFail($id);
 
         return view('admin.library.show', compact('book'));
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $book = Book::findOrFail($id);
 
         return view('admin.library.edit', compact('book'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $book = Book::findOrFail($id);
 
@@ -120,11 +120,11 @@ class LibraryController extends Controller
                 ->with('success', 'বইয়ের তথ্য সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বই আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'বই আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             $book = Book::findOrFail($id);
@@ -144,7 +144,7 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'বই মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'বই মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
@@ -194,11 +194,11 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে ধার দেওয়া হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বই ধার দিতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'বই ধার দিতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function returnBook($id): RedirectResponse
+    public function returnBook(int $id): RedirectResponse
     {
         try {
             $borrowing = BookBorrowing::with('book')->findOrFail($id);
@@ -219,7 +219,7 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে ফেরত নেওয়া হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'বই ফেরত নিতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'বই ফেরত নিতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 }

@@ -55,7 +55,7 @@ class TransportController extends Controller
         }
     }
 
-    public function show($id): View
+    public function show(int $id): View
     {
         $bus = Bus::with([
             'busRoutes' => fn ($q) => $q->orderBy('stop_order'),
@@ -65,7 +65,7 @@ class TransportController extends Controller
         return view('admin.transport.show', compact('bus'));
     }
 
-    public function routes($busId): View
+    public function routes(int $busId): View
     {
         $bus = Bus::findOrFail($busId);
         $routes = BusRoute::where('bus_id', $busId)->orderBy('stop_order')->get();
@@ -73,7 +73,7 @@ class TransportController extends Controller
         return view('admin.transport.routes', compact('bus', 'routes'));
     }
 
-    public function storeRoute(Request $request, $busId): RedirectResponse
+    public function storeRoute(Request $request, int $busId): RedirectResponse
     {
         $validated = $request->validate([
             'stop_name' => 'required|string|max:255',
@@ -100,14 +100,14 @@ class TransportController extends Controller
         }
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $bus = Bus::findOrFail($id);
 
         return view('admin.transport.edit', compact('bus'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $bus = Bus::findOrFail($id);
 
@@ -138,7 +138,7 @@ class TransportController extends Controller
         }
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             $bus = Bus::findOrFail($id);

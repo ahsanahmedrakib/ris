@@ -13,6 +13,7 @@ use App\Models\FeeStructure;
 use App\Models\Student;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class FeeController extends Controller
@@ -79,7 +80,7 @@ class FeeController extends Controller
                 ->with('success', 'ফি কাঠামো সফলভাবে তৈরি হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'ফি কাঠামো তৈরি করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ফি কাঠামো তৈরি করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
@@ -92,7 +93,7 @@ class FeeController extends Controller
         }
 
         if ($request->filled('class_id')) {
-            $query->whereHas('student', fn ($q) => $q->where('class_id', $request->class_id));
+            $query->whereHas('student', fn($q) => $q->where('class_id', $request->class_id));
         }
 
         $invoices = $query->latest()->paginate(20)->withQueryString();
@@ -140,7 +141,7 @@ class FeeController extends Controller
                 ->with('success', "{$count}টি ফি চালান সফলভাবে তৈরি হয়েছে।");
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'ফি চালান তৈরি করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ফি চালান তৈরি করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
@@ -185,7 +186,7 @@ class FeeController extends Controller
                 'amount' => $validated['amount'],
                 'payment_method' => $validated['payment_method'],
                 'transaction_id' => $validated['transaction_id'] ?? null,
-                'paid_by' => auth()->id(),
+                'paid_by' => Auth::id(),
                 'paid_at' => now(),
             ]);
 
@@ -199,18 +200,18 @@ class FeeController extends Controller
                 ->with('success', 'পেমেন্ট সফলভাবে রেকর্ড করা হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'পেমেন্ট রেকর্ড করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'পেমেন্ট রেকর্ড করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $invoice = FeeInvoice::with(['student.user', 'feeStructure'])->findOrFail($id);
 
         return view('admin.fees.edit', compact('invoice'));
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             FeeInvoice::findOrFail($id)->delete();
@@ -219,7 +220,7 @@ class FeeController extends Controller
                 ->with('success', 'ফি চালান সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'ফি চালান মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ফি চালান মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 }

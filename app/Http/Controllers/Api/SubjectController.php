@@ -37,14 +37,14 @@ class SubjectController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         $subject = Subject::with(['classRoom', 'teacher'])->findOrFail($id);
 
         return response()->json($subject);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $subject = Subject::findOrFail($id);
 
@@ -67,7 +67,7 @@ class SubjectController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             Subject::findOrFail($id)->delete();

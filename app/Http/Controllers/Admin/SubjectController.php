@@ -56,7 +56,7 @@ class SubjectController extends Controller
         }
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $subject = Subject::findOrFail($id);
         $classes = ClassRoom::orderBy('name')->get();
@@ -65,7 +65,7 @@ class SubjectController extends Controller
         return view('admin.subjects.edit', compact('subject', 'classes', 'teachers'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $subject = Subject::findOrFail($id);
 
@@ -95,7 +95,7 @@ class SubjectController extends Controller
         }
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             Subject::findOrFail($id)->delete();

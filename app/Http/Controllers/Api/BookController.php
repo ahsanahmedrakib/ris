@@ -53,14 +53,14 @@ class BookController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         $book = Book::with(['bookBorrowings' => fn ($q) => $q->with('student.user')])->findOrFail($id);
 
         return response()->json($book);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $book = Book::findOrFail($id);
 
@@ -84,7 +84,7 @@ class BookController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             Book::findOrFail($id)->delete();

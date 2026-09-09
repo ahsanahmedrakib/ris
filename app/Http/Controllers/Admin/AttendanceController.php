@@ -9,6 +9,7 @@ use App\Models\ClassRoom;
 use App\Models\Student;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class AttendanceController extends Controller
@@ -87,7 +88,7 @@ class AttendanceController extends Controller
                     [
                         'status' => $attendance['status'],
                         'remarks' => $attendance['remarks'] ?? null,
-                        'marked_by' => auth()->id(),
+                        'marked_by' => Auth::id(),
                     ]
                 );
             }
@@ -96,11 +97,11 @@ class AttendanceController extends Controller
                 ->with('success', 'উপস্থিতি সফলভাবে সংরক্ষিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'উপস্থিতি সংরক্ষণ করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'উপস্থিতি সংরক্ষণ করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function show($id): View
+    public function show(int $id): View
     {
         $attendance = Attendance::with(['student.user', 'classRoom', 'marker'])
             ->findOrFail($id);
@@ -108,7 +109,7 @@ class AttendanceController extends Controller
         return view('admin.attendance.show', compact('attendance'));
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $attendance = Attendance::with('student')->findOrFail($id);
         $classes = ClassRoom::orderBy('name')->get();
@@ -117,7 +118,7 @@ class AttendanceController extends Controller
         return view('admin.attendance.edit', compact('attendance', 'classes', 'statuses'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $attendance = Attendance::findOrFail($id);
 
@@ -136,11 +137,11 @@ class AttendanceController extends Controller
                 ->with('success', 'উপস্থিতি সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'উপস্থিতি আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'উপস্থিতি আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             Attendance::findOrFail($id)->delete();
@@ -149,7 +150,7 @@ class AttendanceController extends Controller
                 ->with('success', 'উপস্থিতি সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'উপস্থিতি মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'উপস্থিতি মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 }

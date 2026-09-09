@@ -39,14 +39,14 @@ class ClassController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        $class = ClassRoom::with(['academicYear', 'classTeacher', 'students' => fn ($q) => $q->with('user')])->withCount('students')->findOrFail($id);
+        $class = ClassRoom::with(['academicYear', 'classTeacher', 'students' => fn($q) => $q->with('user')])->withCount('students')->findOrFail($id);
 
         return response()->json($class);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $class = ClassRoom::findOrFail($id);
 
@@ -70,7 +70,7 @@ class ClassController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             ClassRoom::findOrFail($id)->delete();

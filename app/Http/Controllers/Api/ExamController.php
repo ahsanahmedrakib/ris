@@ -47,14 +47,14 @@ class ExamController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         $exam = Exam::with(['classRoom', 'academicYear', 'examResults' => fn ($q) => $q->with(['student.user', 'subject'])])->findOrFail($id);
 
         return response()->json($exam);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int  $id): JsonResponse
     {
         $exam = Exam::findOrFail($id);
 
@@ -81,7 +81,7 @@ class ExamController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             Exam::findOrFail($id)->delete();

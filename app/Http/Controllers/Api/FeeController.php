@@ -8,6 +8,7 @@ use App\Models\FeeInvoice;
 use App\Models\FeePayment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FeeController extends Controller
 {
@@ -47,7 +48,7 @@ class FeeController extends Controller
                 'amount' => $validated['amount'],
                 'payment_method' => $validated['payment_method'],
                 'transaction_id' => $validated['transaction_id'] ?? null,
-                'paid_by' => auth()->id(),
+                'paid_by' => Auth::id(),
                 'paid_at' => now(),
             ]);
 
@@ -66,14 +67,14 @@ class FeeController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        $invoice = FeeInvoice::with(['student.user', 'feeStructure', 'feePayments' => fn ($q) => $q->with('payer')])->findOrFail($id);
+        $invoice = FeeInvoice::with(['student.user', 'feeStructure', 'feePayments' => fn($q) => $q->with('payer')])->findOrFail($id);
 
         return response()->json($invoice);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request,    int $id): JsonResponse
     {
         $invoice = FeeInvoice::findOrFail($id);
 
@@ -94,7 +95,7 @@ class FeeController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             FeeInvoice::findOrFail($id)->delete();

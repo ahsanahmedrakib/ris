@@ -13,6 +13,7 @@ use App\Models\Subject;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 
 class ExamController extends Controller
 {
@@ -74,22 +75,22 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষা সফলভাবে তৈরি হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'পরীক্ষা তৈরি করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'পরীক্ষা তৈরি করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function show($id): View
+    public function show(int $id): View
     {
         $exam = Exam::with([
             'classRoom',
             'academicYear',
-            'examResults' => fn ($q) => $q->with(['student.user', 'subject'])->orderBy('student_id'),
+            'examResults' => fn($q) => $q->with(['student.user', 'subject'])->orderBy('student_id'),
         ])->withCount('examResults')->findOrFail($id);
 
         return view('admin.exams.show', compact('exam'));
     }
 
-    public function results($id): View
+    public function results(int $id): View
     {
         $exam = Exam::with(['classRoom', 'academicYear'])->findOrFail($id);
         $students = Student::where('class_id', $exam->class_id)
@@ -100,12 +101,12 @@ class ExamController extends Controller
         $subjects = Subject::where('class_id', $exam->class_id)->get();
         $existingResults = ExamResult::where('exam_id', $id)
             ->get()
-            ->keyBy(fn ($r) => "{$r->student_id}_{$r->subject_id}");
+            ->keyBy(fn($r) => "{$r->student_id}_{$r->subject_id}");
 
         return view('admin.exams.results', compact('exam', 'students', 'subjects', 'existingResults'));
     }
 
-    public function storeResults(Request $request, $id): RedirectResponse
+    public function storeResults(Request $request, int $id): RedirectResponse
     {
         $validated = $request->validate([
             'results' => 'required|array',
@@ -137,7 +138,7 @@ class ExamController extends Controller
                         'marks_obtained' => $result['marks_obtained'],
                         'grade' => $result['grade'] ?? null,
                         'remarks' => $result['remarks'] ?? null,
-                        'entered_by' => auth()->id(),
+                        'entered_by' => Auth::id(),
                     ]
                 );
             }
@@ -146,11 +147,11 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষার ফলাফল সফলভাবে সংরক্ষিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'ফলাফল সংরক্ষণ করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ফলাফল সংরক্ষণ করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $exam = Exam::findOrFail($id);
         $classes = ClassRoom::orderBy('name')->get();
@@ -160,7 +161,7 @@ class ExamController extends Controller
         return view('admin.exams.edit', compact('exam', 'classes', 'academicYears', 'examTypes'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $exam = Exam::findOrFail($id);
 
@@ -192,11 +193,11 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষা সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'পরীক্ষা আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'পরীক্ষা আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             Exam::findOrFail($id)->delete();
@@ -205,7 +206,7 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষা সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'পরীক্ষা মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'পরীক্ষা মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 }

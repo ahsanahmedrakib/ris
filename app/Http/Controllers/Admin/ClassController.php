@@ -58,7 +58,7 @@ class ClassController extends Controller
         }
     }
 
-    public function show($id): View
+    public function show(int $id): View
     {
         $class = ClassRoom::with([
             'academicYear',
@@ -70,7 +70,7 @@ class ClassController extends Controller
         return view('admin.classes.show', compact('class'));
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $class = ClassRoom::findOrFail($id);
         $academicYears = AcademicYear::orderByDesc('is_current')->orderByDesc('name')->get();
@@ -79,7 +79,7 @@ class ClassController extends Controller
         return view('admin.classes.edit', compact('class', 'academicYears', 'teachers'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $class = ClassRoom::findOrFail($id);
 
@@ -108,7 +108,7 @@ class ClassController extends Controller
         }
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             $class = ClassRoom::findOrFail($id);

@@ -65,21 +65,21 @@ class TeacherController extends Controller
         }
     }
 
-    public function show($id): View
+    public function show(int $id): View
     {
         $teacher = User::where('role', 'teacher')->findOrFail($id);
 
         return view('admin.teachers.show', compact('teacher'));
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $teacher = User::where('role', 'teacher')->findOrFail($id);
 
         return view('admin.teachers.edit', compact('teacher'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $teacher = User::where('role', 'teacher')->findOrFail($id);
 
@@ -106,7 +106,7 @@ class TeacherController extends Controller
         }
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             $teacher = User::where('role', 'teacher')->findOrFail($id);

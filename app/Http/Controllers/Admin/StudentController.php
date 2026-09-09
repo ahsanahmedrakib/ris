@@ -114,26 +114,26 @@ class StudentController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'ছাত্র/ছাত্রী যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function show($id): View
+    public function show(int $id): View
     {
         $student = Student::with([
             'user',
             'classRoom',
             'parents',
-            'attendances' => fn ($q) => $q->latest('date')->take(30),
-            'examResults' => fn ($q) => $q->with('exam', 'subject')->latest(),
-            'feeInvoices' => fn ($q) => $q->with('feeStructure')->latest(),
-            'bookBorrowings' => fn ($q) => $q->with('book')->latest(),
+            'attendances' => fn($q) => $q->latest('date')->take(30),
+            'examResults' => fn($q) => $q->with('exam', 'subject')->latest(),
+            'feeInvoices' => fn($q) => $q->with('feeStructure')->latest(),
+            'bookBorrowings' => fn($q) => $q->with('book')->latest(),
         ])->findOrFail($id);
 
         return view('admin.students.show', compact('student'));
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $student = Student::with('user')->findOrFail($id);
         $classes = ClassRoom::orderBy('name')->get();
@@ -141,7 +141,7 @@ class StudentController extends Controller
         return view('admin.students.edit', compact('student', 'classes'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $student = Student::findOrFail($id);
 
@@ -198,11 +198,11 @@ class StudentController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'ছাত্র/ছাত্রী আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
             $student = Student::findOrFail($id);
@@ -213,7 +213,7 @@ class StudentController extends Controller
                 ->with('success', 'ছাত্র/ছাত্রী সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'ছাত্র/ছাত্রী মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 }

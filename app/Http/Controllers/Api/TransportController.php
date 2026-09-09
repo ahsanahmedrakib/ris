@@ -40,14 +40,14 @@ class TransportController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        $bus = Bus::with(['busRoutes' => fn ($q) => $q->orderBy('stop_order'), 'studentTransports' => fn ($q) => $q->with('student.user')])->withCount(['busRoutes', 'studentTransports'])->findOrFail($id);
+        $bus = Bus::with(['busRoutes' => fn($q) => $q->orderBy('stop_order'), 'studentTransports' => fn($q) => $q->with('student.user')])->withCount(['busRoutes', 'studentTransports'])->findOrFail($id);
 
         return response()->json($bus);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $bus = Bus::findOrFail($id);
 
@@ -73,7 +73,7 @@ class TransportController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             Bus::findOrFail($id)->delete();

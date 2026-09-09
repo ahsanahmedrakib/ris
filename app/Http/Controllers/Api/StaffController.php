@@ -69,14 +69,14 @@ class StaffController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         $staff = Staff::with(['user', 'payrolls'])->findOrFail($id);
 
         return response()->json($staff);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $staff = Staff::findOrFail($id);
 
@@ -102,7 +102,7 @@ class StaffController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             $staff = Staff::findOrFail($id);

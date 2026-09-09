@@ -26,7 +26,7 @@ class StudentController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('admission_no', 'like', "%{$search}%")
                     ->orWhere('guardian_name', 'like', "%{$search}%")
-                    ->orWhereHas('user', fn ($q2) => $q2->where('name', 'like', "%{$search}%"));
+                    ->orWhereHas('user', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
             });
         }
 
@@ -80,14 +80,14 @@ class StudentController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        $student = Student::with(['user', 'classRoom', 'parents', 'attendances', 'examResults' => fn ($q) => $q->with('exam', 'subject')])->findOrFail($id);
+        $student = Student::with(['user', 'classRoom', 'parents', 'attendances', 'examResults' => fn($q) => $q->with('exam', 'subject')])->findOrFail($id);
 
         return response()->json($student);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int  $id): JsonResponse
     {
         $student = Student::findOrFail($id);
 
@@ -117,7 +117,7 @@ class StudentController extends Controller
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             $student = Student::findOrFail($id);
