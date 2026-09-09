@@ -49,7 +49,7 @@
                             <label for="phone" class="block text-sm font-medium text-gray-700 mb-1.5">ফোন নম্বর</label>
                             <input type="tel" id="phone" name="phone" value="{{ old('phone') }}"
                                 class="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
-                                placeholder="+৮৮০-১XXXXXXXXX">
+                                placeholder="+৮৮০-১৬১৯ ০০৭ ০০৬">
                         </div>
                         <div>
                             <label for="subject" class="block text-sm font-medium text-gray-700 mb-1.5">বিষয়</label>
@@ -111,8 +111,9 @@
                             </div>
                             <div>
                                 <h4 class="font-heading font-semibold text-ris-dark">ফোন</h4>
-                                <a href="tel:+8801XXXXXXXXX"
-                                    class="mt-1 block text-gray-600 text-sm hover:text-ris-primary transition-colors">+৮৮০-১XXXXXXXXX</a>
+                                <a href="tel:+8801619007006"
+                                    class="mt-1 block text-gray-600 text-sm hover:text-ris-primary transition-colors">+৮৮০-১৬১৯
+                                    ০০৭ ০০৬</a>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">
@@ -125,8 +126,8 @@
                             </div>
                             <div>
                                 <h4 class="font-heading font-semibold text-ris-dark">ইমেইল</h4>
-                                <a href="mailto:info@ris.edu.bd"
-                                    class="mt-1 block text-gray-600 text-sm hover:text-ris-primary transition-colors">info@ris.edu.bd</a>
+                                <a href="mailto:resmaintlschool@gmail.com"
+                                    class="mt-1 block text-gray-600 text-sm hover:text-ris-primary transition-colors">resmaintlschool@gmail.com</a>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">

@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
         new Swiper(el, {
             loop: true,
             speed: 800,
-            effect: 'fade',
-            fadeEffect: { crossFade: true },
             autoplay: {
                 delay: 5000,
                 disableOnInteraction: false,

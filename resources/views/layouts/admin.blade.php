@@ -37,7 +37,7 @@
             </div>
 
             {{-- Navigation --}}
-            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <nav class="flex-1 sidebar-scroll overflow-y-auto py-4 px-3 space-y-1">
                 @php
                     $sidebarItems = [
                         [
@@ -118,6 +118,12 @@
                             'label' => 'রিপোর্ট',
                             'route' => 'admin.reports.index',
                         ],
+[
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h3v3h-3v-3zM17 14h3v3h-3v-3zM14 17h3v3h-3v-3zM20 14h1v3h-3v-1h2v-2zM17 20h1v1h-1v-1z"/>',
+                            'label' => 'QR কোড জেনারেটর',
+                            'route' => 'admin.qrcode',
+                        ],
 ];
 
                 @endphp
@@ -176,7 +182,7 @@
                     </svg>
                 </button>
             </div>
-            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <nav class="flex-1 sidebar-scroll overflow-y-auto py-4 px-3 space-y-1">
                 @foreach ($sidebarItems as $item)
                     <a href="{{ route($item['route']) }}"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
@@ -300,6 +306,8 @@
     @livewireScripts
 
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    @yield('scripts')
 </body>
 
 </html>

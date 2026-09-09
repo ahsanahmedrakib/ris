@@ -15,7 +15,7 @@ return new class extends Migration
             $table->enum('type', ['notice', 'event', 'holiday']);
             $table->string('target_role', 50)->nullable()->default('all');
             $table->foreignId('published_by')->constrained('users')->cascadeOnDelete();
-            $table->timestamp('published_at');
+            $table->timestamp('published_at')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();

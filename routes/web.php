@@ -35,6 +35,10 @@ Route::middleware(['auth', 'role:admin,teacher'])->prefix('admin')->group(functi
     Route::resource('transport', \App\Http\Controllers\Admin\TransportController::class)->names('admin.transport');
     Route::resource('staff', \App\Http\Controllers\Admin\StaffController::class)->names('admin.staff');
 
+    // QR Code Generator
+    Route::get('/qrcode', [\App\Http\Controllers\Admin\QrCodeController::class, 'index'])->name('admin.qrcode');
+    Route::get('/qrcode/generate', [\App\Http\Controllers\Admin\QrCodeController::class, 'generate'])->name('admin.qrcode.generate');
+
     // Attendance (custom routes before resource)
     Route::get('/attendance/select', [\App\Http\Controllers\Admin\AttendanceController::class, 'selectClass'])->name('admin.attendance.select');
     Route::resource('attendance', \App\Http\Controllers\Admin\AttendanceController::class)->names('admin.attendance');

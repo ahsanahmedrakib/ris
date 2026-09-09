@@ -14,7 +14,17 @@
                     <img src="{{ asset('logo.png') }}" alt="রেশমা ইন্টারন্যাশনাল স্কুল"
                         class="h-14 lg:h-16 w-auto mx-auto mb-4 object-contain">
                     <h1 class="font-heading font-bold text-xl text-ris-primary">রেশমা ইন্টারন্যাশনাল স্কুল</h1>
-                    <p class="text-gray-500 text-sm mt-1">সিস্টেমে প্রবেশ করুন</p>
+                    <p class="text-gray-500 text-sm mt-1">
+                        @if ($loginRole === 'admin')
+                            অ্যাডমিন প্যানেল — সিস্টেমে প্রবেশ করুন
+                        @elseif ($loginRole === 'teacher')
+                            শিক্ষক প্যানেল — সিস্টেমে প্রবেশ করুন
+                        @elseif ($loginRole === 'parent')
+                            অভিভাবক প্যানেল — সিস্টেমে প্রবেশ করুন
+                        @else
+                            সিস্টেমে প্রবেশ করুন
+                        @endif
+                    </p>
                 </div>
 
                 {{-- Form --}}

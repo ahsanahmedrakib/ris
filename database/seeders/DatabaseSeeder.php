@@ -58,8 +58,8 @@ class DatabaseSeeder extends Seeder
             $teachers[] = $user;
         }
 
-        // Classes
-        $classNames = ['প্লে', 'নার্সারি', 'কেজি', '১ম', '২য়', '৩য়', '৪র্থ', '৫ম', '৬ষ্ঠ', '৭ম', '৮ম', '৯ম', '১০ম'];
+        // Classes (school serves Play, Nursery, and Classes 1-5)
+        $classNames = ['প্লে', 'নার্সারি', '১ম', '২য়', '৩য়', '৪র্থ', '৫ম'];
         $classes = [];
         foreach ($classNames as $i => $name) {
             $class = ClassRoom::create([
@@ -151,7 +151,7 @@ class DatabaseSeeder extends Seeder
 
         for ($i = 0; $i < count($studentNames); $i++) {
             $parentUser = $parents[$i % count($parents)];
-            $class = $classes[($i % 8) + 3]; // classes 4-11 (index 3-10)
+            $class = $classes[$i % 7]; // distribute across Play, Nursery, Class 1-5
             $gender = $i % 2 === 0 ? 'male' : 'female';
 
             $studentUser = User::create([

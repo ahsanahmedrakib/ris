@@ -4,9 +4,9 @@
 
 @section('content')
 
-{{-- Hero --}}
+    {{-- Hero --}}
     <section class="relative overflow-hidden">
-        <div class="swiper hero-swiper reveal-zoom">
+        <div class="swiper hero-swiper animate-fade-in">
             <div class="swiper-wrapper">
                 @php
                     $slideImages = [
@@ -16,10 +16,14 @@
                         'images/home/hero-4.jpg',
                         'images/home/hero-5.jpg',
                         'images/home/hero-6.jpg',
+                        'images/home/hero-7.jpg',
+                        'images/home/hero-8.jpg',
+                        'images/home/hero-9.jpg',
+                        'images/home/hero-10.jpg',
                     ];
                 @endphp
                 @foreach ($slideImages as $slideImage)
-                    <div class="swiper-slide relative h-[320px] sm:h-[440px] lg:h-[560px]">
+                    <div class="swiper-slide relative">
                         <img src="{{ asset($slideImage) }}" alt="রেশমা ইন্টারন্যাশনাল স্কুল"
                             class="absolute inset-0 w-full h-full object-cover">
                         <div class="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"></div>
@@ -38,10 +42,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             @php
                 $stats = [
-                    ['value' => 500, 'suffix' => '+', 'label' => 'মোট ছাত্র'],
+                    ['value' => 500, 'suffix' => '+', 'label' => 'মোট ছাত্র-ছাত্রী'],
                     ['value' => 30, 'suffix' => '+', 'label' => 'শিক্ষক'],
-                    ['value' => 12, 'suffix' => '', 'label' => 'শ্রেণী'],
-                    ['value' => 10, 'suffix' => '+', 'label' => 'বছরের অভিজ্ঞতা'],
+                    ['value' => 8, 'suffix' => '', 'label' => 'শ্রেণী'],
+                    ['value' => 11, 'suffix' => '+', 'label' => 'বছরের অভিজ্ঞতা'],
                 ];
             @endphp
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 reveal-stagger">
@@ -112,24 +116,24 @@
                 $programs = [
                     [
                         'icon' =>
+                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                        'title' => 'প্লে গ্রুপ',
+                        'desc' => 'খেলাধুলা ও আনন্দের মাধ্যমে শিশুর প্রথম পাঠ।',
+                        'range' => 'প্লে',
+                    ],
+                    [
+                        'icon' =>
                             '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
+                        'title' => 'নার্সারি',
+                        'desc' => 'শিশুর প্রস্তুতি, ভাষা ও মৌলিক দক্ষতা গড়ে তোলা।',
+                        'range' => 'নার্সারি',
+                    ],
+                    [
+                        'icon' =>
+                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.825-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14v9"/>',
                         'title' => 'প্রাথমিক শিক্ষা',
                         'desc' => '১ম থেকে ৫ম শ্রেণি পর্যন্ত মৌলিক শিক্ষা।',
                         'range' => '১ম — ৫ম শ্রেণি',
-                    ],
-                    [
-                        'icon' =>
-                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>',
-                        'title' => 'মাধ্যমিক শিক্ষা',
-                        'desc' => '৬ষ্ঠ থেকে ৮ম শ্রেণি পর্যন্ত মাধ্যমিক পর্যায়ের শিক্ষা।',
-                        'range' => '৬ষ্ঠ — ৮ম শ্রেণি',
-                    ],
-                    [
-                        'icon' =>
-                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>',
-                        'title' => 'উচ্চ মাধ্যমিক',
-                        'desc' => '৯ম থেকে ১০ম শ্রেণি পর্যন্ত উচ্চ মাধ্যমিক শিক্ষা।',
-                        'range' => '৯ম — ১০ম শ্রেণি',
                     ],
                 ];
             @endphp
@@ -227,8 +231,7 @@
                 @forelse(['ভর্তি প্রক্রিয়া চলমান — ২০২৬ শিক্ষাবর্ষ', 'বার্ষিক পরীক্ষার সময়সূচি প্রকাশিত', 'ঈদের ছুটি ঘোষণা'] as $index => $notice)
                     <div class="card p-5 flex items-start gap-4 reveal">
                         <div class="w-12 h-12 shrink-0 rounded-xl bg-ris-primary/10 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-ris-primary" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
+                            <svg class="w-6 h-6 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                             </svg>
