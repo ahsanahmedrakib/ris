@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
     {
         // Admin
         $admin = User::create([
-            'name' => 'প্রশাসক',
+            'name' => 'অ্যাডমিন',
             'email' => 'admin@ris.edu.bd',
             'password' => Hash::make('password'),
             'role' => 'admin',
@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
                 'email' => $t['email'],
                 'password' => Hash::make('password'),
                 'role' => 'teacher',
-                'phone' => '017'.rand(10000000, 99999999),
+                'phone' => '017' . rand(10000000, 99999999),
                 'is_active' => true,
             ]);
             $teachers[] = $user;
@@ -77,7 +77,7 @@ class DatabaseSeeder extends Seeder
             foreach ($subjectNames as $sName) {
                 Subject::create([
                     'name' => $sName,
-                    'code' => strtoupper(substr($sName, 0, 3)).'-'.$class->id,
+                    'code' => strtoupper(substr($sName, 0, 3)) . '-' . $class->id,
                     'class_id' => $class->id,
                     'teacher_id' => $teachers[array_rand($teachers)]->id,
                 ]);
@@ -103,10 +103,10 @@ class DatabaseSeeder extends Seeder
         foreach ($parentNames as $pName) {
             $user = User::create([
                 'name' => $pName,
-                'email' => strtolower(str_replace([' ', 'মোঃ'], ['', ''], $pName)).'@gmail.com',
+                'email' => strtolower(str_replace([' ', 'মোঃ'], ['', ''], $pName)) . '@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'parent',
-                'phone' => '017'.rand(10000000, 99999999),
+                'phone' => '017' . rand(10000000, 99999999),
                 'is_active' => true,
             ]);
             $parents[] = $user;
@@ -156,20 +156,20 @@ class DatabaseSeeder extends Seeder
 
             $studentUser = User::create([
                 'name' => $studentNames[$i],
-                'email' => 'student'.($i + 1).'@ris.edu.bd',
+                'email' => 'student' . ($i + 1) . '@ris.edu.bd',
                 'password' => Hash::make('password'),
                 'role' => 'student',
-                'phone' => '017'.rand(10000000, 99999999),
+                'phone' => '017' . rand(10000000, 99999999),
                 'is_active' => true,
             ]);
 
             $student = Student::create([
                 'user_id' => $studentUser->id,
-                'admission_no' => 'RIS-'.str_pad($i + 1, 4, '0', STR_PAD_LEFT),
+                'admission_no' => 'RIS-' . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
                 'class_id' => $class->id,
                 'section' => $i % 3 === 0 ? 'ক' : ($i % 3 === 1 ? 'খ' : 'গ'),
                 'roll_no' => ($i % 30) + 1,
-                'date_of_birth' => '201'.rand(2, 8).'-'.str_pad(rand(1, 12), 2, '0', STR_PAD_LEFT).'-'.str_pad(rand(1, 28), 2, '0', STR_PAD_LEFT),
+                'date_of_birth' => '201' . rand(2, 8) . '-' . str_pad(rand(1, 12), 2, '0', STR_PAD_LEFT) . '-' . str_pad(rand(1, 28), 2, '0', STR_PAD_LEFT),
                 'gender' => $gender,
                 'blood_group' => $bloodGroups[array_rand($bloodGroups)],
                 'address' => 'নিচুপাড়া, গোপালগঞ্জ',
@@ -199,7 +199,7 @@ class DatabaseSeeder extends Seeder
             Book::create(array_merge($book, [
                 'total_copies' => rand(3, 10),
                 'available_copies' => rand(1, 5),
-                'location' => 'শেল্ফ-'.rand(1, 5),
+                'location' => 'শেল্ফ-' . rand(1, 5),
             ]));
         }
 
@@ -224,7 +224,7 @@ class DatabaseSeeder extends Seeder
         foreach ($teachers as $teacher) {
             Staff::create([
                 'user_id' => $teacher->id,
-                'employee_id' => 'RIS-T'.str_pad($teacher->id, 3, '0', STR_PAD_LEFT),
+                'employee_id' => 'RIS-T' . str_pad($teacher->id, 3, '0', STR_PAD_LEFT),
                 'designation' => 'শিক্ষক',
                 'department' => 'একাডেমিক',
                 'joining_date' => '2020-01-01',
@@ -266,7 +266,7 @@ class DatabaseSeeder extends Seeder
 
         echo "সিডিং সফলভাবে সম্পন্ন হয়েছে!\n";
         echo "লগইন তথ্য:\n";
-        echo "  প্রশাসক: admin@ris.edu.bd / password\n";
+        echo "  অ্যাডমিন: admin@ris.edu.bd / password\n";
         echo "  শিক্ষক: rafiq@ris.edu.bd / password\n";
         echo "  অভিভাবক: যেকোনো অভিভাবকের ইমেইল / password\n";
     }

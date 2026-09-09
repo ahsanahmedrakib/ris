@@ -12,7 +12,7 @@ enum UserRole: string
     public function label(): string
     {
         return match ($this) {
-            self::Admin => 'প্রশাসক',
+            self::Admin => 'অ্যাডমিন',
             self::Teacher => 'শিক্ষক',
             self::Parent => 'অভিভাবক',
             self::Student => 'ছাত্র/ছাত্রী',
