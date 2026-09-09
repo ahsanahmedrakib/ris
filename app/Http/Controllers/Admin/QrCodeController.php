@@ -9,11 +9,12 @@ use chillerlan\QRCode\Output\QRGdImagePNG;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class QrCodeController extends Controller
 {
-    public function index(): \Illuminate\View\View
+    public function index(): View
     {
         return view('admin.qrcode.index');
     }
@@ -29,7 +30,7 @@ class QrCodeController extends Controller
         $data = $validated['data'];
 
         if (! preg_match('#^https?://#i', $data)) {
-            $data = 'https://' . $data;
+            $data = 'https://'.$data;
         }
 
         $rgb = $this->hexToRgb($validated['color'] ?? '#a31c42');

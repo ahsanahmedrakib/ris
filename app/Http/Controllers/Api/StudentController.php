@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
-use App\Models\ClassRoom;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -43,8 +42,11 @@ class StudentController extends Controller
             'email' => 'required|email|unique:users,email',
             'admission_no' => 'required|string|unique:students,admission_no',
             'class_id' => 'required|exists:classes,id',
+            'section' => 'required|string|max:10',
+            'roll_no' => 'required|integer|min:0',
             'date_of_birth' => 'required|date|before:today',
             'gender' => 'required|in:male,female,other',
+            'address' => 'required|string',
             'guardian_name' => 'required|string|max:255',
             'guardian_phone' => 'required|string|max:20',
         ]);
@@ -93,12 +95,17 @@ class StudentController extends Controller
             'name' => 'required|string|max:255',
             'email' => "required|email|unique:users,email,{$student->user_id}",
             'class_id' => 'required|exists:classes,id',
+            'section' => 'nullable|string|max:10',
+            'roll_no' => 'nullable|integer|min:0',
+            'address' => 'nullable|string',
             'guardian_name' => 'required|string|max:255',
             'guardian_phone' => 'required|string|max:20',
         ]);
 
         try {
-            $student->user->update(['name' => $validated['name'], 'email' => $validated['email']]);
+            if ($student->user) {
+                $student->user->update(['name' => $validated['name'], 'email' => $validated['email']]);
+            }
             $student->update($validated);
 
             return response()->json([
@@ -114,7 +121,9 @@ class StudentController extends Controller
     {
         try {
             $student = Student::findOrFail($id);
-            $student->user->update(['is_active' => false]);
+            if ($student->user) {
+                $student->user->update(['is_active' => false]);
+            }
             $student->update(['is_active' => false]);
 
             return response()->json(['message' => 'ছাত্র/ছাত্রী সফলভাবে মুছে ফেলা হয়েছে।']);

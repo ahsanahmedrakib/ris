@@ -10,9 +10,9 @@ use App\Models\Exam;
 use App\Models\ExamResult;
 use App\Models\Student;
 use App\Models\Subject;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class ExamController extends Controller
 {
@@ -74,7 +74,7 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষা সফলভাবে তৈরি হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'পরীক্ষা তৈরি করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'পরীক্ষা তৈরি করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -146,7 +146,7 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষার ফলাফল সফলভাবে সংরক্ষিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'ফলাফল সংরক্ষণ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ফলাফল সংরক্ষণ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -192,7 +192,7 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষা সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'পরীক্ষা আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'পরীক্ষা আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -205,7 +205,7 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষা সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'পরীক্ষা মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'পরীক্ষা মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

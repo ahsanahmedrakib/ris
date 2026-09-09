@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
 use App\Models\Subject;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class SubjectController extends Controller
 {
@@ -52,7 +52,7 @@ class SubjectController extends Controller
                 ->with('success', 'বিষয় সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বিষয় যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বিষয় যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -91,7 +91,7 @@ class SubjectController extends Controller
                 ->with('success', 'বিষয় সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বিষয় আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বিষয় আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -104,7 +104,7 @@ class SubjectController extends Controller
                 ->with('success', 'বিষয় সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'বিষয় মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বিষয় মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

@@ -26,6 +26,8 @@ class ClassController extends Controller
         ]);
 
         try {
+            $validated['section'] = $validated['section'] ?? '';
+
             $class = ClassRoom::create($validated);
 
             return response()->json([
@@ -51,9 +53,12 @@ class ClassController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'academic_year_id' => 'required|exists:academic_years,id',
+            'section' => 'nullable|string|max:10',
         ]);
 
         try {
+            $validated['section'] = $validated['section'] ?? '';
+
             $class->update($validated);
 
             return response()->json([

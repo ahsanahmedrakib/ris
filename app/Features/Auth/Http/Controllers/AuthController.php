@@ -3,17 +3,19 @@
 namespace App\Features\Auth\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
-    public function showLogin(): View
+    public function showLogin(Request $request): View
     {
-        return view('auth.login', ['loginRole' => request()->query('role')]);
+        return view('auth.login', ['loginRole' => $request->query('role')]);
     }
 
     public function login(Request $request): RedirectResponse
@@ -29,9 +31,10 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
+        /** @var User|null $user */
         $user = Auth::user();
 
-        if (! $user->is_active) {
+        if ($user === null || ! $user->is_active) {
             Auth::logout();
 
             return back()->withErrors([
@@ -39,7 +42,13 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
-        $token = auth()->guard('api')->login($user);
+        try {
+            $token = auth()->guard('api')->login($user);
+        } catch (JWTException) {
+            return back()->withErrors([
+                'email' => 'লগইন সেশন তৈরি করা যায়নি, আবার চেষ্টা করুন।',
+            ])->onlyInput('email');
+        }
 
         return $this->redirectByRole($user->role)
             ->withCookie(
@@ -51,7 +60,7 @@ class AuthController extends Controller
     {
         try {
             auth()->guard('api')->invalidate(true);
-        } catch (\Exception $e) {
+        } catch (JWTException) {
             // JWT token may not exist on web logout
         }
 
@@ -95,7 +104,13 @@ class AuthController extends Controller
 
     public function apiLogout(Request $request): JsonResponse
     {
-        auth()->guard('api')->invalidate(true);
+        try {
+            auth()->guard('api')->invalidate(true);
+        } catch (JWTException) {
+            return response()->json([
+                'message' => 'লগআউট ব্যর্থ হয়েছে বা টোকেন ইতিমধ্যে অবৈধ।',
+            ], 401);
+        }
 
         return response()->json([
             'message' => 'সফলভাবে লগআউট হয়েছে।',
@@ -104,7 +119,13 @@ class AuthController extends Controller
 
     public function apiRefresh(Request $request): JsonResponse
     {
-        $token = auth()->guard('api')->refresh();
+        try {
+            $token = auth()->guard('api')->refresh();
+        } catch (JWTException) {
+            return response()->json([
+                'message' => 'টোকেন রিফ্রেশ করা যায়নি, পুনরায় লগইন করুন।',
+            ], 401);
+        }
 
         return response()->json([
             'message' => 'টোকেন রিফ্রেশ হয়েছে।',

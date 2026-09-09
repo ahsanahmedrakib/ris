@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Bus;
 use App\Models\BusRoute;
-use App\Models\Student;
 use App\Models\StudentTransport;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class TransportController extends Controller
 {
@@ -44,13 +43,15 @@ class TransportController extends Controller
         ]);
 
         try {
+            $validated['route_name'] = $validated['route_name'] ?? '';
+
             Bus::create($validated);
 
             return redirect()->route('admin.transport.index')
                 ->with('success', 'বাস সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বাস যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বাস যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -95,7 +96,7 @@ class TransportController extends Controller
                 ->with('success', 'বাস স্টপ সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বাস স্টপ যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বাস স্টপ যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -125,13 +126,15 @@ class TransportController extends Controller
         ]);
 
         try {
+            $validated['route_name'] = $validated['route_name'] ?? '';
+
             $bus->update($validated);
 
             return redirect()->route('admin.transport.index')
                 ->with('success', 'বাসের তথ্য সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বাস আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বাস আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -151,7 +154,7 @@ class TransportController extends Controller
                 ->with('success', 'বাস সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'বাস মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বাস মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -194,7 +197,7 @@ class TransportController extends Controller
                 ->with('success', 'ছাত্র/ছাত্রী সফলভাবে বাসে নির্ধারিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'ছাত্র/ছাত্রী নির্ধারণ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী নির্ধারণ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

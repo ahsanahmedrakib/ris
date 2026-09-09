@@ -37,7 +37,7 @@
                             <td class="px-5 py-3.5">
                                 <div>
                                     <p class="font-medium text-gray-900">{{ $notice->title }}</p>
-                                    <p class="text-xs text-gray-400 mt-0.5 line-clamp-1">{{ $notice->description }}</p>
+                                    <p class="text-xs text-gray-400 mt-0.5 line-clamp-1">{{ $notice->content }}</p>
                                 </div>
                             </td>
                             <td class="px-5 py-3.5">
@@ -47,10 +47,10 @@
                                 </span>
                             </td>
                             <td class="px-5 py-3.5 text-gray-600">
-                                {{ ($notice->target ?? '') === 'all' ? 'সকল' : (($notice->target ?? '') === 'teachers' ? 'শিক্ষক' : (($notice->target ?? '') === 'parents' ? 'অভিভাবক' : 'ছাত্র')) }}
+                                {{ ($notice->target_role ?? '') === 'all' ? 'সকল' : (($notice->target_role ?? '') === 'teacher' ? 'শিক্ষক' : (($notice->target_role ?? '') === 'parent' ? 'অভিভাবক' : 'ছাত্র')) }}
                             </td>
-                            <td class="px-5 py-3.5 text-gray-600">{{ $notice->publish_date ? \Carbon\Carbon::parse($notice->publish_date)->format('d/m/Y') : '-' }}</td>
-                            <td class="px-5 py-3.5 text-gray-600">{{ $notice->expiry_date ? \Carbon\Carbon::parse($notice->expiry_date)->format('d/m/Y') : '-' }}</td>
+                            <td class="px-5 py-3.5 text-gray-600">{{ $notice->published_at?->format('d/m/Y') ?? '-' }}</td>
+                            <td class="px-5 py-3.5 text-gray-600">{{ $notice->expires_at?->format('d/m/Y') ?? '-' }}</td>
                             <td class="px-5 py-3.5">
                                 <div class="flex items-center justify-end gap-1">
                                     <a href="{{ route('admin.notices.edit', $notice) }}" class="p-1.5 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors" title="সম্পাদনা">

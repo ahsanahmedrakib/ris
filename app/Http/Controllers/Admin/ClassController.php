@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\ClassRoom;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class ClassController extends Controller
 {
@@ -46,13 +46,15 @@ class ClassController extends Controller
         ]);
 
         try {
+            $validated['section'] = $validated['section'] ?? '';
+
             ClassRoom::create($validated);
 
             return redirect()->route('admin.classes.index')
                 ->with('success', 'শ্রেণী সফলভাবে তৈরি হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'শ্রেণী তৈরি করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'শ্রেণী তৈরি করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -94,13 +96,15 @@ class ClassController extends Controller
         ]);
 
         try {
+            $validated['section'] = $validated['section'] ?? '';
+
             $class->update($validated);
 
             return redirect()->route('admin.classes.index')
                 ->with('success', 'শ্রেণী সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'শ্রেণী আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'শ্রেণী আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -120,7 +124,7 @@ class ClassController extends Controller
                 ->with('success', 'শ্রেণী সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'শ্রেণী মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'শ্রেণী মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

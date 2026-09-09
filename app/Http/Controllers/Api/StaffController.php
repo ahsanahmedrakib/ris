@@ -88,7 +88,9 @@ class StaffController extends Controller
         ]);
 
         try {
-            $staff->user->update(['name' => $validated['name'], 'email' => $validated['email']]);
+            if ($staff->user) {
+                $staff->user->update(['name' => $validated['name'], 'email' => $validated['email']]);
+            }
             $staff->update($validated);
 
             return response()->json([
@@ -104,7 +106,9 @@ class StaffController extends Controller
     {
         try {
             $staff = Staff::findOrFail($id);
-            $staff->user->update(['is_active' => false]);
+            if ($staff->user) {
+                $staff->user->update(['is_active' => false]);
+            }
             $staff->delete();
 
             return response()->json(['message' => 'কর্মচারী সফলভাবে মুছে ফেলা হয়েছে।']);

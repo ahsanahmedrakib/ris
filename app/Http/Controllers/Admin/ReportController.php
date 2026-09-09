@@ -6,6 +6,7 @@ use App\Enums\AttendanceStatus;
 use App\Enums\FeeStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
+use App\Models\Bus;
 use App\Models\ClassRoom;
 use App\Models\Exam;
 use App\Models\ExamResult;
@@ -13,7 +14,6 @@ use App\Models\FeeInvoice;
 use App\Models\FeePayment;
 use App\Models\Staff;
 use App\Models\Student;
-use App\Models\Bus;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -94,12 +94,26 @@ class ReportController extends Controller
         $classes = ClassRoom::orderBy('name')->get();
         $statuses = AttendanceStatus::cases();
 
+        $summaryQuery = Attendance::query();
+
+        if ($request->filled('class_id')) {
+            $summaryQuery->where('class_id', $request->class_id);
+        }
+
+        if ($request->filled('start_date')) {
+            $summaryQuery->whereDate('date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $summaryQuery->whereDate('date', '<=', $request->end_date);
+        }
+
         $summary = [
-            'total' => $attendances->total(),
-            'present' => (clone $query)->where('status', AttendanceStatus::Present->value)->count(),
-            'absent' => (clone $query)->where('status', AttendanceStatus::Absent->value)->count(),
-            'late' => (clone $query)->where('status', AttendanceStatus::Late->value)->count(),
-            'excused' => (clone $query)->where('status', AttendanceStatus::Excused->value)->count(),
+            'total' => (clone $summaryQuery)->count(),
+            'present' => (clone $summaryQuery)->where('status', AttendanceStatus::Present->value)->count(),
+            'absent' => (clone $summaryQuery)->where('status', AttendanceStatus::Absent->value)->count(),
+            'late' => (clone $summaryQuery)->where('status', AttendanceStatus::Late->value)->count(),
+            'excused' => (clone $summaryQuery)->where('status', AttendanceStatus::Excused->value)->count(),
         ];
 
         return view('admin.reports.attendance', compact('attendances', 'classes', 'statuses', 'summary'));
@@ -141,12 +155,14 @@ class ReportController extends Controller
     public function staffReport(): View
     {
         $staff = Staff::with('user')->orderBy('employee_id')->paginate(20);
+
         return view('admin.reports.staff', compact('staff'));
     }
 
     public function transportReport(): View
     {
-        $buses = Bus::withCount('studentTransport')->orderBy('bus_no')->paginate(20);
+        $buses = Bus::withCount('studentTransports')->orderBy('bus_no')->paginate(20);
+
         return view('admin.reports.transport', compact('buses'));
     }
 }

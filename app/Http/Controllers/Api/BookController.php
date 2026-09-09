@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Book;
-use App\Models\BookBorrowing;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -41,6 +40,8 @@ class BookController extends Controller
         ]);
 
         try {
+            $validated['category'] = $validated['category'] ?? '';
+
             $book = Book::create($validated);
 
             return response()->json([

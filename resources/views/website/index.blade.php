@@ -87,7 +87,7 @@
                         <img src="{{ asset('logo.png') }}" alt="Resma International School"
                             class="h-36 lg:h-44 w-auto object-contain">
                     </div>
-                    <div class="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-lg p-4 flex items-center gap-3">
+                    <div class="absolute -bottom-8 -left-6 bg-white rounded-xl shadow-lg p-4 flex items-center gap-3">
                         <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center"><svg
                                 class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

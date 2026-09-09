@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bus;
-use App\Models\StudentTransport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -28,6 +27,8 @@ class TransportController extends Controller
         ]);
 
         try {
+            $validated['route_name'] = $validated['route_name'] ?? '';
+
             $bus = Bus::create($validated);
 
             return response()->json([
@@ -55,9 +56,12 @@ class TransportController extends Controller
             'driver_name' => 'required|string|max:255',
             'driver_phone' => 'required|string|max:20',
             'capacity' => 'required|integer|min:1',
+            'route_name' => 'nullable|string|max:255',
         ]);
 
         try {
+            $validated['route_name'] = $validated['route_name'] ?? '';
+
             $bus->update($validated);
 
             return response()->json([

@@ -18,10 +18,14 @@ class NoticeController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        if ($request->missing('published_at')) {
+            $request->merge(['published_at' => now()]);
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'type' => 'required|in:general,academic,exam,fee,event',
+            'type' => 'required|in:notice,event,holiday',
             'target_role' => 'nullable|in:admin,teacher,student,parent,all',
             'published_at' => 'nullable|date',
             'expires_at' => 'nullable|date|after_or_equal:published_at',
@@ -58,7 +62,7 @@ class NoticeController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'type' => 'required|in:general,academic,exam,fee,event',
+            'type' => 'required|in:notice,event,holiday',
         ]);
 
         try {

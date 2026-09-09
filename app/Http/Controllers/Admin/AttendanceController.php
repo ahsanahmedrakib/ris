@@ -7,9 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\ClassRoom;
 use App\Models\Student;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class AttendanceController extends Controller
 {
@@ -29,6 +29,11 @@ class AttendanceController extends Controller
         $classes = ClassRoom::orderBy('name')->get();
 
         return view('admin.attendance.index', compact('attendances', 'classes'));
+    }
+
+    public function selectClass(): View
+    {
+        return $this->create(request());
     }
 
     public function create(Request $request): View
@@ -91,7 +96,7 @@ class AttendanceController extends Controller
                 ->with('success', 'উপস্থিতি সফলভাবে সংরক্ষিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'উপস্থিতি সংরক্ষণ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'উপস্থিতি সংরক্ষণ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -131,7 +136,7 @@ class AttendanceController extends Controller
                 ->with('success', 'উপস্থিতি সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'উপস্থিতি আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'উপস্থিতি আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -144,7 +149,7 @@ class AttendanceController extends Controller
                 ->with('success', 'উপস্থিতি সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'উপস্থিতি মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'উপস্থিতি মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

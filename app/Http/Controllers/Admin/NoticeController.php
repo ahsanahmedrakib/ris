@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class NoticeController extends Controller
 {
@@ -24,10 +24,14 @@ class NoticeController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        if ($request->missing('published_at')) {
+            $request->merge(['published_at' => now()]);
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'type' => 'required|string|in:general,academic,exam,fee,event',
+            'type' => 'required|string|in:notice,event,holiday',
             'target_role' => 'nullable|string|in:admin,teacher,student,parent,all',
             'published_at' => 'nullable|date',
             'expires_at' => 'nullable|date|after_or_equal:published_at',
@@ -52,7 +56,7 @@ class NoticeController extends Controller
                 ->with('success', 'বিজ্ঞপ্তি সফলভাবে প্রকাশিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বিজ্ঞপ্তি প্রকাশ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বিজ্ঞপ্তি প্রকাশ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -77,7 +81,7 @@ class NoticeController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'type' => 'required|string|in:general,academic,exam,fee,event',
+            'type' => 'required|string|in:notice,event,holiday',
             'target_role' => 'nullable|string|in:admin,teacher,student,parent,all',
             'published_at' => 'nullable|date',
             'expires_at' => 'nullable|date|after_or_equal:published_at',
@@ -96,7 +100,7 @@ class NoticeController extends Controller
                 ->with('success', 'বিজ্ঞপ্তি সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বিজ্ঞপ্তি আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বিজ্ঞপ্তি আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -109,7 +113,7 @@ class NoticeController extends Controller
                 ->with('success', 'বিজ্ঞপ্তি সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'বিজ্ঞপ্তি মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বিজ্ঞপ্তি মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

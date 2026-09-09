@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\BookBorrowing;
-use App\Models\Student;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class LibraryController extends Controller
 {
@@ -61,13 +60,15 @@ class LibraryController extends Controller
         ]);
 
         try {
+            $validated['category'] = $validated['category'] ?? '';
+
             Book::create($validated);
 
             return redirect()->route('admin.library.index')
                 ->with('success', 'বই সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বই যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বই যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -111,13 +112,15 @@ class LibraryController extends Controller
         ]);
 
         try {
+            $validated['category'] = $validated['category'] ?? '';
+
             $book->update($validated);
 
             return redirect()->route('admin.library.index')
                 ->with('success', 'বইয়ের তথ্য সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বই আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বই আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -141,7 +144,7 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'বই মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বই মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -191,7 +194,7 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে ধার দেওয়া হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বই ধার দিতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বই ধার দিতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -216,7 +219,7 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে ফেরত নেওয়া হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'বই ফেরত নিতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বই ফেরত নিতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

@@ -28,12 +28,9 @@
         <aside class="hidden lg:flex lg:flex-col bg-ris-dark-900 text-white transition-all duration-300 ease-in-out"
             :class="sidebarOpen ? 'w-64' : 'w-20'">
             {{-- Logo --}}
-            <div class="flex items-center gap-3 px-4 h-16 border-b border-white/10 shrink-0">
+            <div class="flex items-center gap-3 px-4 h-16 border-b border-white/10 shrink-0"
+                onclick="href='{{ route('home') }}'">
                 <img src="{{ asset('logo.png') }}" alt="RIS" class="h-10 w-auto object-contain shrink-0">
-                <div x-show="sidebarOpen" x-cloak class="overflow-hidden">
-                    <div class="font-heading font-bold text-sm text-white leading-tight whitespace-nowrap">RIS</div>
-                    <div class="text-[10px] text-gray-400 whitespace-nowrap">অ্যাডমিন প্যানেল</div>
-                </div>
             </div>
 
             {{-- Navigation --}}
@@ -118,13 +115,13 @@
                             'label' => 'রিপোর্ট',
                             'route' => 'admin.reports.index',
                         ],
-[
+                        [
                             'icon' =>
                                 '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h3v3h-3v-3zM17 14h3v3h-3v-3zM14 17h3v3h-3v-3zM20 14h1v3h-3v-1h2v-2zM17 20h1v1h-1v-1z"/>',
                             'label' => 'QR কোড জেনারেটর',
                             'route' => 'admin.qrcode',
                         ],
-];
+                    ];
 
                 @endphp
 

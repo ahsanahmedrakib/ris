@@ -2,6 +2,7 @@
 
 namespace App\Features\Website\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
 use App\Models\Notice;
 use App\Models\Staff;
@@ -10,7 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class WebsiteController extends \App\Http\Controllers\Controller
+class WebsiteController extends Controller
 {
     public function index(): View
     {

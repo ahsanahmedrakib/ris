@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Gender;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
 use App\Models\Student;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class StudentController extends Controller
 {
@@ -115,7 +114,7 @@ class StudentController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'ছাত্র/ছাত্রী যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -199,7 +198,7 @@ class StudentController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'ছাত্র/ছাত্রী আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -214,7 +213,7 @@ class StudentController extends Controller
                 ->with('success', 'ছাত্র/ছাত্রী সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'ছাত্র/ছাত্রী মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

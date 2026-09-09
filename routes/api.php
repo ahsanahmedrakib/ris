@@ -1,6 +1,17 @@
 <?php
 
 use App\Features\Auth\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\AttendanceController;
+use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\ClassController;
+use App\Http\Controllers\Api\ExamController;
+use App\Http\Controllers\Api\FeeController;
+use App\Http\Controllers\Api\NoticeController;
+use App\Http\Controllers\Api\PayrollController;
+use App\Http\Controllers\Api\StaffController;
+use App\Http\Controllers\Api\StudentController;
+use App\Http\Controllers\Api\SubjectController;
+use App\Http\Controllers\Api\TransportController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -11,15 +22,15 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:api')->group(function () {
-    Route::resource('students', \App\Http\Controllers\Api\StudentController::class);
-    Route::resource('classes', \App\Http\Controllers\Api\ClassController::class);
-    Route::resource('subjects', \App\Http\Controllers\Api\SubjectController::class);
-    Route::resource('attendance', \App\Http\Controllers\Api\AttendanceController::class);
-    Route::resource('exams', \App\Http\Controllers\Api\ExamController::class);
-    Route::resource('fees', \App\Http\Controllers\Api\FeeController::class);
-    Route::resource('notices', \App\Http\Controllers\Api\NoticeController::class);
-    Route::resource('books', \App\Http\Controllers\Api\BookController::class);
-    Route::resource('transport', \App\Http\Controllers\Api\TransportController::class);
-    Route::resource('staff', \App\Http\Controllers\Api\StaffController::class);
-    Route::resource('payroll', \App\Http\Controllers\Api\PayrollController::class);
+    Route::resource('students', StudentController::class);
+    Route::resource('classes', ClassController::class);
+    Route::resource('subjects', SubjectController::class);
+    Route::resource('attendance', AttendanceController::class);
+    Route::resource('exams', ExamController::class);
+    Route::resource('fees', FeeController::class);
+    Route::resource('notices', NoticeController::class);
+    Route::resource('books', BookController::class);
+    Route::resource('transport', TransportController::class);
+    Route::resource('staff', StaffController::class);
+    Route::resource('payroll', PayrollController::class);
 });

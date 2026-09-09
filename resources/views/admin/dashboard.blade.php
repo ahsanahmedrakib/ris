@@ -234,7 +234,7 @@
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
                                     <h3 class="text-sm font-medium text-gray-900 truncate">{{ $notice->title }}</h3>
-                                    <p class="text-xs text-gray-500 mt-0.5 line-clamp-1">{{ $notice->description }}</p>
+                                    <p class="text-xs text-gray-500 mt-0.5 line-clamp-1">{{ $notice->content }}</p>
                                 </div>
                                 <span
                                     class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium

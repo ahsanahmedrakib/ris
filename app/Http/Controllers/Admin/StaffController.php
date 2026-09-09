@@ -6,11 +6,11 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Staff;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class StaffController extends Controller
 {
@@ -92,7 +92,7 @@ class StaffController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'কর্মচারী যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'কর্মচারী যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -143,11 +143,13 @@ class StaffController extends Controller
         try {
             DB::beginTransaction();
 
-            $staff->user->update([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'phone' => $validated['phone'] ?? null,
-            ]);
+            if ($staff->user) {
+                $staff->user->update([
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'phone' => $validated['phone'] ?? null,
+                ]);
+            }
 
             $staff->update($validated);
 
@@ -159,7 +161,7 @@ class StaffController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'কর্মচারী আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'কর্মচারী আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -167,14 +169,16 @@ class StaffController extends Controller
     {
         try {
             $staff = Staff::findOrFail($id);
-            $staff->user->update(['is_active' => false]);
+            if ($staff->user) {
+                $staff->user->update(['is_active' => false]);
+            }
             $staff->delete();
 
             return redirect()->route('admin.staff.index')
                 ->with('success', 'কর্মচারী সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'কর্মচারী মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'কর্মচারী মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

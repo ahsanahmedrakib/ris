@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Payroll;
 use App\Models\Staff;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class PayrollController extends Controller
 {
@@ -42,6 +42,16 @@ class PayrollController extends Controller
     }
 
     public function store(Request $request): RedirectResponse
+    {
+        return $this->processPayroll($request);
+    }
+
+    public function process(Request $request): RedirectResponse
+    {
+        return $this->processPayroll($request);
+    }
+
+    private function processPayroll(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'month' => 'required|integer|min:1|max:12',
@@ -98,7 +108,7 @@ class PayrollController extends Controller
                 ->with('success', "{$count}টি বেতন স্লিপ সফলভাবে তৈরি হয়েছে।");
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বেতন প্রক্রিয়া করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বেতন প্রক্রিয়া করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -147,7 +157,7 @@ class PayrollController extends Controller
                 ->with('success', $message);
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বেতন আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বেতন আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

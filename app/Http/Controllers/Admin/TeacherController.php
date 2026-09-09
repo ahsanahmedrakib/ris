@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class TeacherController extends Controller
 {
@@ -61,7 +61,7 @@ class TeacherController extends Controller
                 ->with('success', 'শিক্ষক সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'শিক্ষক যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'শিক্ষক যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ class TeacherController extends Controller
                 ->with('success', 'শিক্ষকের তথ্য সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'শিক্ষক আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'শিক্ষক আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -116,7 +116,7 @@ class TeacherController extends Controller
                 ->with('success', 'শিক্ষক সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'শিক্ষক মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'শিক্ষক মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

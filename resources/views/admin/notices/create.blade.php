@@ -50,9 +50,9 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">বিবরণ <span class="text-red-500">*</span></label>
-                    <textarea name="description" rows="5" required
+                    <textarea name="content" rows="5" required
                               class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors resize-none"
-                              placeholder="নোটিশের বিস্তারিত বিবরণ লিখুন...">{{ old('description') }}</textarea>
+                              placeholder="নোটিশের বিস্তারিত বিবরণ লিখুন...">{{ old('content') }}</textarea>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     <div>
@@ -65,25 +65,32 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">লক্ষ্য <span class="text-red-500">*</span></label>
-                        <select name="target" required class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
-                            <option value="">লক্ষ্য নির্বাচন করুন</option>
-                            <option value="all" {{ old('target') === 'all' ? 'selected' : '' }}>সকল</option>
-                            <option value="teachers" {{ old('target') === 'teachers' ? 'selected' : '' }}>শিক্ষক</option>
-                            <option value="parents" {{ old('target') === 'parents' ? 'selected' : '' }}>অভিভাবক</option>
-                            <option value="students" {{ old('target') === 'students' ? 'selected' : '' }}>ছাত্র</option>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">লক্ষ্য</label>
+                        <select name="target_role" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
+                            <option value="all" {{ old('target_role', 'all') === 'all' ? 'selected' : '' }}>সকল</option>
+                            <option value="admin" {{ old('target_role') === 'admin' ? 'selected' : '' }}>অ্যাডমিন</option>
+                            <option value="teacher" {{ old('target_role') === 'teacher' ? 'selected' : '' }}>শিক্ষক</option>
+                            <option value="parent" {{ old('target_role') === 'parent' ? 'selected' : '' }}>অভিভাবক</option>
+                            <option value="student" {{ old('target_role') === 'student' ? 'selected' : '' }}>ছাত্র</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">প্রকাশের তারিখ <span class="text-red-500">*</span></label>
-                        <input type="date" name="publish_date" value="{{ old('publish_date', date('Y-m-d')) }}" required
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">প্রকাশের তারিখ</label>
+                        <input type="datetime-local" name="published_at" value="{{ old('published_at') }}"
                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">মেয়াদোত্তীর্ণ</label>
-                        <input type="date" name="expiry_date" value="{{ old('expiry_date') }}"
+                        <input type="datetime-local" name="expires_at" value="{{ old('expires_at') }}"
                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                     </div>
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', 1) ? 'checked' : '' }}
+                               class="w-4 h-4 rounded border-gray-300 text-ris-primary focus:ring-ris-primary">
+                        সক্রিয়
+                    </label>
                 </div>
             </div>
         </div>

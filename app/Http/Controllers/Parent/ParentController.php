@@ -78,6 +78,7 @@ class ParentController extends Controller
     public function attendanceForStudent(Request $request, $studentId): View
     {
         $request->merge(['student_id' => $studentId]);
+
         return $this->attendance($request);
     }
 
@@ -111,6 +112,7 @@ class ParentController extends Controller
     public function feesForStudent(Request $request, $studentId): View
     {
         $request->merge(['student_id' => $studentId]);
+
         return $this->fees($request);
     }
 

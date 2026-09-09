@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class FeeInvoice extends Model
@@ -62,7 +62,7 @@ class FeeInvoice extends Model
 
     public function getInvoiceNoAttribute(): string
     {
-        return 'RIS-' . str_pad((string) $this->id, 5, '0', STR_PAD_LEFT);
+        return 'RIS-'.str_pad((string) $this->id, 5, '0', STR_PAD_LEFT);
     }
 
     public function getFeeTypeAttribute(): ?string

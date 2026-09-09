@@ -25,39 +25,35 @@
                         <th class="text-left px-5 py-3.5 font-medium text-gray-500">চালক</th>
                         <th class="text-center px-5 py-3.5 font-medium text-gray-500">ধারণক্ষমতা</th>
                         <th class="text-center px-5 py-3.5 font-medium text-gray-500">নির্ধারিত ছাত্র</th>
-                        <th class="text-center px-5 py-3.5 font-medium text-gray-500">অবস্থা</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
                     @forelse($buses as $index => $bus)
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-5 py-3.5 text-gray-500">{{ ($buses->currentPage() - 1) * $buses->perPage() + $index + 1 }}</td>
-                            <td class="px-5 py-3.5 font-medium text-gray-900">{{ $bus->bus_no ?? $bus->number ?? '-' }}</td>
-                            <td class="px-5 py-3.5 text-gray-600">{{ $bus->route ?? '-' }}</td>
+                            <td class="px-5 py-3.5 font-medium text-gray-900">{{ $bus->bus_no }}</td>
+                            <td class="px-5 py-3.5 text-gray-600">{{ $bus->route_name ?? '-' }}</td>
                             <td class="px-5 py-3.5">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-xs font-semibold shrink-0">
-                                        {{ substr($bus->driver->name ?? '?', 0, 1) }}
+                                        {{ substr($bus->driver_name ?? '?', 0, 1) }}
                                     </div>
-                                    <span class="text-gray-900">{{ $bus->driver->name ?? '-' }}</span>
+                                    <div>
+                                        <span class="text-gray-900">{{ $bus->driver_name ?? '-' }}</span>
+                                        <p class="text-xs text-gray-400">{{ $bus->driver_phone }}</p>
+                                    </div>
                                 </div>
                             </td>
                             <td class="px-5 py-3.5 text-center text-gray-600">{{ $bus->capacity ?? '-' }}</td>
                             <td class="px-5 py-3.5 text-center">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-ris-primary/10 text-ris-primary font-semibold">
-                                    {{ $bus->students_count ?? $bus->students->count() ?? 0 }}
-                                </span>
-                            </td>
-                            <td class="px-5 py-3.5 text-center">
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
-                                    {{ ($bus->status ?? '') === 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700' }}">
-                                    {{ ($bus->status ?? '') === 'active' ? 'সক্রিয়' : 'নিষ্ক্রিয়' }}
+                                    {{ $bus->student_transports_count ?? 0 }}
                                 </span>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-5 py-12 text-center">
+                            <td colspan="6" class="px-5 py-12 text-center">
                                 <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h8m0 0v8m0-8l-4 4m4-4l-4 4"/></svg>
                                 <p class="text-gray-500 font-medium">কোনো বাস পাওয়া যায়নি</p>
                             </td>
