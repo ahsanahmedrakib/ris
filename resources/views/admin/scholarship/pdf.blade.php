@@ -145,7 +145,7 @@
             <div class="text-center mt-6 space-y-2 text-base font-bold">
                 <p class="underline decoration-1 underline-offset-2">পরীক্ষার তারিখ ও সময়ঃ</p>
                 <p class="text-lg">
-                    ২১ নভেম্বর ২০২৬, শুক্রবার,
+                    ৩০ অক্টোবর ২০২৬, শুক্রবার,
                     @if (in_array($registration->class_no, [1, 2]))
                         ৯টা থেকে ১১টা
                     @else
