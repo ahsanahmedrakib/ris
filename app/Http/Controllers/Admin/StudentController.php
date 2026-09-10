@@ -79,8 +79,8 @@ class StudentController extends Controller
             'email.unique' => 'এই ইমেইল ইতিমধ্যে ব্যবহৃত হয়েছে।',
             'admission_no.required' => 'ভর্তি নম্বর আবশ্যক।',
             'admission_no.unique' => 'এই ভর্তি নম্বর ইতিমধ্যে বিদ্যমান।',
-            'class_id.required' => 'শ্রেণী নির্বাচন আবশ্যক।',
-            'class_id.exists' => 'নির্বাচিত শ্রেণী বিদ্যমান নেই।',
+            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
+            'class_id.exists' => 'নির্বাচিত শ্রেণি বিদ্যমান নেই।',
             'date_of_birth.required' => 'জন্ম তারিখ আবশ্যক।',
             'date_of_birth.before' => 'জন্ম তারিখ আজকের আগে হতে হবে।',
             'gender.required' => 'লিঙ্গ নির্বাচন আবশ্যক।',
@@ -114,7 +114,7 @@ class StudentController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'ছাত্র/ছাত্রী যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -124,10 +124,10 @@ class StudentController extends Controller
             'user',
             'classRoom',
             'parents',
-            'attendances' => fn($q) => $q->latest('date')->take(30),
-            'examResults' => fn($q) => $q->with('exam', 'subject')->latest(),
-            'feeInvoices' => fn($q) => $q->with('feeStructure')->latest(),
-            'bookBorrowings' => fn($q) => $q->with('book')->latest(),
+            'attendances' => fn ($q) => $q->latest('date')->take(30),
+            'examResults' => fn ($q) => $q->with('exam', 'subject')->latest(),
+            'feeInvoices' => fn ($q) => $q->with('feeStructure')->latest(),
+            'bookBorrowings' => fn ($q) => $q->with('book')->latest(),
         ])->findOrFail($id);
 
         return view('admin.students.show', compact('student'));
@@ -168,8 +168,8 @@ class StudentController extends Controller
             'email.unique' => 'এই ইমেইল ইতিমধ্যে ব্যবহৃত হয়েছে।',
             'admission_no.required' => 'ভর্তি নম্বর আবশ্যক।',
             'admission_no.unique' => 'এই ভর্তি নম্বর ইতিমধ্যে বিদ্যমান।',
-            'class_id.required' => 'শ্রেণী নির্বাচন আবশ্যক।',
-            'class_id.exists' => 'নির্বাচিত শ্রেণী বিদ্যমান নেই।',
+            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
+            'class_id.exists' => 'নির্বাচিত শ্রেণি বিদ্যমান নেই।',
             'date_of_birth.required' => 'জন্ম তারিখ আবশ্যক।',
             'date_of_birth.before' => 'জন্ম তারিখ আজকের আগে হতে হবে।',
             'gender.required' => 'লিঙ্গ নির্বাচন আবশ্যক।',
@@ -198,7 +198,7 @@ class StudentController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'ছাত্র/ছাত্রী আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -213,7 +213,7 @@ class StudentController extends Controller
                 ->with('success', 'ছাত্র/ছাত্রী সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'ছাত্র/ছাত্রী মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

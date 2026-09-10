@@ -12,8 +12,8 @@ use App\Models\Student;
 use App\Models\Subject;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class ExamController extends Controller
 {
@@ -55,8 +55,8 @@ class ExamController extends Controller
             'name.required' => 'পরীক্ষার নাম আবশ্যক।',
             'type.required' => 'পরীক্ষার ধরন আবশ্যক।',
             'type.in' => 'সঠিক পরীক্ষার ধরন নির্বাচন করুন।',
-            'class_id.required' => 'শ্রেণী নির্বাচন আবশ্যক।',
-            'class_id.exists' => 'নির্বাচিত শ্রেণী বিদ্যমান নেই।',
+            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
+            'class_id.exists' => 'নির্বাচিত শ্রেণি বিদ্যমান নেই।',
             'academic_year_id.required' => 'শিক্ষাবর্ষ নির্বাচন আবশ্যক।',
             'academic_year_id.exists' => 'নির্বাচিত শিক্ষাবর্ষ বিদ্যমান নেই।',
             'start_date.required' => 'শুরুর তারিখ আবশ্যক।',
@@ -75,7 +75,7 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষা সফলভাবে তৈরি হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'পরীক্ষা তৈরি করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'পরীক্ষা তৈরি করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -84,7 +84,7 @@ class ExamController extends Controller
         $exam = Exam::with([
             'classRoom',
             'academicYear',
-            'examResults' => fn($q) => $q->with(['student.user', 'subject'])->orderBy('student_id'),
+            'examResults' => fn ($q) => $q->with(['student.user', 'subject'])->orderBy('student_id'),
         ])->withCount('examResults')->findOrFail($id);
 
         return view('admin.exams.show', compact('exam'));
@@ -101,7 +101,7 @@ class ExamController extends Controller
         $subjects = Subject::where('class_id', $exam->class_id)->get();
         $existingResults = ExamResult::where('exam_id', $id)
             ->get()
-            ->keyBy(fn($r) => "{$r->student_id}_{$r->subject_id}");
+            ->keyBy(fn ($r) => "{$r->student_id}_{$r->subject_id}");
 
         return view('admin.exams.results', compact('exam', 'students', 'subjects', 'existingResults'));
     }
@@ -147,7 +147,7 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষার ফলাফল সফলভাবে সংরক্ষিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'ফলাফল সংরক্ষণ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ফলাফল সংরক্ষণ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -177,7 +177,7 @@ class ExamController extends Controller
         ], [
             'name.required' => 'পরীক্ষার নাম আবশ্যক।',
             'type.required' => 'পরীক্ষার ধরন আবশ্যক।',
-            'class_id.required' => 'শ্রেণী নির্বাচন আবশ্যক।',
+            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
             'academic_year_id.required' => 'শিক্ষাবর্ষ নির্বাচন আবশ্যক।',
             'start_date.required' => 'শুরুর তারিখ আবশ্যক।',
             'end_date.required' => 'শেষ তারিখ আবশ্যক।',
@@ -193,7 +193,7 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষা সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'পরীক্ষা আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'পরীক্ষা আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -206,7 +206,7 @@ class ExamController extends Controller
                 ->with('success', 'পরীক্ষা সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'পরীক্ষা মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'পরীক্ষা মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

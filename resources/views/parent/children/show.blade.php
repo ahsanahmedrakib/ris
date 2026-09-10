@@ -97,7 +97,7 @@
                 </div>
                 <div class="space-y-3 text-sm">
                     <div class="flex justify-between py-2 border-b border-gray-50">
-                        <span class="text-ris-gray">শ্রেণী</span>
+                        <span class="text-ris-gray">শ্রেণি</span>
                         <span class="font-medium text-gray-800">{{ $child->class->name ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b border-gray-50">

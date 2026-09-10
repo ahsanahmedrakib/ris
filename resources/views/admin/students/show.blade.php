@@ -47,7 +47,7 @@
                 </div>
                 <div class="p-5 space-y-3">
                     <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-500">শ্রেণী</span>
+                        <span class="text-gray-500">শ্রেণি</span>
                         <span class="font-medium text-gray-900">{{ $student->class->name ?? '-' }}</span>
                     </div>
                     <div class="flex items-center justify-between text-sm">

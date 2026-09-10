@@ -74,7 +74,7 @@
                                 class="font-medium text-gray-800 text-sm">{{ $invoice->student->name ?? ($child->name ?? '—') }}</span>
                         </div>
                         <div class="flex justify-between items-center py-3 border-b border-gray-100">
-                            <span class="text-ris-gray text-sm">শ্রেণী</span>
+                            <span class="text-ris-gray text-sm">শ্রেণি</span>
                             <span
                                 class="font-medium text-gray-800 text-sm">{{ $invoice->student->class->name ?? ($child->class->name ?? '—') }}</span>
                         </div>

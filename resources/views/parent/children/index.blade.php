@@ -49,7 +49,7 @@
                         <div class="p-5 space-y-3">
                             <div class="grid grid-cols-2 gap-3 text-sm">
                                 <div class="bg-gray-50 rounded-lg p-3">
-                                    <p class="text-ris-gray text-xs">শ্রেণী</p>
+                                    <p class="text-ris-gray text-xs">শ্রেণি</p>
                                     <p class="font-medium text-gray-800 mt-0.5">{{ $child->class->name ?? '—' }}</p>
                                 </div>
                                 <div class="bg-gray-50 rounded-lg p-3">

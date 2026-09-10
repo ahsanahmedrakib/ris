@@ -38,8 +38,8 @@ class ClassController extends Controller
             'academic_year_id' => 'required|exists:academic_years,id',
             'class_teacher_id' => 'nullable|exists:users,id',
         ], [
-            'name.required' => 'শ্রেণীর নাম আবশ্যক।',
-            'name.string' => 'শ্রেণীর নাম অবশ্যই একটি স্ট্রিং হতে হবে।',
+            'name.required' => 'শ্রেণির নাম আবশ্যক।',
+            'name.string' => 'শ্রেণির নাম অবশ্যই একটি স্ট্রিং হতে হবে।',
             'academic_year_id.required' => 'শিক্ষাবর্ষ নির্বাচন আবশ্যক।',
             'academic_year_id.exists' => 'নির্বাচিত শিক্ষাবর্ষ বিদ্যমান নেই।',
             'class_teacher_id.exists' => 'নির্বাচিত শিক্ষক বিদ্যমান নেই।',
@@ -51,10 +51,10 @@ class ClassController extends Controller
             ClassRoom::create($validated);
 
             return redirect()->route('admin.classes.index')
-                ->with('success', 'শ্রেণী সফলভাবে তৈরি হয়েছে।');
+                ->with('success', 'শ্রেণি সফলভাবে তৈরি হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'শ্রেণী তৈরি করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'শ্রেণি তৈরি করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -89,7 +89,7 @@ class ClassController extends Controller
             'academic_year_id' => 'required|exists:academic_years,id',
             'class_teacher_id' => 'nullable|exists:users,id',
         ], [
-            'name.required' => 'শ্রেণীর নাম আবশ্যক।',
+            'name.required' => 'শ্রেণির নাম আবশ্যক।',
             'academic_year_id.required' => 'শিক্ষাবর্ষ নির্বাচন আবশ্যক।',
             'academic_year_id.exists' => 'নির্বাচিত শিক্ষাবর্ষ বিদ্যমান নেই।',
             'class_teacher_id.exists' => 'নির্বাচিত শিক্ষক বিদ্যমান নেই।',
@@ -101,10 +101,10 @@ class ClassController extends Controller
             $class->update($validated);
 
             return redirect()->route('admin.classes.index')
-                ->with('success', 'শ্রেণী সফলভাবে আপডেট হয়েছে।');
+                ->with('success', 'শ্রেণি সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'শ্রেণী আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'শ্রেণি আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -115,16 +115,16 @@ class ClassController extends Controller
 
             if ($class->students()->count() > 0) {
                 return back()
-                    ->with('error', 'এই শ্রেণীতে ছাত্র/ছাত্রী আছে, তাই এটি মুছে ফেলা যাচ্ছে না।');
+                    ->with('error', 'এই শ্রেণিতে ছাত্র/ছাত্রী আছে, তাই এটি মুছে ফেলা যাচ্ছে না।');
             }
 
             $class->delete();
 
             return redirect()->route('admin.classes.index')
-                ->with('success', 'শ্রেণী সফলভাবে মুছে ফেলা হয়েছে।');
+                ->with('success', 'শ্রেণি সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'শ্রেণী মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'শ্রেণি মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

@@ -65,33 +65,33 @@
             <div class="space-y-4 mt-6 text-base">
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">শিক্ষার্থীর নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2">{{ $registration->student_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->student_name }}</div>
                 </div>
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">পিতার নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2">{{ $registration->father_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->father_name }}</div>
                 </div>
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">মাতার নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2">{{ $registration->mother_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->mother_name }}</div>
                 </div>
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">স্কুলের নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2">{{ $registration->school_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->school_name }}</div>
                 </div>
                 <div class="flex items-end gap-4">
                     <div class="flex items-end flex-1">
                         <span class="font-bold whitespace-nowrap">শ্রেণিঃ</span>
-                        <div class="border-b-2 border-black grow ml-2">
+                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
                             {{ $classes[$registration->class_no] ?? '-' }}</div>
                     </div>
                     <div class="flex items-end flex-1">
                         <span class="font-bold whitespace-nowrap">রোল নং</span>
-                        <div class="border-b-2 border-black grow ml-2">{{ $registration->roll_no ?? '-' }}</div>
+                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->roll_no ?? '-' }}</div>
                     </div>
                     <div class="flex items-end flex-1">
                         <span class="font-bold whitespace-nowrap">মোবাইল নং</span>
-                        <div class="border-b-2 border-black grow ml-2">{{ $registration->mobile_no }}</div>
+                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->mobile_no }}</div>
                     </div>
                 </div>
             </div>
@@ -123,28 +123,28 @@
             <div class="space-y-4 mt-6 text-base">
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">শিক্ষার্থীর নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2">{{ $registration->student_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->student_name }}</div>
                 </div>
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">স্কুলের নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2">{{ $registration->school_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->school_name }}</div>
                 </div>
                 <div class="flex items-end gap-6">
                     <div class="flex items-end flex-1">
                         <span class="font-bold whitespace-nowrap">শ্রেণিঃ</span>
-                        <div class="border-b-2 border-black grow ml-2">
+                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
                             {{ $classes[$registration->class_no] ?? '-' }}</div>
                     </div>
                     <div class="flex items-end flex-1">
                         <span class="font-bold whitespace-nowrap">রোল নং</span>
-                        <div class="border-b-2 border-black grow ml-2">{{ $registration->roll_no ?? '-' }}</div>
+                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->roll_no ?? '-' }}</div>
                     </div>
                 </div>
             </div>
 
             <div class="text-center mt-6 space-y-2 text-base font-bold">
                 <p class="underline decoration-1 underline-offset-2">পরীক্ষার তারিখ ও সময়ঃ</p>
-                <p class="text-lg">
+                <p class="text-xl font-bold">
                     ৩০ অক্টোবর ২০২৬, শুক্রবার,
                     @if (in_array($registration->class_no, [1, 2]))
                         ৯টা থেকে ১১টা
@@ -152,7 +152,7 @@
                         ১২টা থেকে ২টা ৩০ মিনিট
                     @endif
                 </p>
-                <p class="text-lg">স্থানঃ রেশমা ইন্টারন্যাশনাল স্কুল, গোপালগঞ্জ</p>
+                <p class="text-xl font-bold">স্থানঃ রেশমা ইন্টারন্যাশনাল স্কুল, গোপালগঞ্জ</p>
                 <p class="text-base">মোবাইলঃ ০১৬১৯ ০০৭ ০০৮</p>
             </div>
 

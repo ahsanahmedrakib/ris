@@ -102,7 +102,7 @@
                             <td class="px-5 py-3.5 text-gray-600">{{ $registration->mobile_no }}</td>
                             <td class="px-5 py-3.5 text-gray-600">
                                 @if ($registration->payment_method === 'cash')
-                                    <span class="text-emerald-600 font-medium">নগদ</span>
+                                    <span class="text-emerald-600 font-medium">ক্যাশ</span>
                                 @else
                                     {{ $registration->bkash_no }}
                                 @endif

@@ -66,8 +66,8 @@ class AttendanceController extends Controller
             'attendances.*.status' => 'required|in:present,absent,late,excused',
             'attendances.*.remarks' => 'nullable|string|max:255',
         ], [
-            'class_id.required' => 'শ্রেণী নির্বাচন আবশ্যক।',
-            'class_id.exists' => 'নির্বাচিত শ্রেণী বিদ্যমান নেই।',
+            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
+            'class_id.exists' => 'নির্বাচিত শ্রেণি বিদ্যমান নেই।',
             'date.required' => 'তারিখ আবশ্যক।',
             'attendances.required' => 'উপস্থিতি তালিকা আবশ্যক।',
             'attendances.array' => 'উপস্থিতি তালিকা অবশ্যই একটি অ্যারে হতে হবে।',
@@ -97,7 +97,7 @@ class AttendanceController extends Controller
                 ->with('success', 'উপস্থিতি সফলভাবে সংরক্ষিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'উপস্থিতি সংরক্ষণ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'উপস্থিতি সংরক্ষণ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -137,7 +137,7 @@ class AttendanceController extends Controller
                 ->with('success', 'উপস্থিতি সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'উপস্থিতি আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'উপস্থিতি আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -150,7 +150,7 @@ class AttendanceController extends Controller
                 ->with('success', 'উপস্থিতি সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'উপস্থিতি মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'উপস্থিতি মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

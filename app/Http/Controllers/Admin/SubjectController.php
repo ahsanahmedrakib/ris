@@ -39,8 +39,8 @@ class SubjectController extends Controller
             'name.string' => 'বিষয়ের নাম অবশ্যই একটি স্ট্রিং হতে হবে।',
             'code.required' => 'বিষয় কোড আবশ্যক।',
             'code.unique' => 'এই বিষয় কোড ইতিমধ্যে বিদ্যমান।',
-            'class_id.required' => 'শ্রেণী নির্বাচন আবশ্যক।',
-            'class_id.exists' => 'নির্বাচিত শ্রেণী বিদ্যমান নেই।',
+            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
+            'class_id.exists' => 'নির্বাচিত শ্রেণি বিদ্যমান নেই।',
             'teacher_id.required' => 'শিক্ষক নির্বাচন আবশ্যক।',
             'teacher_id.exists' => 'নির্বাচিত শিক্ষক বিদ্যমান নেই।',
         ]);
@@ -78,8 +78,8 @@ class SubjectController extends Controller
             'name.required' => 'বিষয়ের নাম আবশ্যক।',
             'code.required' => 'বিষয় কোড আবশ্যক।',
             'code.unique' => 'এই বিষয় কোড ইতিমধ্যে বিদ্যমান।',
-            'class_id.required' => 'শ্রেণী নির্বাচন আবশ্যক।',
-            'class_id.exists' => 'নির্বাচিত শ্রেণী বিদ্যমান নেই।',
+            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
+            'class_id.exists' => 'নির্বাচিত শ্রেণি বিদ্যমান নেই।',
             'teacher_id.required' => 'শিক্ষক নির্বাচন আবশ্যক।',
             'teacher_id.exists' => 'নির্বাচিত শিক্ষক বিদ্যমান নেই।',
         ]);

@@ -31,17 +31,17 @@ class ClassController extends Controller
             $class = ClassRoom::create($validated);
 
             return response()->json([
-                'message' => 'শ্রেণী সফলভাবে তৈরি হয়েছে।',
+                'message' => 'শ্রেণি সফলভাবে তৈরি হয়েছে।',
                 'class' => $class->load(['academicYear', 'classTeacher']),
             ], 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'শ্রেণী তৈরি করতে সমস্যা হয়েছে।'], 500);
+            return response()->json(['message' => 'শ্রেণি তৈরি করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
     public function show(int $id): JsonResponse
     {
-        $class = ClassRoom::with(['academicYear', 'classTeacher', 'students' => fn($q) => $q->with('user')])->withCount('students')->findOrFail($id);
+        $class = ClassRoom::with(['academicYear', 'classTeacher', 'students' => fn ($q) => $q->with('user')])->withCount('students')->findOrFail($id);
 
         return response()->json($class);
     }
@@ -62,11 +62,11 @@ class ClassController extends Controller
             $class->update($validated);
 
             return response()->json([
-                'message' => 'শ্রেণী সফলভাবে আপডেট হয়েছে।',
+                'message' => 'শ্রেণি সফলভাবে আপডেট হয়েছে।',
                 'class' => $class->fresh()->load(['academicYear', 'classTeacher']),
             ]);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'শ্রেণী আপডেট করতে সমস্যা হয়েছে।'], 500);
+            return response()->json(['message' => 'শ্রেণি আপডেট করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
@@ -75,9 +75,9 @@ class ClassController extends Controller
         try {
             ClassRoom::findOrFail($id)->delete();
 
-            return response()->json(['message' => 'শ্রেণী সফলভাবে মুছে ফেলা হয়েছে।']);
+            return response()->json(['message' => 'শ্রেণি সফলভাবে মুছে ফেলা হয়েছে।']);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'শ্রেণী মুছে ফেলতে সমস্যা হয়েছে।'], 500);
+            return response()->json(['message' => 'শ্রেণি মুছে ফেলতে সমস্যা হয়েছে।'], 500);
         }
     }
 }

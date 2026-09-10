@@ -73,7 +73,7 @@
                     <div>
                         <dt class="text-gray-500 mb-1">পেমেন্ট মাধ্যম</dt>
                         <dd class="font-medium text-gray-900">
-                            {{ $registration->payment_method === 'cash' ? 'নগদ' : 'বিকাশ' }}</dd>
+                            {{ $registration->payment_method === 'cash' ? 'ক্যাশ' : 'বিকাশ' }}</dd>
                     </div>
                     @if ($registration->payment_method !== 'cash')
                         <div>

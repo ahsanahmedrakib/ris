@@ -312,7 +312,7 @@
                         <tr class="bg-gray-50 border-b border-gray-100">
                             <th class="text-left px-5 py-3 font-medium text-gray-500">ভর্তি নং</th>
                             <th class="text-left px-5 py-3 font-medium text-gray-500">নাম</th>
-                            <th class="text-left px-5 py-3 font-medium text-gray-500">শ্রেণী</th>
+                            <th class="text-left px-5 py-3 font-medium text-gray-500">শ্রেণি</th>
                             <th class="text-left px-5 py-3 font-medium text-gray-500">অভিভাবক</th>
                             <th class="text-left px-5 py-3 font-medium text-gray-500">তারিখ</th>
                             <th class="text-left px-5 py-3 font-medium text-gray-500">অবস্থা</th>

@@ -217,7 +217,7 @@
                         <div
                             class="bg-white border border-emerald-200 rounded-lg px-4 py-3 text-sm text-gray-600 flex items-center gap-3">
                             <span class="text-lg">💵</span>
-                            <span>নগদ (ক্যাশ) পদ্ধতিতে পরিশোধ করা হয়েছে। অফিসে টাকা জমা নেওয়া হয়েছে।</span>
+                            <span>ক্যাশ পদ্ধতিতে পরিশোধ করা হয়েছে। অফিসে টাকা জমা নেওয়া হয়েছে।</span>
                         </div>
                     @endif
                 </div>
@@ -289,7 +289,7 @@
                             <div class="flex gap-4">
                                 <dt class="w-36 shrink-0 text-gray-500">পেমেন্ট মাধ্যম</dt>
                                 <dd class="flex-1 font-medium text-gray-900">
-                                    {{ $paymentMethod === 'cash' ? 'নগদ' : 'বিকাশ' }}</dd>
+                                    {{ $paymentMethod === 'cash' ? 'ক্যাশ' : 'বিকাশ' }}</dd>
                             </div>
                             @if ($paymentMethod !== 'cash')
                                 <div class="flex gap-4">
@@ -302,7 +302,7 @@
                         <div
                             class="mt-5 p-3 rounded-lg bg-gray-50 border border-gray-100 text-xs text-gray-500 leading-relaxed">
                             @if ($paymentMethod === 'cash')
-                                পেমেন্টটি <span class="font-semibold text-ris-primary">নগদ (ক্যাশ)</span> হিসেবে রেকর্ড
+                                পেমেন্টটি <span class="font-semibold text-ris-primary">ক্যাশ</span> হিসেবে রেকর্ড
                                 করা হবে।
                             @else
                                 টাকা পাঠানো হয়েছে: <span class="font-semibold text-ris-primary">বিকাশ পার্সোনাল
