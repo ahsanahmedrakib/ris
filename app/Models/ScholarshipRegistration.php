@@ -12,11 +12,11 @@ class ScholarshipRegistration extends Model
     use HasFactory;
 
     public const CLASSES = [
-        1 => 'One',
-        2 => 'Two',
-        3 => 'Three',
-        4 => 'Four',
-        5 => 'Five',
+        1 => 'প্রথম',
+        2 => 'দ্বিতীয়',
+        3 => 'তৃতীয়',
+        4 => 'চতুর্থ',
+        5 => 'পঞ্চম',
     ];
 
     public const BKASH_NUMBER = '01618197972';
