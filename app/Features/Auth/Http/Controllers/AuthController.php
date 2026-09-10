@@ -32,6 +32,8 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
+        $request->session()->regenerate();
+
         /** @var User|null $user */
         $user = Auth::user();
 

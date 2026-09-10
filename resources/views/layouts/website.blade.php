@@ -67,7 +67,7 @@
                             x-transition:leave="transition ease-in duration-100"
                             x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
                             class="absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
-                            <a href="{{ route('login') }}?role=admin"
+                            <a href="{{ route('login') }}"
                                 class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors">
                                 <span
                                     class="w-9 h-9 shrink-0 rounded-lg gradient-logo flex items-center justify-center">
