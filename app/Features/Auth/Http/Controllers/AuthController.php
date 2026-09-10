@@ -45,18 +45,24 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
+        $token = null;
+
         try {
             $token = JWTAuth::fromUser($user);
         } catch (JWTException) {
-            return back()->withErrors([
-                'email' => 'লগইন সেশন তৈরি করা যায়নি, আবার চেষ্টা করুন।',
-            ])->onlyInput('email');
+            // JWT creation may fail (e.g. cached config mismatch on production).
+            // Session auth still works — proceed with redirect.
         }
 
-        return $this->redirectByRole($user->role)
-            ->withCookie(
+        $redirect = $this->redirectByRole($user->role);
+
+        if ($token) {
+            $redirect->withCookie(
                 cookie('jwt_token', $token, 1440, '/', null, false, true)
             );
+        }
+
+        return $redirect;
     }
 
     public function logout(Request $request): RedirectResponse

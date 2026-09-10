@@ -14,7 +14,6 @@ echo "=== Seeding database (if empty) ==="
 php artisan db:seed --force || echo "Seed skipped (data may already exist)"
 
 echo "=== Clearing caches ==="
-php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
