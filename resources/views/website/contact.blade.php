@@ -97,7 +97,7 @@
                             </div>
                             <div>
                                 <h4 class="font-heading font-semibold text-ris-dark">ঠিকানা</h4>
-                                <p class="mt-1 text-gray-600 text-sm leading-relaxed">২১৭, ঘুল্লিবাড়ি মোড়, গোপালগঞ্জ-৮১০০,
+                                <p class="mt-1 text-gray-600 text-sm leading-relaxed">৪৩৯, ঘুল্লিবাড়ি মোড়, গোপালগঞ্জ-৮১০০,
                                     বাংলাদেশ</p>
                             </div>
                         </div>

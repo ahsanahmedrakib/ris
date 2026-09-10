@@ -51,7 +51,10 @@
                         <span class="text-sm font-semibold">রেজিস্ট্রেশন নং</span>
                     </div>
                     <div class="flex-1 min-w-0 text-center sm:text-left">
-                        <span class="font-heading font-bold text-ris-primary tracking-wider text-sm sm:text-base">
+                        <div wire:loading wire:target="classNo"
+                            class="inline-block h-5 w-44 sm:w-52 rounded-md bg-ris-primary/15 animate-pulse"></div>
+                        <span wire:loading.remove wire:target="classNo"
+                            class="font-heading font-bold text-ris-primary tracking-wider text-sm sm:text-base">
                             {{ $registrationNo ?: 'শ্রেণি নির্বাচন করলে স্বয়ংক্রিয়ভাবে তৈরি হবে' }}
                         </span>
                     </div>

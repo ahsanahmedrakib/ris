@@ -23,7 +23,7 @@
                         যাত্রা শুরু হয়েছিল একটি স্বপ্ন থেকে
                     </h2>
                     <p class="mt-5 text-gray-600 leading-relaxed">
-                        রেশমা ইন্টারন্যাশনাল স্কুল ২০১৫ সালে গোপালগঞ্জের ঘুল্লিবাড়ি মোড় ২১৭ নংয়ে প্রতিষ্ঠিত হয়।
+                        রেশমা ইন্টারন্যাশনাল স্কুল ২০১৫ সালে গোপালগঞ্জের ঘুল্লিবাড়ি মোড় ৪৩৯ নংয়ে প্রতিষ্ঠিত হয়।
                         প্রতিষ্ঠাকালে মাত্র ৫০
                         জন ছাত্র নিয়ে যাত্রা শুরু করলেও আজ ৫০০-র বেশি ছাত্র আমাদের পরিবারের অংশ।
                     </p>
@@ -32,7 +32,8 @@
                         বিকাশ ঘটাতে পারবে। আজ আমরা সেই স্বপ্নকে বাস্তবায়নে সফল হচ্ছি।
                     </p>
                 </div>
-                <div class="rounded-2xl bg-white border border-gray-100 shadow-card flex items-center justify-center p-10 reveal-right animate-float-slow">
+                <div
+                    class="rounded-2xl bg-white border border-gray-100 shadow-card flex items-center justify-center p-10 reveal-right animate-float-slow">
                     <img src="{{ asset('logo.png') }}" alt="Resma International School"
                         class="h-36 lg:h-44 w-auto object-contain">
                 </div>

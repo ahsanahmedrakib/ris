@@ -141,7 +141,7 @@
                     <div class="hidden sm:block">
                         <div class="font-heading font-bold text-ris-primary text-lg leading-tight">রেশমা ইন্টারন্যাশনাল
                             স্কুল</div>
-                        <div class="text-[11px] text-ris-gray tracking-wide">২১৭, ঘুল্লিবাড়ি মোড়, গোপালগঞ্জ-৮১০০</div>
+                        <div class="text-[11px] text-ris-gray tracking-wide">৪৩৯, ঘুল্লিবাড়ি মোড়, গোপালগঞ্জ-৮১০০</div>
                     </div>
                 </a>
 
@@ -310,7 +310,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            <span class="text-sm text-gray-400">২১৭, ঘুল্লিবাড়ি মোড়, গোপালগঞ্জ-৮১০০, বাংলাদেশ</span>
+                            <span class="text-sm text-gray-400">৪৩৯, ঘুল্লিবাড়ি মোড়, গোপালগঞ্জ-৮১০০, বাংলাদেশ</span>
                         </li>
                         <li class="flex items-center gap-3">
                             <svg class="w-5 h-5 text-ris-light shrink-0" fill="none" stroke="currentColor"
@@ -350,7 +350,7 @@
             <div class="border-t border-white/10 mt-12 pt-8">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-500">
                     <p>&copy; {{ date('Y') }} রেশমা ইন্টারন্যাশনাল স্কুল। সর্বস্বত্ব সংরক্ষিত।</p>
-                    <p class="text-xs text-gray-600">২১৭, ঘুল্লিবাড়ি মোড়, গোপালগঞ্জ-৮১০০</p>
+                    <p class="text-xs text-gray-600">৪৩৯, ঘুল্লিবাড়ি মোড়, গোপালগঞ্জ-৮১০০</p>
                 </div>
             </div>
         </div>
