@@ -61,6 +61,14 @@ class ScholarshipController extends Controller
         ]);
     }
 
+    public function print(ScholarshipRegistration $scholarshipRegistration): View
+    {
+        return view('admin.scholarship.pdf', [
+            'registration' => $scholarshipRegistration,
+            'classes' => ScholarshipRegistration::CLASSES,
+        ]);
+    }
+
     public function destroy(ScholarshipRegistration $scholarshipRegistration): RedirectResponse
     {
         try {

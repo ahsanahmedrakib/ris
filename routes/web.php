@@ -54,6 +54,7 @@ Route::middleware(['auth', 'role:admin,teacher'])->prefix('admin')->group(functi
     Route::get('/scholarship/create', [ScholarshipController::class, 'create'])->name('admin.scholarship.create');
     Route::get('/scholarship/{scholarshipRegistration}', [ScholarshipController::class, 'show'])->name('admin.scholarship.show');
     Route::delete('/scholarship/{scholarshipRegistration}', [ScholarshipController::class, 'destroy'])->name('admin.scholarship.destroy');
+    Route::get('/scholarship/{scholarshipRegistration}/pdf', [ScholarshipController::class, 'print'])->name('admin.scholarship.pdf');
 
     // Library (custom routes before resource)
     Route::get('/library/borrowings', [LibraryController::class, 'borrowings'])->name('admin.library.borrowings');
