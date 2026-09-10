@@ -97,7 +97,7 @@ class RegistrationForm extends Component
 
                 $registration = ScholarshipRegistration::create([
                     'registration_no' => $number,
-                    'serial_no' => (int) substr($number, -2),
+                    'serial_no' => (int) substr($number, -3),
                     'student_name' => $this->studentName,
                     'father_name' => $this->fatherName,
                     'mother_name' => $this->motherName,

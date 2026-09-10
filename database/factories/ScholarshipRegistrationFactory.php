@@ -18,13 +18,13 @@ class ScholarshipRegistrationFactory extends Factory
         $classNo = fake()->numberBetween(1, 5);
 
         return [
-            'registration_no' => sprintf('RIS-SC-%s-%d%02d', now()->format('y'), $classNo, fake()->numberBetween(1, 99)),
+            'registration_no' => sprintf('%s-%d%03d', now()->format('y'), $classNo, fake()->numberBetween(1, 999)),
             'student_name' => fake()->name(),
             'father_name' => fake()->name(),
             'mother_name' => fake()->name(),
             'school_name' => fake()->company(),
             'class_no' => $classNo,
-            'serial_no' => fake()->numberBetween(1, 99),
+            'serial_no' => fake()->numberBetween(1, 999),
             'roll_no' => (string) fake()->numberBetween(1, 50),
             'mobile_no' => '017'.fake()->numerify('########'),
             'bkash_no' => '019'.fake()->numerify('########'),

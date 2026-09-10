@@ -30,9 +30,9 @@ class ScholarshipRegistrationTest extends TestCase
     {
         $year = now()->format('y');
 
-        $this->assertSame("RIS-SC-{$year}-101", ScholarshipRegistration::nextRegistrationNo(1));
-        $this->assertSame("RIS-SC-{$year}-201", ScholarshipRegistration::nextRegistrationNo(2));
-        $this->assertSame("RIS-SC-{$year}-501", ScholarshipRegistration::nextRegistrationNo(5));
+        $this->assertSame("{$year}-1001", ScholarshipRegistration::nextRegistrationNo(1));
+        $this->assertSame("{$year}-2001", ScholarshipRegistration::nextRegistrationNo(2));
+        $this->assertSame("{$year}-5001", ScholarshipRegistration::nextRegistrationNo(5));
     }
 
     #[Test]
@@ -43,11 +43,11 @@ class ScholarshipRegistrationTest extends TestCase
         ScholarshipRegistration::factory()->create([
             'class_no' => 1,
             'serial_no' => 1,
-            'registration_no' => "RIS-SC-{$year}-101",
+            'registration_no' => "{$year}-1001",
         ]);
 
-        $this->assertSame("RIS-SC-{$year}-102", ScholarshipRegistration::nextRegistrationNo(1));
-        $this->assertSame("RIS-SC-{$year}-301", ScholarshipRegistration::nextRegistrationNo(3));
+        $this->assertSame("{$year}-1002", ScholarshipRegistration::nextRegistrationNo(1));
+        $this->assertSame("{$year}-3001", ScholarshipRegistration::nextRegistrationNo(3));
     }
 
     #[Test]
@@ -65,7 +65,7 @@ class ScholarshipRegistrationTest extends TestCase
 
         Livewire::test(ScholarshipRegistrationForm::class)
             ->set('classNo', 3)
-            ->assertSet('registrationNo', "RIS-SC-{$year}-301");
+            ->assertSet('registrationNo', "{$year}-3001");
     }
 
     #[Test]
@@ -121,7 +121,7 @@ class ScholarshipRegistrationTest extends TestCase
         $this->assertDatabaseHas('scholarship_registrations', [
             'student_name' => 'মোঃ রাকিব হাসান',
             'class_no' => 1,
-            'registration_no' => "RIS-SC-{$year}-101",
+            'registration_no' => "{$year}-1001",
             'serial_no' => 1,
             'mobile_no' => '01712345678',
             'bkash_no' => '01912345678',
@@ -190,7 +190,7 @@ class ScholarshipRegistrationTest extends TestCase
         Livewire::actingAs($admin)
             ->test(ScholarshipRegistrationForm::class, ['adminMode' => true])
             ->set('classNo', 3)
-            ->assertSet('registrationNo', "RIS-SC-{$year}-301");
+            ->assertSet('registrationNo', "{$year}-3001");
     }
 
     #[Test]

@@ -51,6 +51,6 @@ class ScholarshipRegistration extends Model
 
         $serial = ((int) $lastSerial) + 1;
 
-        return sprintf('RIS-SC-%s-%d%02d', now()->format('y'), $classNo, $serial);
+        return sprintf('%s-%d%03d', now()->format('y'), $classNo, $serial);
     }
 }
