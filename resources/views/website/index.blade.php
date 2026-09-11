@@ -103,62 +103,133 @@
         </div>
     </section>
 
-    {{-- Programs --}}
+    {{-- Messages --}}
     <section class="py-16 sm:py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
-                <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">আমাদের
-                    প্রোগ্রাম</span>
-                <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">শিক্ষার ধাপসমূহ</h2>
-                <p class="mt-3 text-gray-500">প্রতিটি ধাপে আমরা ছাত্রদের জন্য সেরা শিক্ষা অভিজ্ঞতা নিশ্চিত করি।</p>
+                <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">বার্তা</span>
+                <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">চেয়ারপার্সন ও প্রধান শিক্ষকের
+                    বাণী</h2>
             </div>
-            @php
-                $programs = [
-                    [
-                        'icon' =>
-                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
-                        'title' => 'প্লে গ্রুপ',
-                        'desc' => 'খেলাধুলা ও আনন্দের মাধ্যমে শিশুর প্রথম পাঠ।',
-                        'range' => 'প্লে',
-                    ],
-                    [
-                        'icon' =>
-                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
-                        'title' => 'নার্সারি',
-                        'desc' => 'শিশুর প্রস্তুতি, ভাষা ও মৌলিক দক্ষতা গড়ে তোলা।',
-                        'range' => 'নার্সারি',
-                    ],
-                    [
-                        'icon' =>
-                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
-                        'title' => 'কেজী',
-                        'desc' => 'প্রাথমিক পাঠের প্রস্তুতি ও মৌলিক দক্ষতা গড়ে তোলা।',
-                        'range' => 'কেজী',
-                    ],
-                    [
-                        'icon' =>
-                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.825-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14v9"/>',
-                        'title' => 'প্রাথমিক শিক্ষা',
-                        'desc' => '১ম থেকে ৫ম শ্রেণি পর্যন্ত মৌলিক শিক্ষা।',
-                        'range' => '১ম — ৫ম শ্রেণি',
-                    ],
-                ];
-            @endphp
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 reveal-stagger">
-                @foreach ($programs as $program)
-                    <div class="card p-8 text-center group hover:-translate-y-1 reveal">
-                        <div
-                            class="w-16 h-16 mx-auto rounded-2xl bg-ris-primary/10 flex items-center justify-center mb-5 group-hover:bg-ris-primary transition-all duration-300">
-                            <svg class="w-8 h-8 text-ris-primary group-hover:text-white transition-colors" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">{!! $program['icon'] !!}</svg>
+            <div class="grid lg:grid-cols-2 gap-8 reveal-stagger">
+                <div class="card p-8 sm:p-10 reveal">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 rounded-full bg-ris-primary/10 flex items-center justify-center shrink-0">
+                            <svg class="w-8 h-8 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
                         </div>
-                        <h3 class="font-heading font-bold text-lg text-ris-dark">{{ $program['title'] }}</h3>
-                        <p class="mt-2 text-xs font-heading text-ris-primary font-medium">{{ $program['range'] }}</p>
-                        <p class="mt-3 text-sm text-gray-500 leading-relaxed">{{ $program['desc'] }}</p>
+                        <div>
+                            <h3 class="font-heading font-bold text-lg text-ris-dark">চেয়ারপার্সনের বাণী</h3>
+                            <p class="text-sm text-ris-primary font-medium">বাংলাদেশ জাতীয় পরিষদ সদস্য</p>
+                        </div>
                     </div>
-                @endforeach
+                    <div class="relative pl-6 border-l-2 border-ris-primary/30">
+                        <svg class="absolute -top-2 -left-3 w-6 h-6 text-ris-primary/40" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
+                        </svg>
+                        <p class="text-gray-600 leading-relaxed italic">"প্রিয় অভিভাবকগণ, আমরা বিশ্বাস করি প্রতিটি শিশু
+                            অসাধারণ সম্ভাবনায় পূর্ণ। রেশমা ইন্টারন্যাশনাল স্কুল আপনার সন্তানের এই সম্ভাবনাকে সমৃদ্ধ করতে
+                            প্রতিশ্রুতিবদ্ধ। আমাদের লক্ষ্য শুধু পাঠ্যক্রম নয়, বরং মূল্যবোধ ও নৈতিকতার শিক্ষা দিয়ে একটি
+                            সুন্দর সমাজ গড়ে তোলা।"</p>
+                        <div class="mt-4">
+                            <p class="font-heading font-bold text-ris-dark">রেশমা আকতার</p>
+                            <p class="text-sm text-gray-500">চেয়ারপার্সন, রেশমা ইন্টারন্যাশনাল স্কুল</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-8 sm:p-10 reveal">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 rounded-full bg-ris-primary/10 flex items-center justify-center shrink-0">
+                            <svg class="w-8 h-8 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-heading font-bold text-lg text-ris-dark">প্রধান শিক্ষকের বাণী</h3>
+                            <p class="text-sm text-ris-primary font-medium">প্রধান শিক্ষক, রেশমা ইন্টারন্যাশনাল স্কুল</p>
+                        </div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-ris-primary/30">
+                        <svg class="absolute -top-2 -left-3 w-6 h-6 text-ris-primary/40" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
+                        </svg>
+                        <p class="text-gray-600 leading-relaxed italic">"প্রিয় শিক্ষার্থী ও অভিভাবকগণ, শিক্ষা হলো আলোর পথ
+                            যা জীবনকে আলোকিত করে। আমাদের স্কুলে আমরা আধুনিক শিক্ষা পদ্ধতির পাশাপাশি নৈতিক মূল্যবোধ ও
+                            সুশিক্ষার পরিবেশ তৈরি করেছি। প্রতিটি শিশুর সর্বোত্তম বিকাশ নিশ্চিত করাই আমাদের সর্বোচ্চ
+                            অগ্রাধিকার।"</p>
+                        <div class="mt-4">
+                            <p class="font-heading font-bold text-ris-dark">সাইফুল ইসলাম</p>
+                            <p class="text-sm text-gray-500">প্রধান শিক্ষক, রেশমা ইন্টারন্যাশনাল স্কুল</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
+
+    {{-- Programs --}}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+            <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">আমাদের
+                প্রোগ্রাম</span>
+            <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">শিক্ষার ধাপসমূহ</h2>
+            <p class="mt-3 text-gray-500">প্রতিটি ধাপে আমরা ছাত্রদের জন্য সেরা শিক্ষা অভিজ্ঞতা নিশ্চিত করি।</p>
+        </div>
+        @php
+            $programs = [
+                [
+                    'icon' =>
+                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                    'title' => 'প্লে গ্রুপ',
+                    'desc' => 'খেলাধুলা ও আনন্দের মাধ্যমে শিশুর প্রথম পাঠ।',
+                    'range' => 'প্লে',
+                ],
+                [
+                    'icon' =>
+                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
+                    'title' => 'নার্সারি',
+                    'desc' => 'শিশুর প্রস্তুতি, ভাষা ও মৌলিক দক্ষতা গড়ে তোলা।',
+                    'range' => 'নার্সারি',
+                ],
+                [
+                    'icon' =>
+                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
+                    'title' => 'কেজী',
+                    'desc' => 'প্রাথমিক পাঠের প্রস্তুতি ও মৌলিক দক্ষতা গড়ে তোলা।',
+                    'range' => 'কেজী',
+                ],
+                [
+                    'icon' =>
+                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.825-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14v9"/>',
+                    'title' => 'প্রাথমিক শিক্ষা',
+                    'desc' => '১ম থেকে ৫ম শ্রেণি পর্যন্ত মৌলিক শিক্ষা।',
+                    'range' => '১ম — ৫ম শ্রেণি',
+                ],
+            ];
+        @endphp
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 reveal-stagger">
+            @foreach ($programs as $program)
+                <div class="card p-8 text-center group hover:-translate-y-1 reveal">
+                    <div
+                        class="w-16 h-16 mx-auto rounded-2xl bg-ris-primary/10 flex items-center justify-center mb-5 group-hover:bg-ris-primary transition-all duration-300">
+                        <svg class="w-8 h-8 text-ris-primary group-hover:text-white transition-colors" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">{!! $program['icon'] !!}</svg>
+                    </div>
+                    <h3 class="font-heading font-bold text-lg text-ris-dark">{{ $program['title'] }}</h3>
+                    <p class="mt-2 text-xs font-heading text-ris-primary font-medium">{{ $program['range'] }}</p>
+                    <p class="mt-3 text-sm text-gray-500 leading-relaxed">{{ $program['desc'] }}</p>
+                </div>
+            @endforeach
+        </div>
+    </div>
     </section>
 
     {{-- Features --}}
@@ -238,7 +309,8 @@
                 @forelse(['ভর্তি প্রক্রিয়া চলমান — ২০২৬ শিক্ষাবর্ষ', 'বার্ষিক পরীক্ষার সময়সূচি প্রকাশিত', 'ঈদের ছুটি ঘোষণা'] as $index => $notice)
                     <div class="card p-5 flex items-start gap-4 reveal">
                         <div class="w-12 h-12 shrink-0 rounded-xl bg-ris-primary/10 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-6 h-6 text-ris-primary" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                             </svg>
