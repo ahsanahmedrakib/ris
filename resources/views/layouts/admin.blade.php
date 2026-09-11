@@ -28,10 +28,11 @@
         <aside class="hidden lg:flex lg:flex-col bg-ris-dark-900 text-white transition-all duration-300 ease-in-out"
             :class="sidebarOpen ? 'w-64' : 'w-20'">
             {{-- Logo --}}
-            <div class="flex items-center gap-3 px-4 h-16 border-b border-white/10 shrink-0"
-                onclick="href='{{ route('home') }}'">
-                <img src="{{ asset('logo.png') }}" alt="RIS" class="h-10 w-auto object-contain shrink-0">
-            </div>
+            <a href={{ route('home') }}>
+                <div class="flex items-center justify-center gap-3 px-4 h-16 border-b border-white/10 shrink-0">
+                    <img :src="sidebarOpen ? '{{ asset('logo.png') }}' : '{{ asset('logo-small.png') }}'" alt="RIS" class="h-15 w-auto object-contain shrink-0">
+                </div>
+            </a>
 
             {{-- Navigation --}}
             <nav class="flex-1 sidebar-scroll overflow-y-auto py-4 px-3 space-y-1">

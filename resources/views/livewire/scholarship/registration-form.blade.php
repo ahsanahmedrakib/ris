@@ -159,7 +159,7 @@
                 <div class="border border-ris-primary/20 bg-ris-primary/5 rounded-xl p-5 sm:p-6">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="text-lg">💳</span>
-                        <h3 class="font-heading font-semibold text-ris-dark">রেজিস্ট্রেশন ফি পরিশোধ</h3>
+                        <h3 class="font-heading font-semibold text-ris-dark">রেজিস্ট্রেশন ফি পরিশোধ। রেজিস্ট্রেশন ফি ২০০ টাকা।</h3>
                     </div>
 
                     @if ($adminMode)
