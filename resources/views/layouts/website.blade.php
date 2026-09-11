@@ -67,7 +67,7 @@
                             x-transition:leave="transition ease-in duration-100"
                             x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
                             class="absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
-                            <a href="{{ route('admin.dashboard') }}"
+                            <a target="_blank" href="{{ route('admin.dashboard') }}"
                                 class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors">
                                 <span
                                     class="w-9 h-9 shrink-0 rounded-lg gradient-logo flex items-center justify-center">
@@ -215,7 +215,7 @@
                 {{-- Mobile Login --}}
                 <div class="pt-3 border-t border-gray-100 mt-3 space-y-1">
                     <p class="px-4 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">লগইন</p>
-                    <a href="{{ route('login') }}?role=admin"
+                    <a target="_blank" href="{{ route('admin.dashboard') }}"
                         class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-ris-primary transition-colors">
                         <svg class="w-5 h-5 text-ris-primary" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -348,9 +348,14 @@
 
             {{-- Bottom Bar --}}
             <div class="border-t border-white/10 mt-12 pt-8">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-500">
-                    <p>&copy; {{ date('Y') }} রেশমা ইন্টারন্যাশনাল স্কুল। সর্বস্বত্ব সংরক্ষিত।</p>
-                    <p class="text-xs text-gray-600">৪৩৯, ঘুল্লিবাড়ি মোড়, গোপালগঞ্জ-৮১০০</p>
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-white">
+                    <p>&copy; {{ date('Y') }} রেশমা ইন্টারন্যশনাল স্কুল। সর্বস্বত্ব সংরক্ষিত।</p>
+                    <p>Developed by: <span class="underline"><a href="https://www.facebook.com/rakibahsanahmed"
+                                target="_blank" rel="noopener noreferrer">Ahsan</a> <a href="tel:+8801631112475"
+                                target="_blank">Ahmed</a> <a
+                                href="https://wa.me/8801631112475?text=Hello! I am interested in your services."
+                                target="_blank">Rakib</a></span>
+                    </p>
                 </div>
             </div>
         </div>

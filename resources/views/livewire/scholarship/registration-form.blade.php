@@ -65,7 +65,7 @@
                     <div>
                         <label for="studentName" class="block text-sm font-medium text-gray-700 mb-1.5">শিক্ষার্থীর নাম
                             <span class="text-ris-primary">*</span></label>
-                        <input type="text" id="studentName" wire:model.live="studentName" autocomplete="name"
+                        <input type="text" id="studentName" wire:model.blur="studentName" autocomplete="name"
                             placeholder="শিক্ষার্থীর সম্পূর্ণ নাম লিখুন"
                             class="@error('studentName') border-red-400 @enderror w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                         @error('studentName')
@@ -83,7 +83,7 @@
                         <div>
                             <label for="fatherName" class="block text-sm font-medium text-gray-700 mb-1.5">পিতার নাম
                                 <span class="text-ris-primary">*</span></label>
-                            <input type="text" id="fatherName" wire:model.live="fatherName" autocomplete="off"
+                            <input type="text" id="fatherName" wire:model.blur="fatherName" autocomplete="off"
                                 placeholder="পিতার সম্পূর্ণ নাম লিখুন"
                                 class="@error('fatherName') border-red-400 @enderror w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                             @error('fatherName')
@@ -94,7 +94,7 @@
                         <div>
                             <label for="motherName" class="block text-sm font-medium text-gray-700 mb-1.5">মাতার নাম
                                 <span class="text-ris-primary">*</span></label>
-                            <input type="text" id="motherName" wire:model.live="motherName" autocomplete="off"
+                            <input type="text" id="motherName" wire:model.blur="motherName" autocomplete="off"
                                 placeholder="মাতার সম্পূর্ণ নাম লিখুন"
                                 class="@error('motherName') border-red-400 @enderror w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                             @error('motherName')
@@ -106,7 +106,7 @@
                     <div>
                         <label for="schoolName" class="block text-sm font-medium text-gray-700 mb-1.5">স্কুলের নাম <span
                                 class="text-ris-primary">*</span></label>
-                        <input type="text" id="schoolName" wire:model.live="schoolName" autocomplete="off"
+                        <input type="text" id="schoolName" wire:model.blur="schoolName" autocomplete="off"
                             placeholder="স্কুলের সম্পূর্ণ নাম লিখুন"
                             class="@error('schoolName') border-red-400 @enderror w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                         @error('schoolName')
@@ -135,7 +135,7 @@
                     <div>
                         <label for="rollNo" class="block text-sm font-medium text-gray-700 mb-1.5">রোল নং <span
                                 class="text-ris-primary">*</span></label>
-                        <input type="text" id="rollNo" wire:model.live="rollNo" inputmode="numeric"
+                        <input type="text" id="rollNo" wire:model.blur="rollNo" inputmode="numeric"
                             placeholder="রোল নম্বর লিখুন"
                             class="@error('rollNo') border-red-400 @enderror w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                         @error('rollNo')
@@ -146,7 +146,7 @@
                     <div>
                         <label for="mobileNo" class="block text-sm font-medium text-gray-700 mb-1.5">মোবাইল নং <span
                                 class="text-ris-primary">*</span></label>
-                        <input type="tel" id="mobileNo" wire:model.live="mobileNo" inputmode="numeric"
+                        <input type="tel" id="mobileNo" wire:model.blur="mobileNo" inputmode="numeric"
                             autocomplete="tel" placeholder="01XXXXXXXXX"
                             class="@error('mobileNo') border-red-400 @enderror w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                         @error('mobileNo')
@@ -203,7 +203,7 @@
                             <div>
                                 <label for="bkashNo" class="block text-sm font-medium text-gray-700 mb-1.5">যে বিকাশ
                                     নম্বর থেকে টাকা পাঠিয়েছেন <span class="text-ris-primary">*</span></label>
-                                <input type="tel" id="bkashNo" wire:model.live="bkashNo" inputmode="numeric"
+                                <input type="tel" id="bkashNo" wire:model.blur="bkashNo" inputmode="numeric"
                                     placeholder="01XXXXXXXXX"
                                     class="@error('bkashNo') border-red-400 @enderror w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                                 @error('bkashNo')
