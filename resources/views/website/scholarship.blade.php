@@ -23,7 +23,8 @@
     </section>
 
     {{-- Registration Form --}}
-    <section class="py-12 sm:py-16 bg-gray-50">
+    <section class="py-12 sm:py-16 bg-ris-gray-50 relative overflow-hidden">
+        <div class="absolute top-10 right-10 w-32 h-32 bg-ris-primary/5 rounded-full pointer-events-none"></div>
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="reveal">
                 @livewire('scholarship.registration-form')

@@ -82,13 +82,10 @@
 
     {{-- ═══ Statistics Counters (green.edu.bd style) ═══ --}}
     <section class="py-16 sm:py-20 bg-white relative overflow-hidden">
-        {{-- Decorative background --}}
-        <div
-            class="absolute top-0 right-0 w-64 h-64 bg-ris-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none">
-        </div>
-        <div
-            class="absolute bottom-0 left-0 w-48 h-48 bg-ris-primary/5 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none">
-        </div>
+        {{-- Decorative shapes --}}
+        <div class="absolute top-0 right-0 w-64 h-64 bg-ris-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-48 h-48 bg-ris-primary/5 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-ris-primary/[0.02] rounded-full pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             @php
@@ -143,7 +140,10 @@
     </section>
 
     {{-- ═══ Message Section (green.edu.bd style — portraits + quotes) ═══ --}}
-    <section class="py-16 sm:py-20 bg-gray-50">
+    <section class="py-16 sm:py-20 bg-ris-primary-50/40 section-pattern-grid relative overflow-hidden">
+        {{-- Decorative shapes --}}
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-ris-primary/5 rounded-full pointer-events-none"></div>
+        <div class="absolute -bottom-10 -left-10 w-56 h-56 bg-ris-accent/5 rounded-full pointer-events-none"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                 <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">বার্তা</span>
@@ -274,7 +274,10 @@
             ->get();
     @endphp
     @if($homeTeachers->count())
-    <section class="py-16 sm:py-20 bg-white">
+    <section class="py-16 sm:py-20 bg-gradient-to-b from-white to-ris-primary-50/30 section-pattern-diagonal relative overflow-hidden">
+        {{-- Decorative shapes --}}
+        <div class="absolute top-20 right-20 w-32 h-32 bg-ris-light/10 rounded-2xl rotate-45 pointer-events-none"></div>
+        <div class="absolute bottom-20 left-10 w-24 h-24 bg-ris-primary/5 rounded-full pointer-events-none"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                 <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">আমাদের দল</span>
@@ -317,7 +320,10 @@
     @endif
 
     {{-- ═══ Programs / Departments (green.edu.bd faculty flip card style) ═══ --}}
-    <section class="py-16 sm:py-20 bg-white">
+    <section class="py-16 sm:py-20 bg-ris-gray-50 relative overflow-hidden">
+        {{-- Decorative shapes --}}
+        <div class="absolute top-10 left-10 w-20 h-20 border-2 border-ris-primary/10 rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-32 h-32 border border-ris-primary/5 rounded-2xl rotate-12 pointer-events-none"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                 <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">আমাদের
@@ -551,7 +557,10 @@
     </section>
 
     {{-- ═══ Events Section (green.edu.bd style) ═══ --}}
-    <section class="py-16 sm:py-20 bg-gray-50">
+    <section class="py-16 sm:py-20 bg-gradient-to-br from-ris-primary-50/30 via-white to-ris-accent-50/20 section-pattern-waves relative overflow-hidden">
+        {{-- Decorative shapes --}}
+        <div class="absolute top-0 left-1/4 w-64 h-64 bg-ris-primary/[0.03] rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-0 right-1/4 w-48 h-48 bg-ris-accent/[0.03] rounded-full pointer-events-none"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-end justify-between mb-12 reveal">
                 <div>
@@ -645,10 +654,11 @@
     </section>
 
     {{-- ═══ Notice Board (improved design) ═══ --}}
-    <section class="py-16 sm:py-24 bg-white relative overflow-hidden">
-        {{-- Decorative background --}}
+    <section class="py-16 sm:py-24 bg-white section-pattern-grid relative overflow-hidden">
+        {{-- Decorative shapes --}}
         <div class="absolute top-0 left-0 w-80 h-80 bg-ris-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
         <div class="absolute bottom-0 right-0 w-96 h-96 bg-ris-light/5 rounded-full translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
+        <div class="absolute top-1/3 right-1/3 w-20 h-20 bg-ris-primary/[0.04] rounded-xl rotate-45 pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div class="grid lg:grid-cols-12 gap-10 lg:gap-14">

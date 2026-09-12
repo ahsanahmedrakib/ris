@@ -13,7 +13,8 @@
     </section>
 
     {{-- Admission Process --}}
-    <section class="py-16 sm:py-20 bg-white">
+    <section class="py-16 sm:py-20 bg-white section-pattern-grid relative overflow-hidden">
+        <div class="absolute top-10 left-10 w-32 h-32 bg-ris-primary/5 rounded-full pointer-events-none"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                 <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">ভর্তি
@@ -59,7 +60,8 @@
     </section>
 
     {{-- Requirements --}}
-    <section class="py-16 sm:py-20 bg-gray-50">
+    <section class="py-16 sm:py-20 bg-ris-primary-50/40 section-pattern-diagonal relative overflow-hidden">
+        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-ris-accent/5 rounded-full pointer-events-none"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid lg:grid-cols-2 gap-12">
                 <div class="reveal-left">

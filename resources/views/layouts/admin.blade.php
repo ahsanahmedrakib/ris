@@ -24,7 +24,8 @@
 
         {{-- ═══ Sidebar ═══ --}}
         {{-- Desktop --}}
-        <aside id="desktop-sidebar" class="hidden lg:flex lg:flex-col bg-ris-dark-900 text-white transition-all duration-300 ease-in-out"
+        <aside id="desktop-sidebar"
+            class="hidden lg:flex lg:flex-col bg-ris-dark-900 text-white transition-all duration-300 ease-in-out"
             :style="sidebarOpen ? 'width:16rem' : 'width:5rem'" style="width:16rem">
             {{-- Logo --}}
             <a href={{ route('home') }} target="_blank">
@@ -128,12 +129,12 @@
                         //     'label' => 'রিপোর্ট',
                         //     'route' => 'admin.reports.index',
                         // ],
-                        // [
-                        //     'icon' =>
-                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
-                        //     'label' => 'বার্তা',
-                        //     'route' => 'admin.contact-messages.index',
-                        // ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
+                            'label' => 'কনটাক্ট মেসেজ',
+                            'route' => 'admin.contact-messages.index',
+                        ],
                         [
                             'icon' =>
                                 '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h3v3h-3v-3zM17 14h3v3h-3v-3zM14 17h3v3h-3v-3zM20 14h1v3h-3v-1h2v-2zM17 20h1v1h-1v-1z"/>',
