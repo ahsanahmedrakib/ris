@@ -323,19 +323,19 @@
 
                 {{-- Video placeholder --}}
                 <div class="relative reveal-right">
-                    <div class="relative rounded-2xl overflow-hidden shadow-2xl aspect-video bg-ris-dark-700 flex items-center justify-center group cursor-pointer"
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl aspect-video group"
                         x-data="{ playing: false }">
-                        {{-- Thumbnail placeholder --}}
-                        <div
-                            class="absolute inset-0 bg-linear-to-br from-ris-primary/20 to-ris-dark flex items-center justify-center">
-                            <div class="text-center">
-                                <div
-                                    class="play-btn-circle w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto group-hover:bg-ris-primary/80 transition-all duration-300">
-                                    <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M8 5v14l11-7z" />
-                                    </svg>
-                                </div>
-                                <p class="text-white/70 mt-4 text-sm font-heading">ভিডিও দেখুন</p>
+                        <video x-ref="vid" @play="playing = true" @pause="playing = false" class="w-full h-full" controls preload="metadata">
+                            <source src="{{ asset('videos/video.mp4') }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div x-show="!playing" x-transition
+                            class="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer"
+                            @click="$refs.vid.play()">
+                            <div class="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-ris-primary/80 transition-all duration-300">
+                                <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
                             </div>
                         </div>
                     </div>

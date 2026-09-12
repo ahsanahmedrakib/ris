@@ -305,9 +305,9 @@
         font-weight: 500;
         font-size: 0.9375rem;
         line-height: 1.4;
-        color: var(--color-ris-primary);
+        color: white;
         background-color: transparent;
-        border: 2px solid var(--color-ris-primary);
+        border: 1px solid white;
         border-radius: 0.5rem;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -317,6 +317,7 @@
         background-color: var(--color-ris-primary);
         color: #ffffff;
         transform: translateY(-1px);
+        border: 1px solid transparent;
     }
 
     .btn-secondary:active {
