@@ -244,7 +244,7 @@ class ScholarshipController extends Controller
 
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="scholarship_registrations_'.now()->format('Y-m-d_H-i').'.csv"',
+            'Content-Disposition' => 'attachment; filename="scholarship_registrations_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.csv"',
         ];
 
         $callback = function () use ($registrations) {

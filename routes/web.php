@@ -55,6 +55,7 @@ Route::middleware(['auth', 'role:admin,teacher'])->prefix('admin')->group(functi
     Route::get('/teachers', [TeacherController::class, 'index'])->name('admin.teachers.index');
     Route::post('/teachers', [TeacherController::class, 'store'])->name('admin.teachers.store');
     Route::get('/teachers/download', [TeacherController::class, 'download'])->name('admin.teachers.download');
+    Route::get('/teachers/{teacher}/edit', [TeacherController::class, 'edit'])->name('admin.teachers.edit');
     Route::get('/teachers/{teacher}', [TeacherController::class, 'show'])->name('admin.teachers.show');
     Route::put('/teachers/{teacher}', [TeacherController::class, 'update'])->name('admin.teachers.update');
     Route::delete('/teachers/{teacher}', [TeacherController::class, 'destroy'])->name('admin.teachers.destroy');

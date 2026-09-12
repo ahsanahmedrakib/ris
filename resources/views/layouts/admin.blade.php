@@ -24,8 +24,8 @@
 
         {{-- ═══ Sidebar ═══ --}}
         {{-- Desktop --}}
-        <aside class="hidden lg:flex lg:flex-col bg-ris-dark-900 text-white transition-all duration-300 ease-in-out"
-            :class="sidebarOpen ? 'w-64' : 'w-20'">
+        <aside id="desktop-sidebar" class="hidden lg:flex lg:flex-col bg-ris-dark-900 text-white transition-all duration-300 ease-in-out"
+            :style="sidebarOpen ? 'width:16rem' : 'width:5rem'" style="width:16rem">
             {{-- Logo --}}
             <a href={{ route('home') }} target="_blank">
                 <div class="flex items-center justify-center gap-3 px-4 h-16 border-b border-white/10 shrink-0">

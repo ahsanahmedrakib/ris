@@ -45,7 +45,8 @@ class TeacherController extends Controller
             $perPage = 15;
         }
 
-        $teachers = $query->latest()->paginate($perPage)->withQueryString();
+        $teachers = $query->orderByRaw("(SELECT FIELD(designation, 'প্রধান শিক্ষক', 'সহকারী প্রধান শিক্ষক', 'সহকারী শিক্ষক', 'শিক্ষক') FROM teacher_profiles WHERE user_id = users.id LIMIT 1)")
+            ->paginate($perPage)->withQueryString();
 
         return view('admin.teachers.index', [
             'teachers' => $teachers,
@@ -122,7 +123,7 @@ class TeacherController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'শিক্ষক যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'শিক্ষক যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -161,7 +162,7 @@ class TeacherController extends Controller
             'email' => $teacher->email,
             'phone' => $teacher->phone,
             'is_active' => $teacher->is_active,
-            'photo' => $teacher->teacherProfile?->photo,
+            'photo' => $teacher->teacherProfile?->photo ? Storage::url($teacher->teacherProfile->photo) : null,
             'designation' => $teacher->teacherProfile?->designation ?? '',
             'subject' => $teacher->teacherProfile?->subject ?? '',
             'qualification' => $teacher->teacherProfile?->qualification ?? '',
@@ -252,7 +253,7 @@ class TeacherController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'শিক্ষক আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'শিক্ষক আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -265,7 +266,7 @@ class TeacherController extends Controller
                 ->with('success', 'শিক্ষক সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'শিক্ষক মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'শিক্ষক মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -286,18 +287,18 @@ class TeacherController extends Controller
             });
         }
 
-        $teachers = $query->latest()->get();
+        $teachers = $query->orderByRaw("(SELECT FIELD(designation, 'প্রধান শিক্ষক', 'সহকারী প্রধান শিক্ষক', 'সহকারী শিক্ষক', 'শিক্ষক') FROM teacher_profiles WHERE user_id = users.id LIMIT 1)")->get();
 
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="teachers_' . now()->format('Y-m-d_H-i') . '.csv"',
+            'Content-Disposition' => 'attachment; filename="teachers_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.csv"',
         ];
 
         $callback = function () use ($teachers) {
             $file = fopen('php://output', 'w');
 
             // UTF-8 BOM for Excel Bangla support
-            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
 
             fputcsv($file, ['ক্রমিক', 'নাম', 'ইমেইল', 'ফোন', 'পদবি', 'বিষয়', 'যোগ্যতা', 'প্রতিষ্ঠান', 'যোগদান', 'স্ট্যাটাস']);
 

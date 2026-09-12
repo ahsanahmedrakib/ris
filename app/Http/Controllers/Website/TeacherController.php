@@ -14,7 +14,7 @@ class TeacherController extends Controller
             ->where('is_active', true)
             ->with('teacherProfile')
             ->whereHas('teacherProfile')
-            ->latest()
+            ->orderByRaw("(SELECT FIELD(designation, 'প্রধান শিক্ষক', 'সহকারী প্রধান শিক্ষক', 'সহকারী শিক্ষক', 'শিক্ষক') FROM teacher_profiles WHERE user_id = users.id LIMIT 1)")
             ->get();
 
         return view('website.teachers.index', compact('teachers'));
