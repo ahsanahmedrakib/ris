@@ -18,6 +18,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    document.querySelectorAll('.campus-life-swiper').forEach((el) => {
+        new Swiper(el, {
+            loop: true,
+            speed: 600,
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: el.querySelector('.swiper-pagination'),
+                clickable: true,
+            },
+            breakpoints: {
+                0: { slidesPerView: 1, spaceBetween: 16 },
+                640: { slidesPerView: 2, spaceBetween: 20 },
+                1024: { slidesPerView: 2, spaceBetween: 24 },
+            },
+        });
+    });
+
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const revealSelector = '.reveal, .reveal-left, .reveal-right, .reveal-zoom';

@@ -421,3 +421,203 @@ html {
 .sidebar-scroll::-webkit-scrollbar-thumb:hover {
     background-color: rgba(255, 255, 255, 0.45);
 }
+
+/* ══════════════════════════════════════════════════
+   Homepage Sections (green.edu.bd layout style)
+   ══════════════════════════════════════════════════ */
+
+/* ── Hero Banner overlay ── */
+.hero-banner-section .hero-overlay {
+    background: linear-gradient(
+        to right,
+        rgba(140, 29, 48, 0.85),
+        rgba(163, 28, 66, 0.4),
+        rgba(255, 255, 255, 0.1)
+    );
+}
+
+/* ── Gradient borders for cards ── */
+.stat-card,
+.message-card,
+.program-card,
+.campus-life-card,
+.event-card,
+.notice-item,
+.featured-notice-card {
+    border: 2px solid transparent;
+    background:
+        linear-gradient(#ffffff, #ffffff) padding-box,
+        linear-gradient(135deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light)) border-box;
+}
+
+/* ── Stat cards ── */
+.stat-card {
+    position: relative;
+}
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light));
+    border-radius: 0.75rem 0.75rem 0 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+/* ── Message cards ── */
+.message-card {
+    position: relative;
+}
+.message-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--color-ris-primary), var(--color-ris-accent));
+    border-radius: 0 0.5rem 0.5rem 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.message-card:hover::before {
+    opacity: 1;
+}
+
+/* ── Program cards ── */
+.program-card {
+    position: relative;
+    overflow: hidden;
+}
+.program-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-ris-dark), var(--color-ris-accent));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+.program-card:hover::after {
+    transform: scaleX(1);
+}
+
+/* ── Promo video section ── */
+.promo-section {
+    position: relative;
+}
+.promo-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 80% 50%, rgba(163, 28, 66, 0.15), transparent 60%);
+    pointer-events: none;
+}
+.play-btn-circle {
+    transition: all 0.3s ease;
+}
+.play-btn-circle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(163, 28, 66, 0.4);
+}
+
+/* ── Campus Life section ── */
+.campus-life-section {
+    background: linear-gradient(135deg, #fef9f0 0%, #fdf2f4 50%, #f8f0f2 100%);
+}
+.campus-life-card .badge {
+    font-size: 0.7rem;
+}
+
+/* ── Campus Life Swiper ── */
+.campus-life-swiper .swiper-slide {
+    height: auto;
+}
+.campus-life-swiper .swiper-pagination {
+    position: relative;
+    margin-top: 1.5rem;
+}
+.campus-life-swiper .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: var(--color-ris-primary);
+    opacity: 0.25;
+    transition: all 0.3s ease;
+}
+.campus-life-swiper .swiper-pagination-bullet-active {
+    opacity: 1;
+    width: 26px;
+    border-radius: 9999px;
+}
+
+/* ── Event cards ── */
+.event-card {
+    position: relative;
+    overflow: hidden;
+}
+.event-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-ris-primary), var(--color-ris-accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+.event-card:hover::before {
+    transform: scaleX(1);
+}
+
+/* ── Notice board ── */
+.notice-item {
+    position: relative;
+}
+.notice-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    bottom: 20%;
+    width: 3px;
+    border-radius: 0 9999px 9999px 0;
+    background: linear-gradient(180deg, var(--color-ris-primary), var(--color-ris-light));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.notice-item:hover::before {
+    opacity: 1;
+}
+.notice-item .truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Responsive adjustments ── */
+@media (max-width: 640px) {
+    .hero-banner-section .hero-overlay {
+        background: linear-gradient(
+            to top,
+            rgba(140, 29, 48, 0.9),
+            rgba(140, 29, 48, 0.5) 60%,
+            transparent
+        );
+    }
+    .notice-item {
+        padding: 1rem !important;
+    }
+}
