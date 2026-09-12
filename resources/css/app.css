@@ -121,16 +121,16 @@
 
 /* ── Hero Swiper ── */
 .hero-swiper .swiper-slide {
-    height: 320px;
+    height: 400px;
 }
 @media (min-width: 640px) {
     .hero-swiper .swiper-slide {
-        height: 440px;
+        height: 520px;
     }
 }
 @media (min-width: 1024px) {
     .hero-swiper .swiper-slide {
-        height: 600px;
+        height: 900px;
     }
 }
 .hero-swiper .swiper-pagination {
