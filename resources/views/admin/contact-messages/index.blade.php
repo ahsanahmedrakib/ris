@@ -80,7 +80,7 @@
                             </td>
                             <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $msg->email }}</td>
                             <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $msg->phone ?? '-' }}</td>
-                            <td class="px-4 py-3 text-gray-600 whitespace-nowrap max-w-[200px] truncate">{{ $msg->subject }}</td>
+                            <td class="px-4 py-3 text-gray-600 whitespace-nowrap max-w-50 truncate">{{ $msg->subject }}</td>
                             <td class="px-4 py-3 text-gray-500 whitespace-nowrap">{{ $msg->created_at->format('d/m/Y') }}</td>
                             <td class="px-4 py-3 whitespace-nowrap">
                                 @if($msg->is_read)

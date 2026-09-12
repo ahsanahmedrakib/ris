@@ -147,62 +147,119 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                 <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">বার্তা</span>
-                <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">চেয়ারপার্সন ও প্রধান শিক্ষকের
-                    বাণী</h2>
+                <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">চ্যেয়ারম্যান, চেয়ারপার্সন, প্রতিষ্ঠাতা ও
+                    প্রধান শিক্ষকের বাণী</h2>
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-8 reveal-stagger">
-                {{-- Chairman --}}
-                <div
-                    class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 reveal">
-                    <div class="flex flex-col sm:flex-row">
-                        <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
-                            <img src="{{ asset('images/home/ra.jpg') }}" alt="রেশমা আকতার" class="w-32 h-32 rounded-full object-cover">
-                        </div>
-                        <div class="sm:w-2/3 p-6 sm:p-8">
-                            <div class="flex items-center gap-2 mb-3">
-                                <svg class="w-5 h-5 text-ris-primary" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
-                                </svg>
-                                <h3 class="font-heading font-bold text-lg text-ris-dark">চেয়ারপার্সনের বাণী</h3>
-                            </div>
-                            <p class="text-gray-600 leading-relaxed text-sm italic">"প্রিয় অভিভাবকগণ, আমরা বিশ্বাস করি
-                                প্রতিটি শিশু অসাধারণ সম্ভাবনায় পূর্ণ। রেশমা ইন্টারন্যাশনাল স্কুল আপনার সন্তানের এই
-                                সম্ভাবনাকে সমৃদ্ধ করতে প্রতিশ্রুতিবদ্ধ।"</p>
-                            <div class="mt-4 pt-4 border-t border-gray-100">
-                                <p class="font-heading font-bold text-ris-dark">রেশমা আকতার</p>
-                                <p class="text-xs text-gray-500">চেয়ারপার্সন, রেশমা ইন্টারন্যাশনাল স্কুল</p>
+            <div class="swiper message-swiper reveal">
+                <div class="swiper-wrapper">
+                    {{-- Chairman --}}
+                    <div class="swiper-slide">
+                        <div class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
+                            <div class="flex flex-col sm:flex-row">
+                                <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
+                                    <img src="{{ asset('images/home/rhm.png') }}" alt="রেফাউল হক" class="w-32 h-32 rounded-full object-cover">
+                                </div>
+                                <div class="sm:w-2/3 p-6 sm:p-8">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <svg class="w-5 h-5 text-ris-primary" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
+                                        </svg>
+                                        <h3 class="font-heading font-bold text-lg text-ris-dark">চেয়ারম্যানের বাণী</h3>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed text-base italic">"প্রিয় অভিভাবকগণ, আমরা বিশ্বাস করি
+                                        প্রতিটি শিশু অসাধারণ সম্ভাবনায় পূর্ণ। রেশমা ইন্টারন্যাশনাল স্কুল আপনার সন্তানের এই
+                                        সম্ভাবনাকে সমৃদ্ধ করতে প্রতিশ্রুতিবদ্ধ।"</p>
+                                    <div class="mt-4 pt-4 border-t border-gray-100">
+                                        <p class="font-heading font-bold text-ris-dark">রেফাউল হক</p>
+                                        <p class="text-xs text-gray-500">চেয়ারম্যান, রেশমা ইন্টারন্যাশনাল স্কুল</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {{-- Head Teacher --}}
-                <div
-                    class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 reveal">
-                    <div class="flex flex-col sm:flex-row">
-                        <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
-                            <img src="{{ asset('images/home/si.jpg') }}" alt="সাইফুল ইসলাম" class="w-32 h-32 rounded-full object-cover">
-                        </div>
-                        <div class="sm:w-2/3 p-6 sm:p-8">
-                            <div class="flex items-center gap-2 mb-3">
-                                <svg class="w-5 h-5 text-ris-primary" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
-                                </svg>
-                                <h3 class="font-heading font-bold text-lg text-ris-dark">প্রধান শিক্ষকের বাণী</h3>
+                    {{-- Chairperson --}}
+                    <div class="swiper-slide">
+                        <div class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
+                            <div class="flex flex-col sm:flex-row">
+                                <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
+                                    <img src="{{ asset('images/home/ra.jpg') }}" alt="রেশমা আকতার" class="w-32 h-32 rounded-full object-cover">
+                                </div>
+                                <div class="sm:w-2/3 p-6 sm:p-8">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <svg class="w-5 h-5 text-ris-primary" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
+                                        </svg>
+                                        <h3 class="font-heading font-bold text-lg text-ris-dark">চেয়ারপার্সনের বাণী</h3>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed text-base italic">"শিক্ষার মাধ্যমেই একটি জাতি সত্যিকার অর্থে এগিয়ে যেতে পারে। রেশমা ইন্টারন্যাশনাল স্কুল আমাদের সন্তানদের জন্য মানসম্মত ও আধুনিক শিক্ষার পরিবেশ নিশ্চিত করার প্রতি প্রতিশ্রুতিবদ্ধ।"</p>
+                                    <div class="mt-4 pt-4 border-t border-gray-100">
+                                        <p class="font-heading font-bold text-ris-dark">রেশমা আকতার</p>
+                                        <p class="text-xs text-gray-500">চেয়ারপার্সন, রেশমা ইন্টারন্যাশনাল স্কুল</p>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="text-gray-600 leading-relaxed text-sm italic">"প্রিয় শিক্ষার্থী ও অভিভাবকগণ, শিক্ষা
-                                হলো আলোর পথ যা জীবনকে আলোকিত করে। আমাদের স্কুলে আমরা আধুনিক শিক্ষা পদ্ধতির পাশাপাশি নৈতিক
-                                মূল্যবোধ ও সুশিক্ষার পরিবেশ তৈরি করেছি।"</p>
-                            <div class="mt-4 pt-4 border-t border-gray-100">
-                                <p class="font-heading font-bold text-ris-dark">সাইফুল ইসলাম</p>
-                                <p class="text-xs text-gray-500">প্রধান শিক্ষক, রেশমা ইন্টারন্যাশনাল স্কুল</p>
+                        </div>
+                    </div>
+
+                    {{-- Founder --}}
+                    <div class="swiper-slide">
+                        <div class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
+                            <div class="flex flex-col sm:flex-row">
+                                <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
+                                    <img src="{{ asset('images/home/kej.png') }}" alt="কুদরত-ই-ইবতিহাজ জয়" class="w-32 h-32 rounded-full object-cover">
+                                </div>
+                                <div class="sm:w-2/3 p-6 sm:p-8">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <svg class="w-5 h-5 text-ris-primary" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
+                                        </svg>
+                                        <h3 class="font-heading font-bold text-lg text-ris-dark">প্রতিষ্ঠাতার বাণী</h3>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed text-base italic">"শিক্ষাই জাতির মেরুদণ্ড। আমাদের
+                                        সন্তানদের মানসম্মত শিক্ষা দান এবং তাদের সুনাগরিক হিসাবে গড়ে তুলতে আমি রেশমা
+                                        ইন্টারন্যাশনাল স্কুলকে প্রতিষ্ঠা করেছি।"</p>
+                                    <div class="mt-4 pt-4 border-t border-gray-100">
+                                        <p class="font-heading font-bold text-ris-dark">কুদরত-ই-ইবতিহাজ জয়</p>
+                                        <p class="text-xs text-gray-500">প্রতিষ্ঠাতা, রেশমা ইন্টারন্যাশনাল স্কুল</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Head Teacher --}}
+                    <div class="swiper-slide">
+                        <div class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
+                            <div class="flex flex-col sm:flex-row">
+                                <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
+                                    <img src="{{ asset('images/home/si.jpg') }}" alt="সাইফুল ইসলাম" class="w-32 h-32 rounded-full object-cover">
+                                </div>
+                                <div class="sm:w-2/3 p-6 sm:p-8">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <svg class="w-5 h-5 text-ris-primary" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
+                                        </svg>
+                                        <h3 class="font-heading font-bold text-lg text-ris-dark">প্রধান শিক্ষকের বাণী</h3>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed text-base italic">"প্রিয় শিক্ষার্থী ও অভিভাবকগণ, শিক্ষা
+                                        হলো আলোর পথ যা জীবনকে আলোকিত করে। আমাদের স্কুলে আমরা আধুনিক শিক্ষা পদ্ধতির পাশাপাশি নৈতিক
+                                        মূল্যবোধ ও সুশিক্ষার পরিবেশ তৈরি করেছি।"</p>
+                                    <div class="mt-4 pt-4 border-t border-gray-100">
+                                        <p class="font-heading font-bold text-ris-dark">সাইফুল ইসলাম</p>
+                                        <p class="text-xs text-gray-500">প্রধান শিক্ষক, রেশমা ইন্টারন্যাশনাল স্কুল</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="swiper-pagination mt-6"></div>
             </div>
         </div>
     </section>
