@@ -51,10 +51,14 @@ Route::middleware(['auth', 'role:admin,teacher'])->prefix('admin')->group(functi
 
     // Scholarship (custom routes before anything else)
     Route::get('/scholarship', [ScholarshipController::class, 'index'])->name('admin.scholarship.index');
-    Route::get('/scholarship/create', [ScholarshipController::class, 'create'])->name('admin.scholarship.create');
-    Route::get('/scholarship/{scholarshipRegistration}', [ScholarshipController::class, 'show'])->name('admin.scholarship.show');
+    Route::post('/scholarship', [ScholarshipController::class, 'store'])->name('admin.scholarship.store');
+    Route::get('/scholarship/{scholarshipRegistration}/show', [ScholarshipController::class, 'show'])->name('admin.scholarship.show');
+    Route::get('/scholarship/{scholarshipRegistration}/edit', [ScholarshipController::class, 'edit'])->name('admin.scholarship.edit');
+    Route::put('/scholarship/{scholarshipRegistration}', [ScholarshipController::class, 'update'])->name('admin.scholarship.update');
+    Route::patch('/scholarship/{scholarshipRegistration}/status', [ScholarshipController::class, 'updateStatus'])->name('admin.scholarship.status');
     Route::delete('/scholarship/{scholarshipRegistration}', [ScholarshipController::class, 'destroy'])->name('admin.scholarship.destroy');
     Route::get('/scholarship/{scholarshipRegistration}/pdf', [ScholarshipController::class, 'print'])->name('admin.scholarship.pdf');
+    Route::get('/scholarship/download', [ScholarshipController::class, 'downloadAll'])->name('admin.scholarship.download');
 
     // Library (custom routes before resource)
     Route::get('/library/borrowings', [LibraryController::class, 'borrowings'])->name('admin.library.borrowings');

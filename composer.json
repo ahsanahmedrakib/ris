@@ -12,6 +12,7 @@
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "*",
+        "phpoffice/phpword": "*",
         "tymon/jwt-auth": "^2.3"
     },
     "require-dev": {

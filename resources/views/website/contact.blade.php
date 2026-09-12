@@ -23,12 +23,6 @@
                         পাঠান</span>
                     <h2 class="mt-3 font-heading font-bold text-2xl text-ris-dark">আমাদের লিখুন</h2>
 
-                    @if (session('success'))
-                        <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
                     <form method="POST" action="{{ route('contact.send') }}" class="mt-6 space-y-5">
                         @csrf
                         <div class="grid sm:grid-cols-2 gap-5">

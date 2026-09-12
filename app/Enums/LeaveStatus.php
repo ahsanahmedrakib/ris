@@ -12,8 +12,8 @@ enum LeaveStatus: string
     {
         return match ($this) {
             self::Pending => 'অপেক্ষমাণ',
-            self::Approved => 'অনুমোদিত',
-            self::Rejected => 'প্রত্যাখ্যাত',
+            self::Approved => 'অ্যাকসেপ্ট',
+            self::Rejected => 'রিজেক্টেড',
         };
     }
 

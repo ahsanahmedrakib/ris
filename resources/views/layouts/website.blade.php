@@ -363,6 +363,36 @@
 
     @livewireScripts
 
+    {{-- Toast --}}
+    <div x-data="{ toasts: [], show: false }"
+        x-init="
+            @if(session('success'))
+                toasts.push({ type: 'success', message: '{{ session('success') }}' });
+                show = true;
+                setTimeout(() => { toasts.shift(); if(!toasts.length) show = false; }, 3000);
+            @endif
+            @if(session('error'))
+                toasts.push({ type: 'error', message: '{{ session('error') }}' });
+                show = true;
+                setTimeout(() => { toasts.shift(); if(!toasts.length) show = false; }, 3000);
+            @endif
+        "
+        class="fixed top-5 right-5 z-[9999] space-y-3">
+        <template x-for="(toast, index) in toasts" :key="index">
+            <div x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0"
+                x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-x-0" x-transition:leave-end="opacity-0 translate-x-8"
+                :class="toast.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'"
+                class="flex items-center gap-3 px-5 py-3 rounded-xl border shadow-lg min-w-[300px] max-w-[450px]">
+                <svg x-show="toast.type === 'success'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <svg x-show="toast.type === 'error'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-sm font-medium" x-text="toast.message"></span>
+                <button @click="toasts.splice(index, 1); if(!toasts.length) show = false;" class="ml-auto shrink-0 opacity-60 hover:opacity-100">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </template>
+    </div>
+
 </body>
 
 </html>
