@@ -264,6 +264,58 @@
         </div>
     </section>
 
+    {{-- ═══ Teachers Section ═══ --}}
+    @php
+        $homeTeachers = \App\Models\User::where('role', 'teacher')
+            ->where('is_active', true)
+            ->with('teacherProfile')
+            ->whereHas('teacherProfile')
+            ->latest()
+            ->get();
+    @endphp
+    @if($homeTeachers->count())
+    <section class="py-16 sm:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+                <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">আমাদের দল</span>
+                <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">শিক্ষকবৃন্দ</h2>
+                <p class="mt-3 text-gray-500">অভিজ্ঞ ও নিবেদিত শিক্ষকদের দল যারা আপনার সন্তানের উজ্জ্বল ভবিষ্যত গড়ে তুলছেন।</p>
+            </div>
+
+            <div class="swiper teacher-swiper reveal">
+                <div class="swiper-wrapper">
+                    @foreach($homeTeachers as $teacher)
+                        <div class="swiper-slide">
+                            <a href="{{ route('teacher.single', $teacher->teacherProfile->slug) }}" class="block group">
+                                <div class="bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 text-center p-6 h-full">
+                                    @if($teacher->teacherProfile?->photo)
+                                        <img src="{{ Storage::url($teacher->teacherProfile->photo) }}" alt="{{ $teacher->name }}" class="w-24 h-24 rounded-full object-cover mx-auto group-hover:scale-105 transition-transform duration-300">
+                                    @else
+                                        <div class="w-24 h-24 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-2xl font-semibold mx-auto group-hover:scale-105 transition-transform duration-300">
+                                            {{ mb_substr($teacher->name, 0, 1) }}
+                                        </div>
+                                    @endif
+                                    <h3 class="mt-4 font-heading font-bold text-base text-ris-dark group-hover:text-ris-primary transition-colors">{{ $teacher->name }}</h3>
+                                    <p class="text-sm text-gray-500">{{ $teacher->teacherProfile?->subject ?? '-' }}</p>
+                                    <p class="text-xs text-gray-400 mt-1">{{ $teacher->teacherProfile?->designation ?? '-' }}</p>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="swiper-pagination mt-6"></div>
+            </div>
+
+            <div class="mt-8 text-center reveal">
+                <a href="{{ route('teachers') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-ris-primary text-ris-primary font-heading font-medium text-sm hover:bg-ris-primary hover:text-white transition-all duration-300">
+                    সকল শিক্ষক দেখুন
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+    @endif
+
     {{-- ═══ Programs / Departments (green.edu.bd faculty flip card style) ═══ --}}
     <section class="py-16 sm:py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

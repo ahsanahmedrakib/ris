@@ -10,16 +10,15 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @livewireStyles
 </head>
 
-<body class="h-full font-body antialiased bg-gray-50 text-gray-800" x-data="{ sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false', mobileSidebar: false }" x-effect="localStorage.setItem('sidebarOpen', sidebarOpen)">
+<body class="h-full font-body antialiased bg-gray-50 text-gray-800" x-data="{ sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false', mobileSidebar: false }"
+    x-effect="localStorage.setItem('sidebarOpen', sidebarOpen)">
 
     <div class="flex h-full">
 
@@ -30,7 +29,8 @@
             {{-- Logo --}}
             <a href={{ route('home') }} target="_blank">
                 <div class="flex items-center justify-center gap-3 px-4 h-16 border-b border-white/10 shrink-0">
-                    <img :src="sidebarOpen ? '{{ asset('logo.png') }}' : '{{ asset('logo-small.png') }}'" alt="RIS" class="h-15 w-auto object-contain shrink-0">
+                    <img :src="sidebarOpen ? '{{ asset('logo.png') }}' : '{{ asset('logo-small.png') }}'" alt="RIS"
+                        class="h-15 w-auto object-contain shrink-0">
                 </div>
             </a>
 
@@ -44,90 +44,96 @@
                             'label' => 'ড্যাশবোর্ড',
                             'route' => 'admin.dashboard',
                         ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>',
-                            'label' => 'ছাত্র/ছাত্রী',
-                            'route' => 'admin.students.index',
-                        ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>',
+                        //     'label' => 'ছাত্র/ছাত্রী',
+                        //     'route' => 'admin.students.index',
+                        // ],
                         [
                             'icon' =>
                                 '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>',
                             'label' => 'মেধাবৃত্তি',
                             'route' => 'admin.scholarship.index',
                         ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>',
+                        //     'label' => 'শ্রেণি',
+                        //     'route' => 'admin.classes.index',
+                        // ],
                         [
                             'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>',
-                            'label' => 'শ্রেণি',
-                            'route' => 'admin.classes.index',
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>',
+                            'label' => 'শিক্ষক',
+                            'route' => 'admin.teachers.index',
                         ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
-                            'label' => 'বিষয়',
-                            'route' => 'admin.subjects.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>',
-                            'label' => 'উপস্থিতি',
-                            'route' => 'admin.attendance.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
-                            'label' => 'পরীক্ষা',
-                            'route' => 'admin.exams.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>',
-                            'label' => 'ফি',
-                            'route' => 'admin.fees.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>',
-                            'label' => 'নোটিশ',
-                            'route' => 'admin.notices.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
-                            'label' => 'লাইব্রেরি',
-                            'route' => 'admin.library.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m0 0v8m0-8l-4 4m4-4l-4 4"/>',
-                            'label' => 'পরিবহন',
-                            'route' => 'admin.transport.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>',
-                            'label' => 'কর্মচারী',
-                            'route' => 'admin.staff.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>',
-                            'label' => 'বেতন',
-                            'route' => 'admin.payroll.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>',
-                            'label' => 'রিপোর্ট',
-                            'route' => 'admin.reports.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
-                            'label' => 'বার্তা',
-                            'route' => 'admin.contact-messages.index',
-                        ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
+                        //     'label' => 'বিষয়',
+                        //     'route' => 'admin.subjects.index',
+                        // ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>',
+                        //     'label' => 'উপস্থিতি',
+                        //     'route' => 'admin.attendance.index',
+                        // ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+                        //     'label' => 'পরীক্ষা',
+                        //     'route' => 'admin.exams.index',
+                        // ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>',
+                        //     'label' => 'ফি',
+                        //     'route' => 'admin.fees.index',
+                        // ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>',
+                        //     'label' => 'নোটিশ',
+                        //     'route' => 'admin.notices.index',
+                        // ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
+                        //     'label' => 'লাইব্রেরি',
+                        //     'route' => 'admin.library.index',
+                        // ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m0 0v8m0-8l-4 4m4-4l-4 4"/>',
+                        //     'label' => 'পরিবহন',
+                        //     'route' => 'admin.transport.index',
+                        // ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>',
+                        //     'label' => 'কর্মচারী',
+                        //     'route' => 'admin.staff.index',
+                        // ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>',
+                        //     'label' => 'বেতন',
+                        //     'route' => 'admin.payroll.index',
+                        // ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>',
+                        //     'label' => 'রিপোর্ট',
+                        //     'route' => 'admin.reports.index',
+                        // ],
+                        // [
+                        //     'icon' =>
+                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
+                        //     'label' => 'বার্তা',
+                        //     'route' => 'admin.contact-messages.index',
+                        // ],
                         [
                             'icon' =>
                                 '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h3v3h-3v-3zM17 14h3v3h-3v-3zM14 17h3v3h-3v-3zM20 14h1v3h-3v-1h2v-2zM17 20h1v1h-1v-1z"/>',
@@ -316,30 +322,37 @@
     @livewireScripts
 
     {{-- Toast --}}
-    <div x-data="{ toasts: [], show: false }"
-        x-init="
-            @if(session('success'))
-                toasts.push({ type: 'success', message: '{{ session('success') }}' });
+    <div x-data="{ toasts: [], show: false }" x-init="@if (session('success')) toasts.push({ type: 'success', message: '{{ session('success') }}' });
                 show = true;
-                setTimeout(() => { toasts.shift(); if(!toasts.length) show = false; }, 3000);
-            @endif
-            @if(session('error'))
-                toasts.push({ type: 'error', message: '{{ session('error') }}' });
+                setTimeout(() => { toasts.shift(); if(!toasts.length) show = false; }, 3000); @endif
+    @if (session('error')) toasts.push({ type: 'error', message: '{{ session('error') }}' });
                 show = true;
-                setTimeout(() => { toasts.shift(); if(!toasts.length) show = false; }, 3000);
-            @endif
-        "
-        class="fixed top-5 right-5 z-9999 space-y-3">
+                setTimeout(() => { toasts.shift(); if(!toasts.length) show = false; }, 3000); @endif" class="fixed top-5 right-5 z-9999 space-y-3">
         <template x-for="(toast, index) in toasts" :key="index">
-            <div x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0"
-                x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-x-0" x-transition:leave-end="opacity-0 translate-x-8"
-                :class="toast.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'"
+            <div x-show="show" x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-x-0" x-transition:leave-end="opacity-0 translate-x-8"
+                :class="toast.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                    'bg-red-50 border-red-200 text-red-700'"
                 class="flex items-center gap-3 px-5 py-3 rounded-xl border shadow-lg min-w-75 max-w-112.5">
-                <svg x-show="toast.type === 'success'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <svg x-show="toast.type === 'error'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <svg x-show="toast.type === 'success'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <svg x-show="toast.type === 'error'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 <span class="text-sm font-medium" x-text="toast.message"></span>
-                <button @click="toasts.splice(index, 1); if(!toasts.length) show = false;" class="ml-auto shrink-0 opacity-60 hover:opacity-100">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                <button @click="toasts.splice(index, 1); if(!toasts.length) show = false;"
+                    class="ml-auto shrink-0 opacity-60 hover:opacity-100">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
         </template>

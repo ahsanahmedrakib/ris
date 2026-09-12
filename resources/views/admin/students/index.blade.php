@@ -54,7 +54,7 @@
                             class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
                             <option value="">সকল অবস্থা</option>
                             <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>সক্রিয়</option>
-                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>নিষ্ক্রিয়
+                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>ডিলিট
                             </option>
                             <option value="transferred" {{ request('status') === 'transferred' ? 'selected' : '' }}>
                                 স্থানান্তরিত</option>
@@ -117,7 +117,7 @@
                                     <span
                                         class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
                                     {{ $student->status === 'active' ? 'bg-emerald-50 text-emerald-700' : ($student->status === 'inactive' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700') }}">
-                                        {{ $student->status === 'active' ? 'সক্রিয়' : ($student->status === 'inactive' ? 'নিষ্ক্রিয়' : 'স্থানান্তরিত') }}
+                                        {{ $student->status === 'active' ? 'সক্রিয়' : ($student->status === 'inactive' ? 'ডিলিট' : 'স্থানান্তরিত') }}
                                     </span>
                                 </td>
                                 <td class="px-5 py-3.5">

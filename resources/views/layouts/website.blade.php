@@ -154,6 +154,7 @@
                             ['label' => 'ভর্তি প্রক্রিয়া', 'route' => 'admission'],
                             ['label' => 'মেধাবৃত্তি', 'route' => 'scholarship'],
                             ['label' => 'নোটিশ', 'route' => 'notices'],
+                            ['label' => 'শিক্ষক', 'route' => 'teachers'],
                             ['label' => 'যোগাযোগ', 'route' => 'contact'],
                         ];
                     @endphp
@@ -292,6 +293,8 @@
                         </li>
                         <li><a href="{{ route('notices') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">নোটিশ</a></li>
+                        <li><a href="{{ route('teachers') }}"
+                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">শিক্ষক</a></li>
                         <li><a href="{{ route('contact') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">যোগাযোগ</a>
                         </li>

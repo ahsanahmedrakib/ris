@@ -591,6 +591,34 @@ html {
     border-radius: 9999px;
 }
 
+/* ── Teacher Swiper ── */
+.teacher-swiper .swiper-wrapper {
+    align-items: stretch;
+}
+.teacher-swiper .swiper-slide {
+    height: auto;
+    display: flex;
+}
+.teacher-swiper .swiper-slide > a {
+    width: 100%;
+}
+.teacher-swiper .swiper-pagination {
+    position: relative;
+    margin-top: 1.5rem;
+}
+.teacher-swiper .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: var(--color-ris-primary);
+    opacity: 0.25;
+    transition: all 0.3s ease;
+}
+.teacher-swiper .swiper-pagination-bullet-active {
+    opacity: 1;
+    width: 26px;
+    border-radius: 9999px;
+}
+
 /* ── Event cards ── */
 .event-card {
     position: relative;

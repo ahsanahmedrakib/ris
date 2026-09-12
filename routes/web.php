@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\TransportController;
 use App\Http\Controllers\Parent\ParentController;
+use App\Http\Controllers\Website\TeacherController as WebsiteTeacherController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public Website ──
@@ -30,6 +31,8 @@ Route::get('/scholarship', [WebsiteController::class, 'scholarship'])->name('sch
 Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
 Route::post('/contact', [WebsiteController::class, 'sendContact'])->name('contact.send');
 Route::get('/notices', [WebsiteController::class, 'notices'])->name('notices');
+Route::get('/teachers', [WebsiteTeacherController::class, 'index'])->name('teachers');
+Route::get('/teacher/{slug}', [WebsiteTeacherController::class, 'single'])->name('teacher.single');
 
 // ── Auth ──
 Route::middleware('guest')->group(function () {
@@ -47,7 +50,15 @@ Route::middleware(['auth', 'role:admin,teacher'])->prefix('admin')->group(functi
     Route::resource('students', StudentController::class)->names('admin.students');
     Route::resource('classes', ClassController::class)->names('admin.classes');
     Route::resource('subjects', SubjectController::class)->names('admin.subjects');
-    Route::resource('teachers', TeacherController::class)->names('admin.teachers');
+
+    // Teachers (custom routes)
+    Route::get('/teachers', [TeacherController::class, 'index'])->name('admin.teachers.index');
+    Route::post('/teachers', [TeacherController::class, 'store'])->name('admin.teachers.store');
+    Route::get('/teachers/download', [TeacherController::class, 'download'])->name('admin.teachers.download');
+    Route::get('/teachers/{teacher}', [TeacherController::class, 'show'])->name('admin.teachers.show');
+    Route::put('/teachers/{teacher}', [TeacherController::class, 'update'])->name('admin.teachers.update');
+    Route::delete('/teachers/{teacher}', [TeacherController::class, 'destroy'])->name('admin.teachers.destroy');
+
     Route::resource('notices', NoticeController::class)->names('admin.notices');
 
     // Scholarship (custom routes before anything else)

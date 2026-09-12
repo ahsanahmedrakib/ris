@@ -4,34 +4,54 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Models\TeacherProfile;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class TeacherController extends Controller
 {
+    public const DESIGNATIONS = [
+        'প্রধান শিক্ষক' => 'প্রধান শিক্ষক',
+        'সহকারী প্রধান শিক্ষক' => 'সহকারী প্রধান শিক্ষক',
+        'সহকারী শিক্ষক' => 'সহকারী শিক্ষক',
+        'শিক্ষক' => 'শিক্ষক',
+    ];
+
     public function index(Request $request): View
     {
-        $query = User::where('role', 'teacher');
+        $query = User::where('role', 'teacher')->with('teacherProfile');
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhereHas('teacherProfile', function ($q2) use ($search) {
+                        $q2->where('subject', 'like', "%{$search}%")
+                            ->orWhere('designation', 'like', "%{$search}%");
+                    });
             });
         }
 
-        $teachers = $query->latest()->paginate(15)->withQueryString();
+        $perPage = (int) $request->input('per_page', 15);
+        if (! in_array($perPage, [10, 25, 50, 100])) {
+            $perPage = 15;
+        }
 
-        return view('admin.teachers.index', compact('teachers'));
-    }
+        $teachers = $query->latest()->paginate($perPage)->withQueryString();
 
-    public function create(): View
-    {
-        return view('admin.teachers.create');
+        return view('admin.teachers.index', [
+            'teachers' => $teachers,
+            'designations' => self::DESIGNATIONS,
+            'breadcrumbs' => ['শিক্ষক' => null],
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -39,84 +59,266 @@ class TeacherController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'required|string|max:20',
+            'photo' => 'required|image|max:2048',
+            'designation' => 'required|string|max:255',
+            'subject' => 'required|string|max:255',
+            'qualification' => 'required|string|max:255',
+            'institute' => 'required|string|max:255',
+            'joining_date' => 'required|date',
+            'previous_institutions' => 'nullable|string',
+            'bio' => 'nullable|string',
+            'experience' => 'nullable|string',
+            'achievements' => 'nullable|string',
         ], [
             'name.required' => 'নাম আবশ্যক।',
             'email.required' => 'ইমেইল আবশ্যক।',
             'email.email' => 'সঠিক ইমেইল দিন।',
             'email.unique' => 'এই ইমেইল ইতিমধ্যে ব্যবহৃত হয়েছে।',
+            'phone.required' => 'ফোন নম্বর আবশ্যক।',
+            'photo.required' => 'ছবি আবশ্যক।',
+            'photo.image' => 'ছবি ফাইল হতে হবে।',
+            'photo.max' => 'ছবির সাইজ ২MB এর কম হতে হবে।',
+            'designation.required' => 'পদবি আবশ্যক।',
+            'subject.required' => 'বিষয় আবশ্যক।',
+            'qualification.required' => 'যোগ্যতা আবশ্যক।',
+            'institute.required' => 'প্রতিষ্ঠান আবশ্যক।',
+            'joining_date.required' => 'যোগদানের তারিখ আবশ্যক।',
         ]);
 
+        DB::beginTransaction();
+
         try {
-            User::create([
+            $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'phone' => $validated['phone'] ?? null,
+                'phone' => $validated['phone'],
                 'password' => bcrypt('password'),
                 'role' => UserRole::Teacher->value,
                 'is_active' => true,
             ]);
 
+            $photoPath = $request->file('photo')->store('teachers', 'public');
+
+            TeacherProfile::create([
+                'user_id' => $user->id,
+                'photo' => $photoPath,
+                'designation' => $validated['designation'],
+                'subject' => $validated['subject'],
+                'qualification' => $validated['qualification'],
+                'institute' => $validated['institute'],
+                'previous_institutions' => $validated['previous_institutions'] ?? null,
+                'joining_date' => $validated['joining_date'],
+                'bio' => $validated['bio'] ?? null,
+                'experience' => $validated['experience'] ?? null,
+                'achievements' => $validated['achievements'] ?? null,
+            ]);
+
+            DB::commit();
+
             return redirect()->route('admin.teachers.index')
                 ->with('success', 'শিক্ষক সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
+            DB::rollBack();
+
             return back()->withInput()
-                ->with('error', 'শিক্ষক যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'শিক্ষক যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function show(int $id): View
+    public function show(User $teacher): JsonResponse
     {
-        $teacher = User::where('role', 'teacher')->findOrFail($id);
+        $teacher->load('teacherProfile');
 
-        return view('admin.teachers.show', compact('teacher'));
+        return response()->json([
+            'id' => $teacher->id,
+            'name' => $teacher->name,
+            'email' => $teacher->email,
+            'phone' => $teacher->phone,
+            'is_active' => $teacher->is_active,
+            'photo' => $teacher->teacherProfile?->photo ? Storage::url($teacher->teacherProfile->photo) : null,
+            'designation' => $teacher->teacherProfile?->designation,
+            'subject' => $teacher->teacherProfile?->subject,
+            'qualification' => $teacher->teacherProfile?->qualification,
+            'institute' => $teacher->teacherProfile?->institute,
+            'previous_institutions' => $teacher->teacherProfile?->previous_institutions,
+            'joining_date' => $teacher->teacherProfile?->joining_date?->format('d/m/Y'),
+            'bio' => $teacher->teacherProfile?->bio,
+            'experience' => $teacher->teacherProfile?->experience,
+            'achievements' => $teacher->teacherProfile?->achievements,
+            'slug' => $teacher->teacherProfile?->slug,
+            'created_at' => $teacher->created_at->format('d/m/Y h:i A'),
+        ]);
     }
 
-    public function edit(int $id): View
+    public function edit(User $teacher): JsonResponse
     {
-        $teacher = User::where('role', 'teacher')->findOrFail($id);
+        $teacher->load('teacherProfile');
 
-        return view('admin.teachers.edit', compact('teacher'));
+        return response()->json([
+            'id' => $teacher->id,
+            'name' => $teacher->name,
+            'email' => $teacher->email,
+            'phone' => $teacher->phone,
+            'is_active' => $teacher->is_active,
+            'photo' => $teacher->teacherProfile?->photo,
+            'designation' => $teacher->teacherProfile?->designation ?? '',
+            'subject' => $teacher->teacherProfile?->subject ?? '',
+            'qualification' => $teacher->teacherProfile?->qualification ?? '',
+            'institute' => $teacher->teacherProfile?->institute ?? '',
+            'previous_institutions' => $teacher->teacherProfile?->previous_institutions ?? '',
+            'joining_date' => $teacher->teacherProfile?->joining_date?->format('Y-m-d') ?? '',
+            'bio' => $teacher->teacherProfile?->bio ?? '',
+            'experience' => $teacher->teacherProfile?->experience ?? '',
+            'achievements' => $teacher->teacherProfile?->achievements ?? '',
+        ]);
     }
 
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(Request $request, User $teacher): RedirectResponse
     {
-        $teacher = User::where('role', 'teacher')->findOrFail($id);
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => "required|email|unique:users,email,{$teacher->id}",
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'required|string|max:20',
+            'photo' => 'nullable|image|max:2048',
+            'designation' => 'required|string|max:255',
+            'subject' => 'required|string|max:255',
+            'qualification' => 'required|string|max:255',
+            'institute' => 'required|string|max:255',
+            'joining_date' => 'required|date',
+            'previous_institutions' => 'nullable|string',
+            'bio' => 'nullable|string',
+            'experience' => 'nullable|string',
+            'achievements' => 'nullable|string',
             'is_active' => 'boolean',
         ], [
             'name.required' => 'নাম আবশ্যক।',
             'email.required' => 'ইমেইল আবশ্যক।',
             'email.email' => 'সঠিক ইমেইল দিন।',
             'email.unique' => 'এই ইমেইল ইতিমধ্যে ব্যবহৃত হয়েছে।',
+            'phone.required' => 'ফোন নম্বর আবশ্যক।',
+            'photo.image' => 'ছবি ফাইল হতে হবে।',
+            'photo.max' => 'ছবির সাইজ ২MB এর কম হতে হবে।',
+            'designation.required' => 'পদবি আবশ্যক।',
+            'subject.required' => 'বিষয় আবশ্যক।',
+            'qualification.required' => 'যোগ্যতা আবশ্যক।',
+            'institute.required' => 'প্রতিষ্ঠান আবশ্যক।',
+            'joining_date.required' => 'যোগদানের তারিখ আবশ্যক।',
         ]);
 
+        DB::beginTransaction();
+
         try {
-            $teacher->update($validated);
+            $teacher->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'is_active' => $validated['is_active'] ?? true,
+            ]);
+
+            $photoPath = $teacher->teacherProfile?->photo;
+            if ($request->hasFile('photo')) {
+                if ($photoPath) {
+                    Storage::disk('public')->delete($photoPath);
+                }
+                $photoPath = $request->file('photo')->store('teachers', 'public');
+            }
+
+            $profileData = [
+                'photo' => $photoPath,
+                'designation' => $validated['designation'],
+                'subject' => $validated['subject'],
+                'qualification' => $validated['qualification'],
+                'institute' => $validated['institute'],
+                'previous_institutions' => $validated['previous_institutions'] ?? null,
+                'joining_date' => $validated['joining_date'],
+                'bio' => $validated['bio'] ?? null,
+                'experience' => $validated['experience'] ?? null,
+                'achievements' => $validated['achievements'] ?? null,
+            ];
+
+            if ($teacher->teacherProfile) {
+                $teacher->teacherProfile()->update($profileData);
+            } else {
+                $profileData['user_id'] = $teacher->id;
+                TeacherProfile::create($profileData);
+            }
+
+            DB::commit();
 
             return redirect()->route('admin.teachers.index')
                 ->with('success', 'শিক্ষকের তথ্য সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
+            DB::rollBack();
+
             return back()->withInput()
-                ->with('error', 'শিক্ষক আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'শিক্ষক আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
     }
 
-    public function destroy(int $id): RedirectResponse
+    public function destroy(User $teacher): RedirectResponse
     {
         try {
-            $teacher = User::where('role', 'teacher')->findOrFail($id);
             $teacher->update(['is_active' => false]);
 
             return redirect()->route('admin.teachers.index')
                 ->with('success', 'শিক্ষক সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'শিক্ষক মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'শিক্ষক মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
         }
+    }
+
+    public function download(Request $request)
+    {
+        $query = User::where('role', 'teacher')->with('teacherProfile');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhereHas('teacherProfile', function ($q2) use ($search) {
+                        $q2->where('subject', 'like', "%{$search}%")
+                            ->orWhere('designation', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        $teachers = $query->latest()->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="teachers_' . now()->format('Y-m-d_H-i') . '.csv"',
+        ];
+
+        $callback = function () use ($teachers) {
+            $file = fopen('php://output', 'w');
+
+            // UTF-8 BOM for Excel Bangla support
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($file, ['ক্রমিক', 'নাম', 'ইমেইল', 'ফোন', 'পদবি', 'বিষয়', 'যোগ্যতা', 'প্রতিষ্ঠান', 'যোগদান', 'স্ট্যাটাস']);
+
+            foreach ($teachers as $index => $teacher) {
+                fputcsv($file, [
+                    $index + 1,
+                    $teacher->name,
+                    $teacher->email,
+                    $teacher->phone ?? '-',
+                    $teacher->teacherProfile?->designation ?? '-',
+                    $teacher->teacherProfile?->subject ?? '-',
+                    $teacher->teacherProfile?->qualification ?? '-',
+                    $teacher->teacherProfile?->institute ?? '-',
+                    $teacher->teacherProfile?->joining_date?->format('d/m/Y') ?? '-',
+                    $teacher->is_active ? 'সক্রিয়' : 'ডিলিট',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return Response::stream($callback, 200, $headers);
     }
 }

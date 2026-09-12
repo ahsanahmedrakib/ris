@@ -7,7 +7,6 @@ use App\Models\Book;
 use App\Models\Bus;
 use App\Models\ClassRoom;
 use App\Models\Notice;
-use App\Models\Staff;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Models\User;
@@ -36,28 +35,6 @@ class DatabaseSeeder extends Seeder
             'is_current' => true,
         ]);
 
-        // Teachers
-        $teachers = [];
-        $teacherNames = [
-            ['name' => 'মোঃ রফিকুল ইসলাম', 'email' => 'rafiq@ris.edu.bd'],
-            ['name' => 'ফাতেমা বেগম', 'email' => 'fatema@ris.edu.bd'],
-            ['name' => 'মোঃ কামরুজ্জামান', 'email' => 'kamruzzaman@ris.edu.bd'],
-            ['name' => 'নাসরিন আক্তার', 'email' => 'nasrin@ris.edu.bd'],
-            ['name' => 'মোঃ আব্দুল হাকিম', 'email' => 'hakim@ris.edu.bd'],
-        ];
-
-        foreach ($teacherNames as $t) {
-            $user = User::create([
-                'name' => $t['name'],
-                'email' => $t['email'],
-                'password' => Hash::make('password'),
-                'role' => 'teacher',
-                'phone' => '017'.rand(10000000, 99999999),
-                'is_active' => true,
-            ]);
-            $teachers[] = $user;
-        }
-
         // Classes (school serves Play, Nursery, and Classes 1-5)
         $classNames = ['প্লে', 'নার্সারি', '১ম', '২য়', '৩য়', '৪র্থ', '৫ম'];
         $classes = [];
@@ -66,7 +43,7 @@ class DatabaseSeeder extends Seeder
                 'name' => $name,
                 'section' => 'ক',
                 'academic_year_id' => $year->id,
-                'class_teacher_id' => $teachers[$i % count($teachers)]->id,
+                'class_teacher_id' => $admin->id,
             ]);
             $classes[] = $class;
         }
@@ -79,7 +56,7 @@ class DatabaseSeeder extends Seeder
                     'name' => $sName,
                     'code' => strtoupper(substr($sName, 0, 3)).'-'.$class->id,
                     'class_id' => $class->id,
-                    'teacher_id' => $teachers[array_rand($teachers)]->id,
+                    'teacher_id' => $admin->id,
                 ]);
             }
         }
@@ -220,19 +197,6 @@ class DatabaseSeeder extends Seeder
             'route_name' => 'কাটাখাল রুট',
         ]);
 
-        // Staff
-        foreach ($teachers as $teacher) {
-            Staff::create([
-                'user_id' => $teacher->id,
-                'employee_id' => 'RIS-T'.str_pad($teacher->id, 3, '0', STR_PAD_LEFT),
-                'designation' => 'শিক্ষক',
-                'department' => 'একাডেমিক',
-                'joining_date' => '2020-01-01',
-                'salary' => rand(25000, 45000),
-                'qualification' => 'এমএ/বিএড',
-            ]);
-        }
-
         // Notices
         Notice::create([
             'title' => '২০২৫-২০২৬ শিক্ষাবর্ষে ভর্তি চলছে',
@@ -267,7 +231,6 @@ class DatabaseSeeder extends Seeder
         echo "সিডিং সফলভাবে সম্পন্ন হয়েছে!\n";
         echo "লগইন তথ্য:\n";
         echo "  অ্যাডমিন: admin@ris.edu.bd / password\n";
-        echo "  শিক্ষক: rafiq@ris.edu.bd / password\n";
         echo "  অভিভাবক: যেকোনো অভিভাবকের ইমেইল / password\n";
     }
 }

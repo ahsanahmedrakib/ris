@@ -33,7 +33,8 @@
                             @foreach ($students as $student)
                                 <option value="{{ $student->id }}"
                                     {{ request('student_id') == $student->id ? 'selected' : '' }}>{{ $student->name_bn }}
-                                    ({{ $student->admission_no }})</option>
+                                    ({{ $student->admission_no }})
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -82,7 +83,7 @@
                         <span
                             class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
                         {{ ($selectedStudent->status ?? '') === 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700' }}">
-                            {{ ($selectedStudent->status ?? '') === 'active' ? 'সক্রিয়' : 'নিষ্ক্রিয়' }}
+                            {{ ($selectedStudent->status ?? '') === 'active' ? 'সক্রিয়' : 'ডিলিট' }}
                         </span>
                     </div>
                 </div>

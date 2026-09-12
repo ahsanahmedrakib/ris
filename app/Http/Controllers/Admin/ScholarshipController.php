@@ -7,10 +7,8 @@ use App\Models\ScholarshipRegistration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 use Illuminate\View\View;
-use PhpOffice\PhpWord\IOFactory;
-use PhpOffice\PhpWord\PhpWord;
-use PhpOffice\PhpWord\Style\Table;
 
 class ScholarshipController extends Controller
 {
@@ -244,58 +242,40 @@ class ScholarshipController extends Controller
 
         $registrations = $query->latest()->get();
 
-        $phpWord = new PhpWord;
-        $section = $phpWord->addSection();
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="scholarship_registrations_'.now()->format('Y-m-d_H-i').'.csv"',
+        ];
 
-        $fontStyle = ['font' => 'Kalpurush', 'size' => 12];
-        $boldStyle = ['font' => 'Kalpurush', 'size' => 12, 'bold' => true];
-        $headerStyle = ['font' => 'Kalpurush', 'size' => 12, 'bold' => true, 'color' => 'FFFFFF'];
-        $titleStyle = ['font' => 'Kalpurush', 'size' => 16, 'bold' => true, 'align' => 'center'];
-        $subtitleStyle = ['font' => 'Kalpurush', 'size' => 12, 'align' => 'center'];
+        $callback = function () use ($registrations) {
+            $file = fopen('php://output', 'w');
 
-        $section->addText('আক্‌রামুন্নেছা-জলিল ও রেশমা-রেফাউল মেধাবৃত্তি ২০২৬', $titleStyle);
-        $section->addText('মেধাবৃত্তি রেজিস্ট্রেশন তালিকা', $subtitleStyle);
-        $section->addText('মোট রেজিস্ট্রেশন: '.$registrations->count(), $subtitleStyle);
-        $section->addParagraphBreak();
+            // UTF-8 BOM for Excel Bangla support
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
 
-        $tableStyle = new Table;
-        $tableStyle->setBorderSize(1);
-        $tableStyle->setBorderColor('000000');
-        $tableStyle->setWidth(100, 'pct');
+            fputcsv($file, ['ক্রমিক', 'রেজি নং', 'শিক্ষার্থীর নাম', 'পিতার নাম', 'মাতার নাম', 'স্কুল', 'শ্রেণি', 'রোল', 'মোবাইল', 'পেমেন্ট', 'স্ট্যাটাস', 'তারিখ']);
 
-        $table = $section->addTable($tableStyle);
+            foreach ($registrations as $index => $reg) {
+                fputcsv($file, [
+                    $index + 1,
+                    $reg->registration_no,
+                    $reg->student_name,
+                    $reg->father_name,
+                    $reg->mother_name,
+                    $reg->school_name,
+                    ScholarshipRegistration::CLASSES[$reg->class_no] ?? '-',
+                    $reg->roll_no ?? '-',
+                    $reg->mobile_no,
+                    $reg->payment_method === 'cash' ? 'ক্যাশ' : 'বিকাশ',
+                    self::STATUSES[$reg->status] ?? $reg->status,
+                    $reg->created_at->format('d/m/Y'),
+                ]);
+            }
 
-        $table->addRow();
-        $headers = ['ক্রমিক', 'রেজি নং', 'শিক্ষার্থীর নাম', 'পিতার নাম', 'মাতার নাম', 'স্কুল', 'শ্রেণি', 'রোল', 'মোবাইল', 'পেমেন্ট', 'স্ট্যাটাস', 'তারিখ'];
-        foreach ($headers as $header) {
-            $table->addCell(0, ['width' => 8, 'widthType' => 'pct', 'bgColor' => '2563EB'])->addText($header, $headerStyle);
-        }
+            fclose($file);
+        };
 
-        foreach ($registrations as $index => $reg) {
-            $table->addRow();
-            $table->addCell()->addText((string) ($index + 1), $fontStyle);
-            $table->addCell()->addText($reg->registration_no, $fontStyle);
-            $table->addCell()->addText($reg->student_name, $fontStyle);
-            $table->addCell()->addText($reg->father_name, $fontStyle);
-            $table->addCell()->addText($reg->mother_name, $fontStyle);
-            $table->addCell()->addText($reg->school_name, $fontStyle);
-            $table->addCell()->addText(ScholarshipRegistration::CLASSES[$reg->class_no] ?? '-', $fontStyle);
-            $table->addCell()->addText($reg->roll_no ?? '-', $fontStyle);
-            $table->addCell()->addText($reg->mobile_no, $fontStyle);
-            $table->addCell()->addText($reg->payment_method === 'cash' ? 'ক্যাশ' : 'বিকাশ', $fontStyle);
-            $table->addCell()->addText(self::STATUSES[$reg->status] ?? $reg->status, $fontStyle);
-            $table->addCell()->addText($reg->created_at->format('d/m/Y'), $fontStyle);
-        }
-
-        $fileName = 'scholarship_registrations_'.now()->format('Y-m-d_H-i').'.docx';
-        $tempPath = storage_path('app/'.$fileName);
-
-        $writer = IOFactory::createWriter($phpWord, 'Word2007');
-        $writer->save($tempPath);
-
-        return response()->download($tempPath, $fileName, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        ])->deleteFileAfterSend(true);
+        return Response::stream($callback, 200, $headers);
     }
 
     public function destroy(ScholarshipRegistration $scholarshipRegistration): RedirectResponse
