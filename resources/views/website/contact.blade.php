@@ -29,37 +29,49 @@
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">নাম</label>
                                 <input type="text" id="name" name="name" value="{{ old('name') }}" required
-                                    class="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                                    class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('name') ? 'border-red-400' : 'border-gray-300' }} bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
                                     placeholder="আপনার নাম">
+                                @error('name')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">ইমেইল</label>
                                 <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                                    class="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                                    class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('email') ? 'border-red-400' : 'border-gray-300' }} bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
                                     placeholder="example@email.com">
+                                @error('email')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                         <div>
                             <label for="phone" class="block text-sm font-medium text-gray-700 mb-1.5">ফোন নম্বর</label>
                             <input type="tel" id="phone" name="phone" value="{{ old('phone') }}"
-                                class="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                                class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('phone') ? 'border-red-400' : 'border-gray-300' }} bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
                                 placeholder="+৮৮০-১৬১৯ ০০৭ ০০৬">
+                            @error('phone')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label for="subject" class="block text-sm font-medium text-gray-700 mb-1.5">বিষয়</label>
                             <input type="text" id="subject" name="subject" value="{{ old('subject') }}" required
-                                class="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                                class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('subject') ? 'border-red-400' : 'border-gray-300' }} bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
                                 placeholder="বিষয় লিখুন">
+                            @error('subject')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label for="message" class="block text-sm font-medium text-gray-700 mb-1.5">বার্তা</label>
                             <textarea id="message" name="message" rows="5" required
-                                class="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all resize-none"
+                                class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('message') ? 'border-red-400' : 'border-gray-300' }} bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all resize-none"
                                 placeholder="আপনার বার্তা লিখুন...">{{ old('message') }}</textarea>
+                            @error('message')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
-                        @error('message')
-                            <p class="text-sm text-red-600">{{ $message }}</p>
-                        @enderror
                         <button type="submit" class="btn-primary">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

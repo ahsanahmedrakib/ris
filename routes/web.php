@@ -5,6 +5,7 @@ use App\Features\Auth\Http\Controllers\DashboardController;
 use App\Features\Website\Http\Controllers\WebsiteController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\ClassController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\FeeController;
 use App\Http\Controllers\Admin\LibraryController;
@@ -72,6 +73,12 @@ Route::middleware(['auth', 'role:admin,teacher'])->prefix('admin')->group(functi
     Route::post('/transport/assign', [TransportController::class, 'assignStudent'])->name('admin.transport.assign');
     Route::resource('transport', TransportController::class)->names('admin.transport');
     Route::resource('staff', StaffController::class)->names('admin.staff');
+
+    // Contact Messages
+    Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('admin.contact-messages.index');
+    Route::get('/contact-messages/{contactMessage}', [ContactMessageController::class, 'show'])->name('admin.contact-messages.show');
+    Route::patch('/contact-messages/{contactMessage}/read', [ContactMessageController::class, 'markRead'])->name('admin.contact-messages.read');
+    Route::delete('/contact-messages/{contactMessage}', [ContactMessageController::class, 'destroy'])->name('admin.contact-messages.destroy');
 
     // QR Code Generator
     Route::get('/qrcode', [QrCodeController::class, 'index'])->name('admin.qrcode');

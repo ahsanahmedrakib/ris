@@ -4,6 +4,7 @@ namespace App\Features\Website\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
+use App\Models\ContactMessage;
 use App\Models\Notice;
 use App\Models\Staff;
 use App\Models\Student;
@@ -55,15 +56,26 @@ class WebsiteController extends Controller
 
     public function sendContact(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
+        ], [
+            'name.required' => 'নাম আবশ্যক।',
+            'name.max' => 'নাম ২৫৫ অক্ষরের বেশি হতে পারবে না।',
+            'email.required' => 'ইমেইল আবশ্যক।',
+            'email.email' => 'সঠিক ইমেইল দিন।',
+            'email.max' => 'ইমেইল ২৫৫ অক্ষরের বেশি হতে পারবে না।',
+            'phone.max' => 'ফোন নম্বর ২০ অক্ষরের বেশি হতে পারবে না।',
+            'subject.required' => 'বিষয় আবশ্যক।',
+            'subject.max' => 'বিষয় ২৫৫ অক্ষরের বেশি হতে পারবে না।',
+            'message.required' => 'বার্তা আবশ্যক।',
         ]);
 
-        // In production, send email or store in database
+        ContactMessage::create($validated);
+
         return redirect()->route('contact')->with('success', 'আপনার বার্তা সফলভাবে পাঠানো হয়েছে। আমরা শীঘ্রই যোগাযোগ করব।');
     }
 
