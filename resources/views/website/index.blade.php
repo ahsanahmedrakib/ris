@@ -157,13 +157,7 @@
                     class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 reveal">
                     <div class="flex flex-col sm:flex-row">
                         <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
-                            <div class="w-32 h-32 rounded-full bg-ris-primary/10 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-ris-primary/40" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                            </div>
+                            <img src="{{ asset('images/home/ra.jpg') }}" alt="রেশমা আকতার" class="w-32 h-32 rounded-full object-cover">
                         </div>
                         <div class="sm:w-2/3 p-6 sm:p-8">
                             <div class="flex items-center gap-2 mb-3">
@@ -189,13 +183,7 @@
                     class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 reveal">
                     <div class="flex flex-col sm:flex-row">
                         <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
-                            <div class="w-32 h-32 rounded-full bg-ris-primary/10 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-ris-primary/40" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                </svg>
-                            </div>
+                            <img src="{{ asset('images/home/si.jpg') }}" alt="সাইফুল ইসলাম" class="w-32 h-32 rounded-full object-cover">
                         </div>
                         <div class="sm:w-2/3 p-6 sm:p-8">
                             <div class="flex items-center gap-2 mb-3">
@@ -339,7 +327,7 @@
                         x-data="{ playing: false }">
                         {{-- Thumbnail placeholder --}}
                         <div
-                            class="absolute inset-0 bg-gradient-to-br from-ris-primary/20 to-ris-dark flex items-center justify-center">
+                            class="absolute inset-0 bg-linear-to-br from-ris-primary/20 to-ris-dark flex items-center justify-center">
                             <div class="text-center">
                                 <div
                                     class="play-btn-circle w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto group-hover:bg-ris-primary/80 transition-all duration-300">
@@ -367,7 +355,7 @@
                 <div class="lg:col-span-4 hidden lg:block">
                     <div class="relative">
                         <div
-                            class="w-full h-80 rounded-2xl bg-gradient-to-br from-ris-primary/10 to-ris-primary/5 flex items-center justify-center">
+                            class="w-full h-80 rounded-2xl bg-linear-to-br from-ris-primary/10 to-ris-primary/5 flex items-center justify-center">
                             <div class="text-center">
                                 <svg class="w-24 h-24 text-ris-primary/20 mx-auto" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -420,7 +408,7 @@
                                     <div
                                         class="campus-life-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
                                         <div
-                                            class="h-48 bg-gradient-to-br from-ris-primary/10 to-ris-primary/5 flex items-center justify-center relative">
+                                            class="h-48 bg-linear-to-br from-ris-primary/10 to-ris-primary/5 flex items-center justify-center relative">
                                             <svg class="w-16 h-16 text-ris-primary/20" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
@@ -513,7 +501,7 @@
                     <div
                         class="event-card {{ $event['featured'] ? 'md:col-span-2 lg:col-span-1' : '' }} bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 group h-full reveal">
                         <div
-                            class="relative h-48 bg-gradient-to-br from-ris-primary/10 to-ris-primary/5 flex items-center justify-center overflow-hidden">
+                            class="relative h-48 bg-linear-to-br from-ris-primary/10 to-ris-primary/5 flex items-center justify-center overflow-hidden">
                             @if ($event['image'])
                                 <img src="{{ asset($event['image']) }}" alt="{{ $event['title'] }}"
                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -576,7 +564,7 @@
 
                         {{-- Featured / Important notice --}}
                         <div class="featured-notice-card mt-8 rounded-2xl overflow-hidden shadow-card group relative">
-                            <div class="relative h-40 bg-gradient-to-br from-ris-dark to-ris-primary flex items-center justify-center">
+                            <div class="relative h-40 bg-linear-to-br from-ris-dark to-ris-primary flex items-center justify-center">
                                 <svg class="w-16 h-16 text-white/20 group-hover:scale-110 transition-transform duration-500" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                                 </svg>

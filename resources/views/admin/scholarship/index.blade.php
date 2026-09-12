@@ -81,7 +81,7 @@
                         <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">পেমেন্ট</th>
                         <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">স্ট্যাটাস</th>
                         <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">তারিখ</th>
-                        <th class="text-center px-4 py-3.5 font-medium text-white whitespace-nowrap sticky right-0 bg-gradient-to-r from-ris-light to-ris-dark z-10">অ্যাকশন</th>
+                        <th class="text-center px-4 py-3.5 font-medium text-white whitespace-nowrap sticky right-0 bg-linear-to-r from-ris-light to-ris-dark z-10">অ্যাকশন</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
