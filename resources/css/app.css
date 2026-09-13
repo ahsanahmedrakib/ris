@@ -12,6 +12,14 @@
     --color-ris-primary: #a31c42;
     --color-ris-gray: #6d6f73;
 
+    /* ── Pixel-based breakpoints (html font-size is 18px, not 16px) ── */
+    --breakpoint-xs: 480px;
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-2xl: 1536px;
+
     /* ── Extended palette ── */
     --color-ris-dark-50: #f9e8ec;
     --color-ris-dark-100: #f0c5ce;
@@ -432,9 +440,9 @@ html {
 .hero-banner-section .hero-overlay {
     background: linear-gradient(
         to right,
-        rgba(140, 29, 48, 0.85),
-        rgba(163, 28, 66, 0.4),
-        rgba(255, 255, 255, 0.1)
+        rgba(179, 123, 22, 0.6),
+        rgba(217, 164, 65, 0.35),
+        rgba(244, 206, 108, 0.1)
     );
 }
 
@@ -704,12 +712,15 @@ html {
 
 /* ── Responsive adjustments ── */
 @media (max-width: 640px) {
+    .hero-swiper .swiper-pagination {
+        display: none;
+    }
     .hero-banner-section .hero-overlay {
         background: linear-gradient(
             to top,
-            rgba(140, 29, 48, 0.9),
-            rgba(140, 29, 48, 0.5) 60%,
-            transparent
+            rgba(179, 123, 22, 0.85),
+            rgba(179, 123, 22, 0.35) 55%,
+            rgba(179, 123, 22, 0.05)
         );
     }
     .notice-item {

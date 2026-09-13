@@ -82,38 +82,6 @@
                                     <div class="text-xs text-gray-500">স্কুল পরিচালনা প্যানেল</div>
                                 </div>
                             </a>
-                            <a href="{{ route('login') }}?role=teacher"
-                                class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors">
-                                <span
-                                    class="w-9 h-9 shrink-0 rounded-lg bg-ris-primary/10 flex items-center justify-center">
-                                    <svg class="w-4.5 h-4.5 text-ris-primary" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 14l9-5-9-5-9 5 9 5z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.825-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                                    </svg>
-                                </span>
-                                <div>
-                                    <div class="text-sm font-medium text-ris-dark">শিক্ষক লগইন</div>
-                                    <div class="text-xs text-gray-500">শ্রেণি ও ক্লাস পরিচালনা</div>
-                                </div>
-                            </a>
-                            <a href="{{ route('login') }}?role=parent"
-                                class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors">
-                                <span
-                                    class="w-9 h-9 shrink-0 rounded-lg bg-ris-primary/10 flex items-center justify-center">
-                                    <svg class="w-4.5 h-4.5 text-ris-primary" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                </span>
-                                <div>
-                                    <div class="text-sm font-medium text-ris-dark">অভিভাবক লগইন</div>
-                                    <div class="text-xs text-gray-500">সন্তানের অগ্রগতি দেখুন</div>
-                                </div>
-                            </a>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
@@ -151,7 +119,6 @@
                         $navItems = [
                             ['label' => 'হোম', 'route' => 'home'],
                             ['label' => 'আমাদের সম্পর্কে', 'route' => 'about'],
-                            ['label' => 'ভর্তি প্রক্রিয়া', 'route' => 'admission'],
                             ['label' => 'মেধাবৃত্তি', 'route' => 'scholarship'],
                             ['label' => 'নোটিশ', 'route' => 'notices'],
                             ['label' => 'শিক্ষক', 'route' => 'teachers'],
@@ -225,26 +192,6 @@
                         </svg>
                         অ্যাডমিন লগইন
                     </a>
-                    <a href="{{ route('login') }}?role=teacher"
-                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-ris-primary transition-colors">
-                        <svg class="w-5 h-5 text-ris-primary" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 14l9-5-9-5-9 5 9 5z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.825-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                        </svg>
-                        শিক্ষক লগইন
-                    </a>
-                    <a href="{{ route('login') }}?role=parent"
-                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-ris-primary transition-colors">
-                        <svg class="w-5 h-5 text-ris-primary" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        অভিভাবক লগইন
-                    </a>
                 </div>
             </div>
         </div>
@@ -257,7 +204,7 @@
 
     {{-- ═══ Footer ═══ --}}
     <footer class="bg-ris-dark-900 text-gray-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
 
                 {{-- Column 1: About --}}
@@ -281,11 +228,6 @@
                 <div>
                     <h3 class="font-heading font-semibold text-white text-lg mb-5">দ্রুত লিঙ্ক</h3>
                     <ul class="space-y-2.5">
-                        <li><a href="{{ route('home') }}"
-                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">হোম</a></li>
-                        <li><a href="{{ route('about') }}"
-                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">আমাদের
-                                সম্পর্কে</a></li>
                         <li><a href="{{ route('admission') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">ভর্তি</a></li>
                         <li><a href="{{ route('scholarship') }}"
@@ -336,7 +278,7 @@
                     </ul>
 
                     {{-- Social --}}
-                    <div class="flex items-center gap-3 mt-6">
+                    <div class="flex items-center gap-3 mt-4">
                         <a href="https://www.facebook.com/Resma.International.School" target="_blank" rel="noopener"
                             class="w-9 h-9 rounded-lg bg-white/10 hover:bg-ris-primary flex items-center justify-center transition-colors"
                             aria-label="Facebook">
@@ -350,7 +292,7 @@
             </div>
 
             {{-- Bottom Bar --}}
-            <div class="border-t border-white/10 mt-12 pt-8">
+            <div class="border-t border-white/10 mt-4 pt-4">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-white">
                     <p>&copy; {{ date('Y') }} রেশমা ইন্টারন্যশনাল স্কুল। সর্বস্বত্ব সংরক্ষিত।</p>
                     <p>Developed by: <span class="underline"><a href="https://www.facebook.com/rakibahsanahmed"

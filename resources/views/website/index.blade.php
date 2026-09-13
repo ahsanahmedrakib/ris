@@ -44,20 +44,18 @@
                     <div class="swiper-slide relative">
                         <img src="{{ asset($slide['image']) }}" alt="রেশমা ইন্টারন্যাশনাল স্কুল"
                             class="absolute inset-0 w-full h-full object-cover">
-                        {{-- Green gradient overlay (green.edu.bd style) --}}
-                        <div class="hero-overlay absolute inset-0 flex items-center">
-                            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                        <div class="hero-overlay absolute inset-0 flex items-end sm:pb-12 md:pb-16 lg:pb-24 pb-0">
+                            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-4 sm:pb-0">
                                 <div class="max-w-xl">
                                     <h2
-                                        class="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight drop-shadow-lg">
+                                        class="font-heading font-bold text-2xl sm:text-3xl lg:text-4xl text-white leading-tight drop-shadow-lg">
                                         {{ $slide['title'] }}
                                     </h2>
-                                    <hr class="w-20 h-1 bg-white mt-4 mb-4 rounded">
-                                    <p class="text-white/90 text-base sm:text-lg leading-relaxed drop-shadow">
+                                    <p class="text-white/90 text-sm sm:text-lg leading-relaxed drop-shadow">
                                         {{ $slide['desc'] }}
                                     </p>
                                     <a href="{{ route($slide['link']) }}"
-                                        class="inline-flex items-center gap-2 mt-6 px-8 py-3 bg-white text-ris-primary font-heading font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg">
+                                        class="inline-flex items-center gap-2 mt-4 px-3 py-2 bg-white text-ris-primary font-heading font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg">
                                         {{ $slide['btn'] }}
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -83,9 +81,15 @@
     {{-- ═══ Statistics Counters (green.edu.bd style) ═══ --}}
     <section class="py-16 sm:py-20 bg-white relative overflow-hidden">
         {{-- Decorative shapes --}}
-        <div class="absolute top-0 right-0 w-64 h-64 bg-ris-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-48 h-48 bg-ris-primary/5 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-ris-primary/[0.02] rounded-full pointer-events-none"></div>
+        <div
+            class="absolute top-0 right-0 w-64 h-64 bg-ris-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-48 h-48 bg-ris-primary/5 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none">
+        </div>
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-ris-primary/2 rounded-full pointer-events-none">
+        </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             @php
@@ -147,18 +151,20 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                 <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">বার্তা</span>
-                <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">চ্যেয়ারম্যান, চেয়ারপার্সন, প্রতিষ্ঠাতা ও
-                    প্রধান শিক্ষকের বাণী</h2>
+                <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">আলোকিত মানুষ গড়ায় আমরা বিশ্বাসী
+                </h2>
             </div>
 
             <div class="swiper message-swiper reveal">
                 <div class="swiper-wrapper">
                     {{-- Chairman --}}
                     <div class="swiper-slide">
-                        <div class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
+                        <div
+                            class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
                             <div class="flex flex-col sm:flex-row">
                                 <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
-                                    <img src="{{ asset('images/home/rhm.png') }}" alt="রেফাউল হক" class="w-32 h-32 rounded-full object-cover">
+                                    <img src="{{ asset('images/home/rhm.png') }}" alt="রেফাউল হক"
+                                        class="w-32 h-32 rounded-full object-cover">
                                 </div>
                                 <div class="sm:w-2/3 p-6 sm:p-8">
                                     <div class="flex items-center gap-2 mb-3">
@@ -168,7 +174,8 @@
                                         </svg>
                                         <h3 class="font-heading font-bold text-lg text-ris-dark">চেয়ারম্যানের বাণী</h3>
                                     </div>
-                                    <p class="text-gray-600 leading-relaxed text-base italic">"প্রিয় অভিভাবকগণ, আমরা বিশ্বাস করি
+                                    <p class="text-gray-600 leading-relaxed text-base italic">"প্রিয় অভিভাবকগণ, আমরা
+                                        বিশ্বাস করি
                                         প্রতিটি শিশু অসাধারণ সম্ভাবনায় পূর্ণ। রেশমা ইন্টারন্যাশনাল স্কুল আপনার সন্তানের এই
                                         সম্ভাবনাকে সমৃদ্ধ করতে প্রতিশ্রুতিবদ্ধ।"</p>
                                     <div class="mt-4 pt-4 border-t border-gray-100">
@@ -182,10 +189,12 @@
 
                     {{-- Chairperson --}}
                     <div class="swiper-slide">
-                        <div class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
+                        <div
+                            class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
                             <div class="flex flex-col sm:flex-row">
                                 <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
-                                    <img src="{{ asset('images/home/ra.jpg') }}" alt="রেশমা আকতার" class="w-32 h-32 rounded-full object-cover">
+                                    <img src="{{ asset('images/home/ra.jpg') }}" alt="রেশমা আকতার"
+                                        class="w-32 h-32 rounded-full object-cover">
                                 </div>
                                 <div class="sm:w-2/3 p-6 sm:p-8">
                                     <div class="flex items-center gap-2 mb-3">
@@ -195,7 +204,9 @@
                                         </svg>
                                         <h3 class="font-heading font-bold text-lg text-ris-dark">চেয়ারপার্সনের বাণী</h3>
                                     </div>
-                                    <p class="text-gray-600 leading-relaxed text-base italic">"শিক্ষার মাধ্যমেই একটি জাতি সত্যিকার অর্থে এগিয়ে যেতে পারে। রেশমা ইন্টারন্যাশনাল স্কুল আমাদের সন্তানদের জন্য মানসম্মত ও আধুনিক শিক্ষার পরিবেশ নিশ্চিত করার প্রতি প্রতিশ্রুতিবদ্ধ।"</p>
+                                    <p class="text-gray-600 leading-relaxed text-base italic">"শিক্ষার মাধ্যমেই একটি জাতি
+                                        সত্যিকার অর্থে এগিয়ে যেতে পারে। রেশমা ইন্টারন্যাশনাল স্কুল আমাদের সন্তানদের জন্য
+                                        মানসম্মত ও আধুনিক শিক্ষার পরিবেশ নিশ্চিত করার প্রতি প্রতিশ্রুতিবদ্ধ।"</p>
                                     <div class="mt-4 pt-4 border-t border-gray-100">
                                         <p class="font-heading font-bold text-ris-dark">রেশমা আকতার</p>
                                         <p class="text-xs text-gray-500">চেয়ারপার্সন, রেশমা ইন্টারন্যাশনাল স্কুল</p>
@@ -207,10 +218,12 @@
 
                     {{-- Founder --}}
                     <div class="swiper-slide">
-                        <div class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
+                        <div
+                            class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
                             <div class="flex flex-col sm:flex-row">
                                 <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
-                                    <img src="{{ asset('images/home/kej.png') }}" alt="কুদরত-ই-ইবতিহাজ জয়" class="w-32 h-32 rounded-full object-cover">
+                                    <img src="{{ asset('images/home/kej.png') }}" alt="কুদরত-ই-ইবতিহাজ জয়"
+                                        class="w-32 h-32 rounded-full object-cover">
                                 </div>
                                 <div class="sm:w-2/3 p-6 sm:p-8">
                                     <div class="flex items-center gap-2 mb-3">
@@ -220,7 +233,8 @@
                                         </svg>
                                         <h3 class="font-heading font-bold text-lg text-ris-dark">প্রতিষ্ঠাতার বাণী</h3>
                                     </div>
-                                    <p class="text-gray-600 leading-relaxed text-base italic">"শিক্ষাই জাতির মেরুদণ্ড। আমাদের
+                                    <p class="text-gray-600 leading-relaxed text-base italic">"শিক্ষাই জাতির মেরুদণ্ড।
+                                        আমাদের
                                         সন্তানদের মানসম্মত শিক্ষা দান এবং তাদের সুনাগরিক হিসাবে গড়ে তুলতে আমি রেশমা
                                         ইন্টারন্যাশনাল স্কুলকে প্রতিষ্ঠা করেছি।"</p>
                                     <div class="mt-4 pt-4 border-t border-gray-100">
@@ -234,10 +248,12 @@
 
                     {{-- Head Teacher --}}
                     <div class="swiper-slide">
-                        <div class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
+                        <div
+                            class="message-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
                             <div class="flex flex-col sm:flex-row">
                                 <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
-                                    <img src="{{ asset('images/home/si.jpg') }}" alt="সাইফুল ইসলাম" class="w-32 h-32 rounded-full object-cover">
+                                    <img src="{{ asset('images/home/si.jpg') }}" alt="সাইফুল ইসলাম"
+                                        class="w-32 h-32 rounded-full object-cover">
                                 </div>
                                 <div class="sm:w-2/3 p-6 sm:p-8">
                                     <div class="flex items-center gap-2 mb-3">
@@ -247,8 +263,10 @@
                                         </svg>
                                         <h3 class="font-heading font-bold text-lg text-ris-dark">প্রধান শিক্ষকের বাণী</h3>
                                     </div>
-                                    <p class="text-gray-600 leading-relaxed text-base italic">"প্রিয় শিক্ষার্থী ও অভিভাবকগণ, শিক্ষা
-                                        হলো আলোর পথ যা জীবনকে আলোকিত করে। আমাদের স্কুলে আমরা আধুনিক শিক্ষা পদ্ধতির পাশাপাশি নৈতিক
+                                    <p class="text-gray-600 leading-relaxed text-base italic">"প্রিয় শিক্ষার্থী ও
+                                        অভিভাবকগণ, শিক্ষা
+                                        হলো আলোর পথ যা জীবনকে আলোকিত করে। আমাদের স্কুলে আমরা আধুনিক শিক্ষা পদ্ধতির পাশাপাশি
+                                        নৈতিক
                                         মূল্যবোধ ও সুশিক্ষার পরিবেশ তৈরি করেছি।"</p>
                                     <div class="mt-4 pt-4 border-t border-gray-100">
                                         <p class="font-heading font-bold text-ris-dark">সাইফুল ইসলাম</p>
@@ -273,57 +291,77 @@
             ->latest()
             ->get();
     @endphp
-    @if($homeTeachers->count())
-    <section class="py-16 sm:py-20 bg-gradient-to-b from-white to-ris-primary-50/30 section-pattern-diagonal relative overflow-hidden">
-        {{-- Decorative shapes --}}
-        <div class="absolute top-20 right-20 w-32 h-32 bg-ris-light/10 rounded-2xl rotate-45 pointer-events-none"></div>
-        <div class="absolute bottom-20 left-10 w-24 h-24 bg-ris-primary/5 rounded-full pointer-events-none"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
-                <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">আমাদের দল</span>
-                <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">শিক্ষকবৃন্দ</h2>
-                <p class="mt-3 text-gray-500">অভিজ্ঞ ও নিবেদিত শিক্ষকদের দল যারা আপনার সন্তানের উজ্জ্বল ভবিষ্যত গড়ে তুলছেন।</p>
+    @if ($homeTeachers->count())
+        <section
+            class="py-16 sm:py-20 bg-linear-to-b from-white to-ris-primary-50/30 section-pattern-diagonal relative overflow-hidden">
+            {{-- Decorative shapes --}}
+            <div class="absolute top-20 right-20 w-32 h-32 bg-ris-light/10 rounded-2xl rotate-45 pointer-events-none">
             </div>
-
-            <div class="swiper teacher-swiper reveal">
-                <div class="swiper-wrapper">
-                    @foreach($homeTeachers as $teacher)
-                        <div class="swiper-slide">
-                            <a href="{{ route('teacher.single', $teacher->teacherProfile->slug) }}" class="block group">
-                                <div class="bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 text-center p-6 h-full">
-                                    @if($teacher->teacherProfile?->photo)
-                                        <img src="{{ Storage::url($teacher->teacherProfile->photo) }}" alt="{{ $teacher->name }}" class="w-24 h-24 rounded-full object-cover mx-auto group-hover:scale-105 transition-transform duration-300">
-                                    @else
-                                        <div class="w-24 h-24 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-2xl font-semibold mx-auto group-hover:scale-105 transition-transform duration-300">
-                                            {{ mb_substr($teacher->name, 0, 1) }}
-                                        </div>
-                                    @endif
-                                    <h3 class="mt-4 font-heading font-bold text-base text-ris-dark group-hover:text-ris-primary transition-colors">{{ $teacher->name }}</h3>
-                                    <p class="text-sm text-gray-500">{{ $teacher->teacherProfile?->subject ?? '-' }}</p>
-                                    <p class="text-xs text-gray-400 mt-1">{{ $teacher->teacherProfile?->designation ?? '-' }}</p>
-                                </div>
-                            </a>
-                        </div>
-                    @endforeach
+            <div class="absolute bottom-20 left-10 w-24 h-24 bg-ris-primary/5 rounded-full pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+                    <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">আমাদের
+                        দল</span>
+                    <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">শিক্ষকবৃন্দ</h2>
+                    <p class="mt-3 text-gray-500">অভিজ্ঞ ও নিবেদিত শিক্ষকদের দল যারা আপনার সন্তানের উজ্জ্বল ভবিষ্যত গড়ে
+                        তুলছেন।</p>
                 </div>
-                <div class="swiper-pagination mt-6"></div>
-            </div>
 
-            <div class="mt-8 text-center reveal">
-                <a href="{{ route('teachers') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-ris-primary text-ris-primary font-heading font-medium text-sm hover:bg-ris-primary hover:text-white transition-all duration-300">
-                    সকল শিক্ষক দেখুন
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                </a>
+                <div class="swiper teacher-swiper reveal">
+                    <div class="swiper-wrapper">
+                        @foreach ($homeTeachers as $teacher)
+                            <div class="swiper-slide">
+                                <a href="{{ route('teacher.single', $teacher->teacherProfile->slug) }}"
+                                    class="block group">
+                                    <div
+                                        class="bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 text-center p-6 h-full">
+                                        @if ($teacher->teacherProfile?->photo)
+                                            <img src="{{ Storage::url($teacher->teacherProfile->photo) }}"
+                                                alt="{{ $teacher->name }}"
+                                                class="w-24 h-24 rounded-full object-cover mx-auto group-hover:scale-105 transition-transform duration-300">
+                                        @else
+                                            <div
+                                                class="w-24 h-24 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-2xl font-semibold mx-auto group-hover:scale-105 transition-transform duration-300">
+                                                {{ mb_substr($teacher->name, 0, 1) }}
+                                            </div>
+                                        @endif
+                                        <h3
+                                            class="mt-4 font-heading font-bold text-base text-ris-dark group-hover:text-ris-primary transition-colors">
+                                            {{ $teacher->name }}</h3>
+                                        <p class="text-sm text-gray-500">{{ $teacher->teacherProfile?->subject ?? '-' }}
+                                        </p>
+                                        <p class="text-xs text-gray-400 mt-1">
+                                            {{ $teacher->teacherProfile?->designation ?? '-' }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="swiper-pagination mt-6"></div>
+                </div>
+
+                <div class="mt-8 text-center reveal">
+                    <a href="{{ route('teachers') }}"
+                        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-ris-primary text-ris-primary font-heading font-medium text-sm hover:bg-ris-primary hover:text-white transition-all duration-300">
+                        সকল শিক্ষক দেখুন
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
     @endif
 
     {{-- ═══ Programs / Departments (green.edu.bd faculty flip card style) ═══ --}}
     <section class="py-16 sm:py-20 bg-ris-gray-50 relative overflow-hidden">
         {{-- Decorative shapes --}}
-        <div class="absolute top-10 left-10 w-20 h-20 border-2 border-ris-primary/10 rounded-full pointer-events-none"></div>
-        <div class="absolute bottom-10 right-10 w-32 h-32 border border-ris-primary/5 rounded-2xl rotate-12 pointer-events-none"></div>
+        <div class="absolute top-10 left-10 w-20 h-20 border-2 border-ris-primary/10 rounded-full pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-10 right-10 w-32 h-32 border border-ris-primary/5 rounded-2xl rotate-12 pointer-events-none">
+        </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                 <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">আমাদের
@@ -440,14 +478,16 @@
                 <div class="relative reveal-right">
                     <div class="relative rounded-2xl overflow-hidden shadow-2xl aspect-video group"
                         x-data="{ playing: false }">
-                        <video x-ref="vid" @play="playing = true" @pause="playing = false" class="w-full h-full" controls preload="metadata">
+                        <video x-ref="vid" @play="playing = true" @pause="playing = false" class="w-full h-full"
+                            controls preload="metadata">
                             <source src="{{ asset('videos/video.mp4') }}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                         <div x-show="!playing" x-transition
                             class="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer"
                             @click="$refs.vid.play()">
-                            <div class="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-ris-primary/80 transition-all duration-300">
+                            <div
+                                class="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-ris-primary/80 transition-all duration-300">
                                 <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M8 5v14l11-7z" />
                                 </svg>
@@ -467,7 +507,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid lg:grid-cols-12 gap-10 items-start">
                 {{-- Left decorative area --}}
-                <div class="lg:col-span-4 hidden lg:block">
+                <div class="lg:col-span-4 min-w-0 hidden lg:block">
                     <div class="relative">
                         <div
                             class="w-full h-80 rounded-2xl bg-linear-to-br from-ris-primary/10 to-ris-primary/5 flex items-center justify-center">
@@ -484,7 +524,7 @@
                 </div>
 
                 {{-- Right: News carousel --}}
-                <div class="lg:col-span-8">
+                <div class="lg:col-span-8 min-w-0">
                     <div class="mb-8 reveal">
                         <span
                             class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">ক্যাম্পাস
@@ -557,10 +597,11 @@
     </section>
 
     {{-- ═══ Events Section (green.edu.bd style) ═══ --}}
-    <section class="py-16 sm:py-20 bg-gradient-to-br from-ris-primary-50/30 via-white to-ris-accent-50/20 section-pattern-waves relative overflow-hidden">
+    <section
+        class="py-16 sm:py-20 bg-linear-to-br from-ris-primary-50/30 via-white to-ris-accent-50/20 section-pattern-waves relative overflow-hidden">
         {{-- Decorative shapes --}}
-        <div class="absolute top-0 left-1/4 w-64 h-64 bg-ris-primary/[0.03] rounded-full pointer-events-none"></div>
-        <div class="absolute bottom-0 right-1/4 w-48 h-48 bg-ris-accent/[0.03] rounded-full pointer-events-none"></div>
+        <div class="absolute top-0 left-1/4 w-64 h-64 bg-ris-primary/3 rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-0 right-1/4 w-48 h-48 bg-ris-accent/3 rounded-full pointer-events-none"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-end justify-between mb-12 reveal">
                 <div>
@@ -656,25 +697,36 @@
     {{-- ═══ Notice Board (improved design) ═══ --}}
     <section class="py-16 sm:py-24 bg-white section-pattern-grid relative overflow-hidden">
         {{-- Decorative shapes --}}
-        <div class="absolute top-0 left-0 w-80 h-80 bg-ris-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-        <div class="absolute bottom-0 right-0 w-96 h-96 bg-ris-light/5 rounded-full translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
-        <div class="absolute top-1/3 right-1/3 w-20 h-20 bg-ris-primary/[0.04] rounded-xl rotate-45 pointer-events-none"></div>
+        <div
+            class="absolute top-0 left-0 w-80 h-80 bg-ris-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-0 right-0 w-96 h-96 bg-ris-light/5 rounded-full translate-x-1/3 translate-y-1/3 pointer-events-none">
+        </div>
+        <div class="absolute top-1/3 right-1/3 w-20 h-20 bg-ris-primary/4 rounded-xl rotate-45 pointer-events-none">
+        </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div class="grid lg:grid-cols-12 gap-10 lg:gap-14">
 
                 {{-- ═══ Left: Heading + Featured notice ═══ --}}
-                <div class="lg:col-span-4">
+                <div class="lg:col-span-4 min-w-0">
                     <div class="sticky top-28 reveal-left">
                         <div class="flex items-center gap-3 mb-4">
-                            <span class="w-12 h-12 rounded-2xl gradient-logo flex items-center justify-center shadow-lg shrink-0">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                            <span
+                                class="w-12 h-12 rounded-2xl gradient-logo flex items-center justify-center shadow-lg shrink-0">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                                 </svg>
                             </span>
                             <div>
-                                <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">সর্বশেষ ঘোষণা</span>
-                                <h2 class="font-heading font-bold text-2xl sm:text-3xl text-ris-dark leading-tight">নোটিশ বোর্ড</h2>
+                                <span
+                                    class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">সর্বশেষ
+                                    ঘোষণা</span>
+                                <h2 class="font-heading font-bold text-2xl sm:text-3xl text-ris-dark leading-tight">নোটিশ
+                                    বোর্ড</h2>
                             </div>
                         </div>
                         <p class="text-gray-500 mt-4 leading-relaxed">
@@ -683,26 +735,35 @@
 
                         {{-- Featured / Important notice --}}
                         <div class="featured-notice-card mt-8 rounded-2xl overflow-hidden shadow-card group relative">
-                            <div class="relative h-40 bg-linear-to-br from-ris-dark to-ris-primary flex items-center justify-center">
-                                <svg class="w-16 h-16 text-white/20 group-hover:scale-110 transition-transform duration-500" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                            <div
+                                class="relative h-40 bg-linear-to-br from-ris-dark to-ris-primary flex items-center justify-center">
+                                <svg class="w-16 h-16 text-white/20 group-hover:scale-110 transition-transform duration-500"
+                                    fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                                 </svg>
                                 <div class="absolute top-4 left-4 badge badge-warning">গুরুত্বপূর্ণ</div>
                             </div>
                             <div class="bg-white p-5 border border-t-0 border-gray-100">
-                                <h4 class="font-heading font-semibold text-ris-dark leading-snug">২০২৬ শিক্ষাবর্ষের ভর্তি প্রক্রিয়া চলমান</h4>
+                                <h4 class="font-heading font-semibold text-ris-dark leading-snug">২০২৬ শিক্ষাবর্ষের ভর্তি
+                                    প্রক্রিয়া চলমান</h4>
                                 <hr class="my-3 border-gray-100">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs text-gray-500 flex items-center gap-1.5">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                         ১৫ জানুয়ারি, ২০২৬
                                     </span>
-                                    <a href="{{ route('admission') }}" class="text-xs font-heading font-semibold text-ris-primary hover:text-ris-dark transition-colors inline-flex items-center gap-1">
+                                    <a href="{{ route('admission') }}"
+                                        class="text-xs font-heading font-semibold text-ris-primary hover:text-ris-dark transition-colors inline-flex items-center gap-1">
                                         বিস্তারিত
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                         </svg>
                                     </a>
                                 </div>
@@ -712,7 +773,7 @@
                 </div>
 
                 {{-- ═══ Right: Notice list with tabs ═══ --}}
-                <div class="lg:col-span-8">
+                <div class="lg:col-span-8 min-w-0">
                     <div class="bg-gray-50 border border-gray-100 rounded-3xl p-6 sm:p-8 reveal-right shadow-sm"
                         x-data="{ active: 'all' }">
                         {{-- Tabs --}}
@@ -730,8 +791,9 @@
                                 <button type="button" @click="active = '{{ $tab['key'] }}'"
                                     class="px-4 py-2 rounded-xl text-sm font-heading font-medium transition-all duration-200"
                                     :class="active === '{{ $tab['key'] }}'
-                                        ? 'bg-ris-primary text-white shadow-lg shadow-ris-primary/25'
-                                        : 'bg-white text-gray-600 hover:text-ris-primary border border-gray-200 hover:border-ris-primary/30'">
+                                        ?
+                                        'bg-ris-primary text-white shadow-lg shadow-ris-primary/25' :
+                                        'bg-white text-gray-600 hover:text-ris-primary border border-gray-200 hover:border-ris-primary/30'">
                                     {{ $tab['label'] }}
                                 </button>
                             @endforeach
@@ -741,19 +803,45 @@
                         <div class="space-y-3.5 reveal-stagger">
                             @php
                                 $notices = [
-                                    ['title' => '২০২৬ শিক্ষাবর্ষের ভর্তি প্রক্রিয়া চলমান', 'date' => '১৫ জানুয়ারি, ২০২৬', 'category' => 'admission', 'category_label' => 'ভর্তি', 'highlight' => true],
-                                    ['title' => 'বার্ষিক পরীক্ষার সময়সূচি প্রকাশিত', 'date' => '১০ জানুয়ারি, ২০২৬', 'category' => 'exam', 'category_label' => 'পরীক্ষা'],
-                                    ['title' => 'ঈদুল ফিতরের ছুটি ঘোষণা', 'date' => '৫ জানুয়ারি, ২০২৬', 'category' => 'holiday', 'category_label' => 'ছুটি'],
-                                    ['title' => 'অভিভাবক সমাবেশ ২০২৬ — তারিখ নির্ধারিত', 'date' => '২৮ ডিসেম্বর, ২০২৫', 'category' => 'general', 'category_label' => 'সাধারণ'],
-                                    ['title' => 'নতুন শিক্ষাবর্ষের ক্লাস শুরু সংক্রান্ত বিজ্ঞপ্তি', 'date' => '২০ ডিসেম্বর, ২০২৫', 'category' => 'general', 'category_label' => 'সাধারণ'],
+                                    [
+                                        'title' => '২০২৬ শিক্ষাবর্ষের ভর্তি প্রক্রিয়া চলমান',
+                                        'date' => '১৫ জানুয়ারি, ২০২৬',
+                                        'category' => 'admission',
+                                        'category_label' => 'ভর্তি',
+                                        'highlight' => true,
+                                    ],
+                                    [
+                                        'title' => 'বার্ষিক পরীক্ষার সময়সূচি প্রকাশিত',
+                                        'date' => '১০ জানুয়ারি, ২০২৬',
+                                        'category' => 'exam',
+                                        'category_label' => 'পরীক্ষা',
+                                    ],
+                                    [
+                                        'title' => 'ঈদুল ফিতরের ছুটি ঘোষণা',
+                                        'date' => '৫ জানুয়ারি, ২০২৬',
+                                        'category' => 'holiday',
+                                        'category_label' => 'ছুটি',
+                                    ],
+                                    [
+                                        'title' => 'অভিভাবক সমাবেশ ২০২৬ — তারিখ নির্ধারিত',
+                                        'date' => '২৮ ডিসেম্বর, ২০২৫',
+                                        'category' => 'general',
+                                        'category_label' => 'সাধারণ',
+                                    ],
+                                    [
+                                        'title' => 'নতুন শিক্ষাবর্ষের ক্লাস শুরু সংক্রান্ত বিজ্ঞপ্তি',
+                                        'date' => '২০ ডিসেম্বর, ২০২৫',
+                                        'category' => 'general',
+                                        'category_label' => 'সাধারণ',
+                                    ],
                                 ];
                             @endphp
                             @foreach ($notices as $index => $notice)
                                 <div class="notice-item bg-white rounded-2xl p-4 sm:p-5 flex items-center gap-4 shadow-card hover:shadow-card-hover transition-all duration-300 border border-gray-100 hover:border-ris-primary/20 reveal"
-                                     x-show="active === 'all' || active === '{{ $notice['category'] }}'"
-                                     x-transition:enter="transition ease-out duration-300"
-                                     x-transition:enter-start="opacity-0 -translate-x-3"
-                                     x-transition:enter-end="opacity-100 translate-x-0">
+                                    x-show="active === 'all' || active === '{{ $notice['category'] }}'"
+                                    x-transition:enter="transition ease-out duration-300"
+                                    x-transition:enter-start="opacity-0 -translate-x-3"
+                                    x-transition:enter-end="opacity-100 translate-x-0">
                                     {{-- Calendar-style date block --}}
                                     <div
                                         class="w-16 h-16 shrink-0 rounded-2xl flex flex-col items-center justify-center text-center {{ $notice['highlight'] ?? false ? 'gradient-logo text-white shadow-lg' : 'bg-ris-primary/5 text-ris-primary border border-ris-primary/10' }}">
@@ -762,8 +850,10 @@
                                             $day = $dateParts[0] ?? '';
                                             $month = $dateParts[1] ?? '';
                                         @endphp
-                                        <span class="font-heading font-bold text-xl leading-none">{{ $day }}</span>
-                                        <span class="text-[10px] font-heading font-semibold mt-1 uppercase tracking-wide">{{ $month }}</span>
+                                        <span
+                                            class="font-heading font-bold text-xl leading-none">{{ $day }}</span>
+                                        <span
+                                            class="text-[10px] font-heading font-semibold mt-1 uppercase tracking-wide">{{ $month }}</span>
                                     </div>
 
                                     {{-- Content --}}
@@ -772,15 +862,19 @@
                                             <span
                                                 class="text-[10px] font-heading font-semibold px-2.5 py-0.5 rounded-full bg-ris-primary/10 text-ris-primary">{{ $notice['category_label'] }}</span>
                                             @if ($notice['highlight'] ?? false)
-                                                <span class="text-[10px] font-heading font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700">নতুন</span>
+                                                <span
+                                                    class="text-[10px] font-heading font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700">নতুন</span>
                                             @endif
                                         </div>
-                                        <h4 class="mt-1.5 font-heading font-semibold text-sm sm:text-base text-ris-dark leading-snug truncate">
+                                        <h4
+                                            class="mt-1.5 font-heading font-semibold text-sm sm:text-base text-ris-dark leading-snug truncate">
                                             {{ $notice['title'] }}
                                         </h4>
                                         <p class="mt-1 text-xs text-gray-400 flex items-center gap-1.5">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                             {{ $notice['date'] }} · প্রকাশিত
                                         </p>
@@ -790,7 +884,8 @@
                                     <a href="{{ route('notices') }}"
                                         class="w-11 h-11 shrink-0 rounded-xl flex items-center justify-center transition-all duration-300 {{ $notice['highlight'] ?? false ? 'bg-ris-primary text-white hover:bg-ris-dark' : 'bg-gray-50 text-gray-400 hover:bg-ris-primary hover:text-white' }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                         </svg>
                                     </a>
                                 </div>
@@ -803,7 +898,8 @@
                                 class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-ris-primary text-white font-heading font-medium text-sm hover:bg-ris-dark shadow-lg shadow-ris-primary/25 transition-all duration-300 hover:-translate-y-0.5">
                                 সব নোটিশ দেখুন
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                 </svg>
                             </a>
                         </div>
