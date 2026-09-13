@@ -259,12 +259,23 @@ class TeacherController extends Controller
 
     public function destroy(User $teacher): RedirectResponse
     {
+        DB::beginTransaction();
+
         try {
-            $teacher->update(['is_active' => false]);
+            if ($photo = $teacher->teacherProfile?->photo) {
+                Storage::disk('public')->delete($photo);
+            }
+
+            $teacher->teacherProfile?->delete();
+            $teacher->delete();
+
+            DB::commit();
 
             return redirect()->route('admin.teachers.index')
                 ->with('success', 'শিক্ষক সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
+            DB::rollBack();
+
             return back()
                 ->with('error', 'শিক্ষক মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }

@@ -13,6 +13,9 @@ php artisan migrate --force
 echo "=== Seeding database (if empty) ==="
 php artisan db:seed --force || echo "Seed skipped (data may already exist)"
 
+echo "=== Linking storage ==="
+php artisan storage:link --force
+
 echo "=== Clearing caches ==="
 php artisan config:cache
 php artisan route:cache
