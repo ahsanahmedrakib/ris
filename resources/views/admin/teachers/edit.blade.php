@@ -93,7 +93,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">RIS-এ যোগদানের তারিখ</label>
-                    <input type="date" name="joining_date"
+                    <input type="text" data-date-mask name="joining_date"
                         value="{{ old('joining_date', $teacher->teacherProfile?->joining_date?->format('Y-m-d')) }}"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                 </div>

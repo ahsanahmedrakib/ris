@@ -3,6 +3,7 @@
 use App\Features\Auth\Http\Controllers\AuthController;
 use App\Features\Auth\Http\Controllers\DashboardController;
 use App\Features\Website\Http\Controllers\WebsiteController;
+use App\Http\Controllers\Admin\AdmissionController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\ContactMessageController;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [WebsiteController::class, 'index'])->name('home');
 Route::get('/about', [WebsiteController::class, 'about'])->name('about');
 Route::get('/admission', [WebsiteController::class, 'admission'])->name('admission');
+Route::post('/admission', [WebsiteController::class, 'storeAdmission'])->name('admission.store');
 Route::get('/scholarship', [WebsiteController::class, 'scholarship'])->name('scholarship');
 Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
 Route::post('/contact', [WebsiteController::class, 'sendContact'])->name('contact.send');
@@ -44,7 +46,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // ── Admin Panel ──
-Route::middleware(['auth', 'role:admin,teacher'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->prefix('admin')->group(function () {
     Route::get('/', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
 
     Route::resource('students', StudentController::class)->names('admin.students');
@@ -72,6 +74,17 @@ Route::middleware(['auth', 'role:admin,teacher'])->prefix('admin')->group(functi
     Route::delete('/scholarship/{scholarshipRegistration}', [ScholarshipController::class, 'destroy'])->name('admin.scholarship.destroy');
     Route::get('/scholarship/{scholarshipRegistration}/pdf', [ScholarshipController::class, 'print'])->name('admin.scholarship.pdf');
     Route::get('/scholarship/download', [ScholarshipController::class, 'downloadAll'])->name('admin.scholarship.download');
+
+    // Admission (custom routes before anything else)
+    Route::get('/admission', [AdmissionController::class, 'index'])->name('admin.admission.index');
+    Route::post('/admission', [AdmissionController::class, 'store'])->name('admin.admission.store');
+    Route::get('/admission/{admission}/show', [AdmissionController::class, 'show'])->name('admin.admission.show');
+    Route::get('/admission/{admission}/edit', [AdmissionController::class, 'edit'])->name('admin.admission.edit');
+    Route::put('/admission/{admission}', [AdmissionController::class, 'update'])->name('admin.admission.update');
+    Route::patch('/admission/{admission}/status', [AdmissionController::class, 'updateStatus'])->name('admin.admission.status');
+    Route::delete('/admission/{admission}', [AdmissionController::class, 'destroy'])->name('admin.admission.destroy');
+    Route::get('/admission/{admission}/pdf', [AdmissionController::class, 'print'])->name('admin.admission.pdf');
+    Route::get('/admission/download', [AdmissionController::class, 'downloadAll'])->name('admin.admission.download');
 
     // Library (custom routes before resource)
     Route::get('/library/borrowings', [LibraryController::class, 'borrowings'])->name('admin.library.borrowings');
@@ -131,7 +144,7 @@ Route::middleware(['auth', 'role:admin,teacher'])->prefix('admin')->group(functi
 });
 
 // ── Parent Portal ──
-Route::middleware(['auth', 'role:parent'])->prefix('parent')->name('parent.')->group(function () {
+Route::middleware(['auth', 'role:parent', 'cache.headers:no_store'])->prefix('parent')->name('parent.')->group(function () {
     Route::get('/', [DashboardController::class, 'parentDashboard'])->name('dashboard');
     Route::get('/children', [ParentController::class, 'index'])->name('children');
     Route::get('/child/{student}', [ParentController::class, 'childDetail'])->name('children.show');

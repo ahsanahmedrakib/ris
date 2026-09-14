@@ -168,7 +168,7 @@ class TeacherController extends Controller
             'qualification' => $teacher->teacherProfile?->qualification ?? '',
             'institute' => $teacher->teacherProfile?->institute ?? '',
             'previous_institutions' => $teacher->teacherProfile?->previous_institutions ?? '',
-            'joining_date' => $teacher->teacherProfile?->joining_date?->format('Y-m-d') ?? '',
+            'joining_date' => $teacher->teacherProfile?->joining_date?->format('d/m/Y') ?? '',
             'bio' => $teacher->teacherProfile?->bio ?? '',
             'experience' => $teacher->teacherProfile?->experience ?? '',
             'achievements' => $teacher->teacherProfile?->achievements ?? '',

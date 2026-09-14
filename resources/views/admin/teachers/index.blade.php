@@ -334,7 +334,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">যোগদানের তারিখ <span
                                     class="text-red-500">*</span></label>
-                            <input type="date" name="joining_date" x-model="createForm.joining_date"
+                            <input type="text" data-date-mask name="joining_date" x-model="createForm.joining_date"
                                 @blur="validateCreateField('joining_date')"
                                 class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
                                 :class="(createErrors.joining_date || (createAttempted && !createForm.joining_date)) ?
@@ -634,7 +634,7 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">যোগদানের তারিখ <span
                                             class="text-red-500">*</span></label>
-                                    <input type="date" name="joining_date" x-model="editData.joining_date"
+                                    <input type="text" data-date-mask name="joining_date" x-model="editData.joining_date"
                                         @blur="validateEditField('joining_date')"
                                         class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
                                         :class="(editErrors.joining_date || (editAttempted && !editData.joining_date)) ?

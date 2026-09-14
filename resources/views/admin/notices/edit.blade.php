@@ -71,12 +71,12 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">প্রকাশের তারিখ</label>
-                        <input type="datetime-local" name="published_at" value="{{ old('published_at', $notice->published_at?->format('Y-m-d\TH:i')) }}"
+                        <input type="text" data-date-mask="datetime" name="published_at" value="{{ old('published_at', $notice->published_at?->format('Y-m-d\TH:i')) }}"
                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">মেয়াদোত্তীর্ণ</label>
-                        <input type="datetime-local" name="expires_at" value="{{ old('expires_at', $notice->expires_at?->format('Y-m-d\TH:i')) }}"
+                        <input type="text" data-date-mask="datetime" name="expires_at" value="{{ old('expires_at', $notice->expires_at?->format('Y-m-d\TH:i')) }}"
                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                     </div>
                 </div>

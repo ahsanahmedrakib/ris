@@ -321,6 +321,11 @@
                 show = true;
                 setTimeout(() => { toasts.shift(); if(!toasts.length) show = false; }, 3000);
             @endif
+            window.addEventListener('toast', function (event) {
+                toasts.push(event.detail);
+                show = true;
+                setTimeout(() => { toasts.shift(); if(!toasts.length) show = false; }, 3000);
+            });
         "
         class="fixed top-5 right-5 z-9999 space-y-3">
         <template x-for="(toast, index) in toasts" :key="index">

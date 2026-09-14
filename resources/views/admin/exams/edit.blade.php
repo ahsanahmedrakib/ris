@@ -96,14 +96,14 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">শুরুর তারিখ <span
                                     class="text-red-500">*</span></label>
-                            <input type="date" name="start_date"
+                            <input type="text" data-date-mask name="start_date"
                                 value="{{ old('start_date', $exam->start_date?->format('Y-m-d')) }}" required
                                 class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">শেষ তারিখ <span
                                     class="text-red-500">*</span></label>
-                            <input type="date" name="end_date"
+                            <input type="text" data-date-mask name="end_date"
                                 value="{{ old('end_date', $exam->end_date?->format('Y-m-d')) }}" required
                                 class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                         </div>
