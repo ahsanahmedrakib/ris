@@ -16,7 +16,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500">মোট কর্মচারী</p>
-                    <p class="text-2xl font-heading font-bold text-gray-900 mt-1">{{ $totalStaff ?? 45 }}</p>
+                    <p class="text-2xl font-heading font-bold text-gray-900 mt-1">{{ number_format($totalStaff ?? 0) }}</p>
                 </div>
                 <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -27,7 +27,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500">এই মাসের বেতন</p>
-                    <p class="text-2xl font-heading font-bold text-ris-primary mt-1">৳{{ number_format($totalPayroll ?? 450000) }}</p>
+                    <p class="text-2xl font-heading font-bold text-ris-primary mt-1">৳{{ number_format($totalPayroll ?? 0) }}</p>
                 </div>
                 <div class="w-12 h-12 rounded-xl bg-ris-primary/10 flex items-center justify-center">
                     <svg class="w-6 h-6 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -38,7 +38,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500">ইতিমধ্যে পরিশোধিত</p>
-                    <p class="text-2xl font-heading font-bold text-emerald-600 mt-1">৳{{ number_format($paidPayroll ?? 380000) }}</p>
+                    <p class="text-2xl font-heading font-bold text-emerald-600 mt-1">৳{{ number_format($paidPayroll ?? 0) }}</p>
                 </div>
                 <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
                     <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -108,7 +108,8 @@
                 </thead>
                 <tbody class="divide-y divide-gray-50">
                     @forelse(($payrolls ?? []) as $index => $pay)
-                        <tr class="hover:bg-gray-50 transition-colors">
+                        <tr class="hover:bg-gray-50 transition-colors"
+                                x-data="statusRow('{{ url('admin/payroll') }}', {{ $pay->id }}, {{ ($pay->status ?? '') === 'paid' ? 'true' : 'false' }})">
                             <td class="px-5 py-3.5 text-gray-500">{{ $index + 1 }}</td>
                             <td class="px-5 py-3.5">
                                 <div class="flex items-center gap-3">
@@ -124,11 +125,26 @@
                             <td class="px-5 py-3.5 font-medium text-gray-900">৳{{ number_format($pay->net_salary ?? 0) }}</td>
                             <td class="px-5 py-3.5 text-gray-600">{{ $pay->month ?? '-' }}/{{ $pay->year ?? '' }}</td>
                             <td class="px-5 py-3.5">
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
-                                    {{ ($pay->status ?? '') === 'paid' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' }}">
-                                    {{ ($pay->status ?? '') === 'paid' ? 'পরিশোধিত' : 'বকেয়' }}
-                                </span>
-                            </td>
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                                            :class="active ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
+                                            x-text="active ? 'পরিশোধিত' : 'বকেয়'">{{ ($pay->status ?? '') === 'paid' ? 'পরিশোধিত' : 'বকেয়' }}</span>
+                                        <button x-show="!active" @click="toggle()" title="পরিশোধিত হিসেবে চিহ্নিত করুন"
+                                            class="p-1.5 rounded-lg text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                                            :disabled="busy">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </button>
+                                        <button x-show="active" @click="toggle()" title="বকেয় হিসেবে চিহ্নিত করুন"
+                                            class="p-1.5 rounded-lg text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors"
+                                            :disabled="busy">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
                         </tr>
                     @empty
                         <tr>
@@ -141,4 +157,39 @@
     </div>
 
 </div>
+@endsection
+
+@section('scripts')
+    <script>
+        function statusRow(baseUrl, id, active) {
+            return {
+                active,
+                busy: false,
+                async toggle() {
+                    if (this.busy) return;
+                    this.busy = true;
+                    try {
+                        const res = await fetch(`${baseUrl}/${id}/toggle-status`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                            this.active = data.is_active;
+                        } else {
+                            alert(data.message || 'স্ট্যাটাস পরিবর্তন করা যায়নি।');
+                        }
+                    } catch (e) {
+                        alert('স্ট্যাটাস পরিবর্তন করা যায়নি।');
+                    } finally {
+                        this.busy = false;
+                    }
+                }
+            }
+        }
+    </script>
 @endsection

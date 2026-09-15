@@ -11,8 +11,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        .ris-quill .ql-editor { min-height: 160px; }
+        .ris-quill .ql-toolbar.ql-snow {
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+        .ris-quill .ql-container.ql-snow {
+            border-radius: 0 0 0.5rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
 
     @livewireStyles
 </head>
@@ -44,6 +56,12 @@
                                 '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>',
                             'label' => 'ড্যাশবোর্ড',
                             'route' => 'admin.dashboard',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>',
+                            'label' => 'বিজ্ঞপ্তি',
+                            'route' => 'admin.notifications.index',
                         ],
                         // [
                         //     'icon' =>
@@ -99,12 +117,12 @@
                         //     'label' => 'ফি',
                         //     'route' => 'admin.fees.index',
                         // ],
-                        // [
-                        //     'icon' =>
-                        //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>',
-                        //     'label' => 'নোটিশ',
-                        //     'route' => 'admin.notices.index',
-                        // ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>',
+                            'label' => 'নোটিশ',
+                            'route' => 'admin.notices.index',
+                        ],
                         // [
                         //     'icon' =>
                         //         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
@@ -146,6 +164,60 @@
                                 '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h3v3h-3v-3zM17 14h3v3h-3v-3zM14 17h3v3h-3v-3zM20 14h1v3h-3v-1h2v-2zM17 20h1v1h-1v-1z"/>',
                             'label' => 'QR কোড জেনারেটর',
                             'route' => 'admin.qrcode',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                            'label' => 'টেস্টিমোনিয়াল',
+                            'route' => 'admin.testimonials.index',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
+                            'label' => 'গ্যালারি',
+                            'route' => 'admin.gallery.index',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>',
+                            'label' => 'ক্যাম্পাস লাইফ',
+                            'route' => 'admin.campus-news.index',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>',
+                            'label' => 'হিরো স্লাইডার',
+                            'route' => 'admin.hero-slides.index',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
+                            'label' => 'একাডেমিক ক্যালেন্ডার',
+                            'route' => 'admin.academic-calendars.index',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>',
+                            'label' => 'বার্তা',
+                            'route' => 'admin.messages.index',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                            'label' => 'প্রশ্নোত্তর',
+                            'route' => 'admin.faqs.index',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-9 9h6m-6 4h6"/>',
+                            'label' => 'অ্যাক্টিভিটি লগ',
+                            'route' => 'admin.activity-logs.index',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>',
+                            'label' => 'ট্র্যাশ',
+                            'route' => 'admin.trash.index',
                         ],
                     ];
 
@@ -249,14 +321,65 @@
                 </div>
 
                 <div class="flex items-center gap-3">
+                    @php
+                        $unreadCount = Auth::user()->unreadNotifications()->count();
+                        $recentNotifications = Auth::user()->notifications()->latest()->take(7)->get();
+                    @endphp
+
                     {{-- Notifications --}}
-                    <button class="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-ris-light rounded-full"></span>
-                    </button>
+                    <div x-data="{ notifOpen: false, unread: {{ $unreadCount }} }" @click.outside="notifOpen = false"
+                        class="relative">
+                        <button @click="notifOpen = !notifOpen"
+                            class="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            <template x-if="unread > 0">
+                                <span
+                                    class="absolute -top-0.5 -right-0.5 min-w-5 h-5 px-1 rounded-full bg-ris-light text-white text-[11px] font-semibold flex items-center justify-center"
+                                    x-text="unread"></span>
+                            </template>
+                        </button>
+
+                        <div x-show="notifOpen" x-cloak x-transition:enter="transition ease-out duration-150"
+                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-100"
+                            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-lg border border-gray-100 z-50">
+                            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                                <div class="text-sm font-semibold text-ris-dark">বিজ্ঞপ্তি</div>
+                                <form method="POST" action="{{ route('admin.notifications.read-all') }}">
+                                    @csrf
+                                    <button type="submit" class="text-xs text-ris-primary hover:underline">সব পড়া
+                                        হয়েছে</button>
+                                </form>
+                            </div>
+                            <div class="max-h-96 overflow-y-auto">
+                                @forelse ($recentNotifications as $notification)
+                                    <a href="{{ route('admin.notifications.read', $notification) }}"
+                                        class="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors {{ $notification->read_at ? '' : 'bg-ris-primary/5' }}">
+                                        <span
+                                            class="w-2 h-2 rounded-full mt-1.5 shrink-0 {{ $notification->read_at ? 'bg-gray-200' : 'bg-ris-light' }}"></span>
+                                        <span class="flex-1 min-w-0">
+                                            <span
+                                                class="block text-sm font-medium text-gray-800">{{ $notification->data['title'] ?? 'বিজ্ঞপ্তি' }}</span>
+                                            <span
+                                                class="block text-xs text-gray-500 mt-0.5 truncate">{{ $notification->data['message'] ?? '' }}</span>
+                                            <span
+                                                class="block text-[11px] text-gray-400 mt-1">{{ $notification->created_at->diffForHumans() }}</span>
+                                        </span>
+                                    </a>
+                                @empty
+                                    <div class="px-4 py-10 text-center text-sm text-gray-400">কোনো বিজ্ঞপ্তি নেই।</div>
+                                @endforelse
+                            </div>
+                            <a href="{{ route('admin.notifications.index') }}"
+                                class="block text-center text-sm font-medium text-ris-primary py-2.5 border-t border-gray-100 hover:bg-gray-50 transition-colors">
+                                সব বিজ্ঞপ্তি দেখুন
+                            </a>
+                        </div>
+                    </div>
 
                     {{-- User Dropdown --}}
                     <div x-data="{ open: false }" class="relative">
@@ -367,9 +490,11 @@
 
     @yield('scripts')
 
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
     {{-- Prevent seeing a cached admin page after logout via back button --}}
     <script>
-        window.addEventListener('pageshow', function (event) {
+        window.addEventListener('pageshow', function(event) {
             if (event.persisted) location.reload();
         });
     </script>

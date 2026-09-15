@@ -82,7 +82,8 @@
                     </thead>
                     <tbody class="divide-y divide-gray-50">
                         @forelse($teachers as $index => $teacher)
-                            <tr class="hover:bg-gray-50 transition-colors">
+                            <tr class="hover:bg-gray-50 transition-colors"
+                                x-data="activeRow('{{ url('admin/teachers') }}', {{ $teacher->id }}, {{ $teacher->is_active ? 'true' : 'false' }})">
                                 <td class="px-4 py-3 text-gray-500 whitespace-nowrap">
                                     {{ ($teachers->currentPage() - 1) * $teachers->perPage() + $index + 1 }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">
@@ -111,16 +112,27 @@
                                 <td class="px-4 py-3 text-gray-500 whitespace-nowrap">
                                     {{ $teacher->teacherProfile?->joining_date?->format('d/m/Y') ?? '-' }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">
-                                    @if ($teacher->is_active)
-                                        <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">সক্রিয়</span>
-                                    @else
-                                        <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">ডিলিট</span>
-                                    @endif
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                        :class="active ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'"
+                                        x-text="active ? 'সক্রিয়' : 'ডিলিট'">{{ $teacher->is_active ? 'সক্রিয়' : 'ডিলিট' }}</span>
                                 </td>
                                 <td class="px-4 py-3 sticky right-0 bg-white z-10">
                                     <div class="flex items-center justify-center gap-1">
+                                        <button x-show="!active" @click="toggle()" title="সক্রিয় করুন"
+                                            class="p-1.5 rounded-lg text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                                            :disabled="busy">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </button>
+                                        <button x-show="active" @click="toggle()" title="নিষ্ক্রিয় করুন"
+                                            class="p-1.5 rounded-lg text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors"
+                                            :disabled="busy">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                            </svg>
+                                        </button>
                                         <button @click="openViewModal({{ $teacher->id }})"
                                             class="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors"
                                             title="দেখুন">
@@ -703,6 +715,37 @@
 
     @section('scripts')
         <script>
+            function activeRow(baseUrl, id, active) {
+                return {
+                    active,
+                    busy: false,
+                    async toggle() {
+                        if (this.busy) return;
+                        this.busy = true;
+                        try {
+                            const res = await fetch(`${baseUrl}/${id}/toggle-active`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            });
+                            const data = await res.json();
+                            if (res.ok) {
+                                this.active = data.is_active;
+                            } else {
+                                alert(data.message || 'স্ট্যাটাস পরিবর্তন করা যায়নি।');
+                            }
+                        } catch (e) {
+                            alert('স্ট্যাটাস পরিবর্তন করা যায়নি।');
+                        } finally {
+                            this.busy = false;
+                        }
+                    }
+                }
+            }
+
             function teacherApp() {
                 return {
                     showCreateModal: false,

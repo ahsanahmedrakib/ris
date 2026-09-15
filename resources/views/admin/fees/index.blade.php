@@ -17,7 +17,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-500">মোট সংগৃহীত</p>
                         <p class="text-2xl font-heading font-bold text-emerald-600 mt-1">
-                            ৳{{ number_format($totalCollected ?? 3200000) }}</p>
+                            ৳{{ number_format($stats['total_collected'] ?? 0) }}</p>
                     </div>
                     <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
                         <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,7 +32,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-500">বকেয়</p>
                         <p class="text-2xl font-heading font-bold text-amber-600 mt-1">
-                            ৳{{ number_format($totalPending ?? 890000) }}</p>
+                            ৳{{ number_format($stats['total_pending'] ?? 0) }}</p>
                     </div>
                     <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
                         <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-500">মেয়াদোত্তীর্ণ</p>
                         <p class="text-2xl font-heading font-bold text-red-600 mt-1">
-                            ৳{{ number_format($totalOverdue ?? 340000) }}</p>
+                            ৳{{ number_format($stats['total_overdue'] ?? 0) }}</p>
                     </div>
                     <div class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center">
                         <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

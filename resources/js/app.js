@@ -431,6 +431,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    document.querySelectorAll('.testimonial-swiper').forEach((el) => {
+        const host = el.parentElement;
+        new Swiper(el, {
+            loop: true,
+            speed: 600,
+            autoplay: {
+                delay: 4500,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+            },
+            navigation: {
+                nextEl: host.querySelector('.testimonial-btn-next'),
+                prevEl: host.querySelector('.testimonial-btn-prev'),
+            },
+            pagination: {
+                el: host.querySelector('.swiper-pagination'),
+                clickable: true,
+            },
+            breakpoints: {
+                0: { slidesPerView: 1, spaceBetween: 16 },
+                768: { slidesPerView: 2, spaceBetween: 24 },
+                1280: { slidesPerView: 3, spaceBetween: 28 },
+            },
+        });
+    });
+
+    document.querySelectorAll('.gallery-swiper').forEach((el) => {
+        const host = el.parentElement;
+        new Swiper(el, {
+            loop: true,
+            speed: 600,
+            autoplay: {
+                delay: 3500,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+            },
+            navigation: {
+                nextEl: host.querySelector('.gallery-btn-next'),
+                prevEl: host.querySelector('.gallery-btn-prev'),
+            },
+            pagination: {
+                el: host.querySelector('.swiper-pagination'),
+                clickable: true,
+            },
+            breakpoints: {
+                0: { slidesPerView: 1, spaceBetween: 16 },
+                640: { slidesPerView: 2, spaceBetween: 20 },
+                1024: { slidesPerView: 3, spaceBetween: 24 },
+                1280: { slidesPerView: 4, spaceBetween: 24 },
+            },
+        });
+    });
+
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const revealSelector = '.reveal, .reveal-left, .reveal-right, .reveal-zoom';

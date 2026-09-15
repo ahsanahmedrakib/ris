@@ -119,18 +119,67 @@
                         $navItems = [
                             ['label' => 'হোম', 'route' => 'home'],
                             ['label' => 'আমাদের সম্পর্কে', 'route' => 'about'],
+                            [
+                                'label' => 'একাডেমিক',
+                                'children' => [
+                                    ['label' => 'একাডেমিক ক্যালেন্ডার', 'route' => 'academic.calendar'],
+                                    ['label' => 'টিউশন ফি', 'route' => 'academic.fees'],
+                                    ['label' => 'ফলাফল', 'route' => 'academic.results'],
+                                    ['label' => 'স্কুলের সুবিধা', 'route' => 'academic.facilities'],
+                                ],
+                            ],
                             ['label' => 'মেধাবৃত্তি', 'route' => 'scholarship'],
                             ['label' => 'নোটিশ', 'route' => 'notices'],
                             ['label' => 'শিক্ষক', 'route' => 'teachers'],
+                            ['label' => 'গ্যালারি', 'route' => 'gallery'],
                             ['label' => 'যোগাযোগ', 'route' => 'contact'],
                         ];
+
+                        $activeChildRoute = collect($navItems)->contains(fn ($item) => isset($item['children'])
+                            && collect($item['children'])->contains(fn ($child) => request()->routeIs($child['route'])));
                     @endphp
                     @foreach ($navItems as $item)
-                        <a href="{{ route($item['route']) }}"
-                            class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
-                           {{ request()->routeIs($item['route']) ? 'bg-ris-primary/10 text-ris-primary' : 'text-gray-600 hover:text-ris-primary hover:bg-ris-primary/5' }}">
-                            {{ $item['label'] }}
-                        </a>
+                        @if (isset($item['children']))
+                            <div class="relative" x-data="{ open: false }"
+                                @mouseenter="open = true" @mouseleave="open = false">
+                                <button @click="open = !open"
+                                    class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                                    {{ $activeChildRoute ? 'bg-ris-primary/10 text-ris-primary' : 'text-gray-600 hover:text-ris-primary hover:bg-ris-primary/5' }}">
+                                    {{ $item['label'] }}
+                                    <svg class="w-3.5 h-3.5 transition-transform duration-200"
+                                        :class="open && 'rotate-180'" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-150"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-100"
+                                    x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
+                                    @foreach ($item['children'] as $child)
+                                        <a href="{{ route($child['route']) }}"
+                                            class="flex items-center gap-2.5 px-4 py-2.5 hover:bg-gray-50 transition-colors
+                                            {{ request()->routeIs($child['route']) ? 'text-ris-primary font-medium' : 'text-gray-700' }}">
+                                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                            {{ $child['label'] }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <a href="{{ route($item['route']) }}"
+                                class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                               {{ request()->routeIs($item['route']) ? 'bg-ris-primary/10 text-ris-primary' : 'text-gray-600 hover:text-ris-primary hover:bg-ris-primary/5' }}">
+                                {{ $item['label'] }}
+                            </a>
+                        @endif
                     @endforeach
                 </nav>
 
@@ -168,11 +217,24 @@
             class="lg:hidden bg-white border-t border-gray-100 shadow-lg">
             <div class="max-w-7xl mx-auto px-4 py-4 space-y-1">
                 @foreach ($navItems as $item)
-                    <a href="{{ route($item['route']) }}"
-                        class="block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors
-                       {{ request()->routeIs($item['route']) ? 'bg-ris-primary/10 text-ris-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-ris-primary' }}">
-                        {{ $item['label'] }}
-                    </a>
+                    @if (isset($item['children']))
+                        <div class="space-y-0.5">
+                            <div class="px-4 py-2.5 text-sm font-medium text-ris-primary">{{ $item['label'] }}</div>
+                            @foreach ($item['children'] as $child)
+                                <a href="{{ route($child['route']) }}"
+                                    class="block pl-10 pr-4 py-2 rounded-lg text-sm font-medium transition-colors
+                                   {{ request()->routeIs($child['route']) ? 'bg-ris-primary/10 text-ris-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-ris-primary' }}">
+                                    {{ $child['label'] }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @else
+                        <a href="{{ route($item['route']) }}"
+                            class="block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors
+                           {{ request()->routeIs($item['route']) ? 'bg-ris-primary/10 text-ris-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-ris-primary' }}">
+                            {{ $item['label'] }}
+                        </a>
+                    @endif
                 @endforeach
                 <div class="pt-3 border-t border-gray-100 mt-3">
                     <a href="{{ route('admission') }}" class="btn-primary w-full text-center text-sm">
@@ -230,16 +292,17 @@
                     <ul class="space-y-2.5">
                         <li><a href="{{ route('admission') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">ভর্তি</a></li>
+               
+                        <li><a href="{{ route('academic.results') }}"
+                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">ফলাফল</a></li>
                         <li><a href="{{ route('scholarship') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">মেধাবৃত্তি</a>
                         </li>
                         <li><a href="{{ route('notices') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">নোটিশ</a></li>
-                        <li><a href="{{ route('teachers') }}"
-                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">শিক্ষক</a></li>
-                        <li><a href="{{ route('contact') }}"
-                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">যোগাযোগ</a>
-                        </li>
+                        <li><a href="{{ route('gallery') }}"
+                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">গ্যালারি</a></li>
+                  
                     </ul>
                 </div>
 
@@ -287,6 +350,36 @@
                                     d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                             </svg>
                         </a>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Visitor Counter --}}
+            @php
+                $todayVisitors = \App\Models\Visit::todayUnique();
+                $totalVisitors = \App\Models\Visit::totalUnique();
+            @endphp
+            <div class="mt-8 grid grid-cols-2 sm:grid-cols-2 max-w-xl mx-auto gap-4">
+                <div class="flex items-center justify-center gap-3 rounded-xl bg-white/5 border border-white/10 px-4 py-3">
+                    <svg class="w-6 h-6 text-ris-light shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <div class="text-left">
+                        <div class="text-xl font-heading font-bold text-white leading-tight"
+                            data-count="{{ $todayVisitors }}">{{ \App\Models\Visit::toBengali($todayVisitors) }}</div>
+                        <div class="text-xs text-gray-400">আজকের দর্শক</div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center gap-3 rounded-xl bg-white/5 border border-white/10 px-4 py-3">
+                    <svg class="w-6 h-6 text-ris-light shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <div class="text-left">
+                        <div class="text-xl font-heading font-bold text-white leading-tight"
+                            data-count="{{ $totalVisitors }}">{{ \App\Models\Visit::toBengali($totalVisitors) }}</div>
+                        <div class="text-xs text-gray-400">মোট দর্শক</div>
                     </div>
                 </div>
             </div>
@@ -341,6 +434,17 @@
                 </button>
             </div>
         </template>
+    </div>
+
+{{-- Back to Top --}}
+    <div x-data="{ show: false }" @scroll.window="show = window.scrollY > 400">
+        <button type="button" @click="window.scrollTo({ top: 0, behavior: 'smooth' })" x-show="show" x-cloak
+            aria-label="Back to top"
+            class="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full gradient-logo text-white shadow-lg shadow-ris-primary/30 flex items-center justify-center hover:-translate-y-1 hover:shadow-xl transition-all duration-300 cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+            </svg>
+        </button>
     </div>
 
 </body>

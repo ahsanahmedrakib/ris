@@ -6,11 +6,11 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\TeacherProfile;
 use App\Models\User;
+use App\Support\XlsxExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -40,9 +40,9 @@ class TeacherController extends Controller
             });
         }
 
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = (int) $request->input('per_page', 10);
         if (! in_array($perPage, [10, 25, 50, 100])) {
-            $perPage = 15;
+            $perPage = 10;
         }
 
         $teachers = $query->orderByRaw("(SELECT FIELD(designation, 'প্রধান শিক্ষক', 'সহকারী প্রধান শিক্ষক', 'সহকারী শিক্ষক', 'শিক্ষক') FROM teacher_profiles WHERE user_id = users.id LIMIT 1)")
@@ -262,17 +262,13 @@ class TeacherController extends Controller
         DB::beginTransaction();
 
         try {
-            if ($photo = $teacher->teacherProfile?->photo) {
-                Storage::disk('public')->delete($photo);
-            }
-
             $teacher->teacherProfile?->delete();
             $teacher->delete();
 
             DB::commit();
 
             return redirect()->route('admin.teachers.index')
-                ->with('success', 'শিক্ষক সফলভাবে মুছে ফেলা হয়েছে।');
+                ->with('success', 'শিক্ষক সফলভাবে ট্র্যাশে পাঠানো হয়েছে।');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -300,37 +296,41 @@ class TeacherController extends Controller
 
         $teachers = $query->orderByRaw("(SELECT FIELD(designation, 'প্রধান শিক্ষক', 'সহকারী প্রধান শিক্ষক', 'সহকারী শিক্ষক', 'শিক্ষক') FROM teacher_profiles WHERE user_id = users.id LIMIT 1)")->get();
 
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="teachers_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.csv"',
-        ];
+        $rows = $teachers->map(fn ($teacher, $index) => [
+            $index + 1,
+            $teacher->name,
+            $teacher->email,
+            $teacher->phone ?? '-',
+            $teacher->teacherProfile?->designation ?? '-',
+            $teacher->teacherProfile?->subject ?? '-',
+            $teacher->teacherProfile?->qualification ?? '-',
+            $teacher->teacherProfile?->institute ?? '-',
+            $teacher->teacherProfile?->joining_date?->format('d/m/Y') ?? '-',
+            $teacher->is_active ? 'সক্রিয়' : 'ডিলিট',
+        ])->all();
 
-        $callback = function () use ($teachers) {
-            $file = fopen('php://output', 'w');
+        return XlsxExport::download(
+            ['ক্রমিক', 'নাম', 'ইমেইল', 'ফোন', 'পদবি', 'বিষয়', 'যোগ্যতা', 'প্রতিষ্ঠান', 'যোগদান', 'স্ট্যাটাস'],
+            $rows,
+            'teachers_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.xlsx',
+        );
+    }
 
-            // UTF-8 BOM for Excel Bangla support
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+    public function toggleActive(int $id): JsonResponse
+    {
+        $teacher = User::with('teacherProfile')->findOrFail($id);
+        $teacher->is_active = ! $teacher->is_active;
+        $teacher->save();
 
-            fputcsv($file, ['ক্রমিক', 'নাম', 'ইমেইল', 'ফোন', 'পদবি', 'বিষয়', 'যোগ্যতা', 'প্রতিষ্ঠান', 'যোগদান', 'স্ট্যাটাস']);
+        if ($teacher->teacherProfile) {
+            $teacher->teacherProfile->is_active = $teacher->is_active;
+            $teacher->teacherProfile->save();
+        }
 
-            foreach ($teachers as $index => $teacher) {
-                fputcsv($file, [
-                    $index + 1,
-                    $teacher->name,
-                    $teacher->email,
-                    $teacher->phone ?? '-',
-                    $teacher->teacherProfile?->designation ?? '-',
-                    $teacher->teacherProfile?->subject ?? '-',
-                    $teacher->teacherProfile?->qualification ?? '-',
-                    $teacher->teacherProfile?->institute ?? '-',
-                    $teacher->teacherProfile?->joining_date?->format('d/m/Y') ?? '-',
-                    $teacher->is_active ? 'সক্রিয়' : 'ডিলিট',
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return Response::stream($callback, 200, $headers);
+        return response()->json([
+            'id' => $teacher->id,
+            'is_active' => $teacher->is_active,
+            'status_label' => $teacher->is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়',
+        ]);
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
 use App\Models\Subject;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,16 +16,23 @@ class SubjectController extends Controller
     public function index(): View
     {
         $subjects = Subject::with(['classRoom', 'teacher'])->latest()->get();
-
-        return view('admin.subjects.index', compact('subjects'));
-    }
-
-    public function create(): View
-    {
         $classes = ClassRoom::orderBy('name')->get();
         $teachers = User::where('role', 'teacher')->where('is_active', true)->orderBy('name')->get();
 
-        return view('admin.subjects.create', compact('classes', 'teachers'));
+        return view('admin.subjects.index', compact('subjects', 'classes', 'teachers'));
+    }
+
+    public function show(int $id): JsonResponse
+    {
+        $subject = Subject::with(['classRoom', 'teacher'])->findOrFail($id);
+
+        return response()->json([
+            'id' => $subject->id,
+            'name' => $subject->name,
+            'code' => $subject->code,
+            'class_name' => $subject->classRoom?->name ?? '-',
+            'teacher_name' => $subject->teacher?->name ?? '-',
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -56,13 +64,17 @@ class SubjectController extends Controller
         }
     }
 
-    public function edit(int $id): View
+    public function edit(int $id): JsonResponse
     {
         $subject = Subject::findOrFail($id);
-        $classes = ClassRoom::orderBy('name')->get();
-        $teachers = User::where('role', 'teacher')->where('is_active', true)->orderBy('name')->get();
 
-        return view('admin.subjects.edit', compact('subject', 'classes', 'teachers'));
+        return response()->json([
+            'id' => $subject->id,
+            'name' => $subject->name ?? '',
+            'code' => $subject->code ?? '',
+            'class_id' => $subject->class_id,
+            'teacher_id' => $subject->teacher_id,
+        ]);
     }
 
     public function update(Request $request, int $id): RedirectResponse

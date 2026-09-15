@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\ClassRoom;
 use App\Models\Student;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,34 +27,45 @@ class AttendanceController extends Controller
             $query->where('class_id', $request->class_id);
         }
 
-        $attendances = $query->latest('date')->paginate(20)->withQueryString();
+        $attendances = $query->latest('date')->paginate(10)->withQueryString();
         $classes = ClassRoom::orderBy('name')->get();
 
-        return view('admin.attendance.index', compact('attendances', 'classes'));
-    }
-
-    public function selectClass(): View
-    {
-        return $this->create(request());
-    }
-
-    public function create(Request $request): View
-    {
-        $classes = ClassRoom::orderBy('name')->get();
-        $students = collect();
         $date = $request->get('date', today()->toDateString());
 
-        if ($request->filled('class_id')) {
-            $students = Student::where('class_id', $request->class_id)
-                ->where('is_active', true)
-                ->with('user')
-                ->orderBy('roll_no')
-                ->get();
-        }
+        $students = Student::query()
+            ->with('user')
+            ->when($request->filled('class_id'), fn ($q) => $q->where('class_id', $request->class_id))
+            ->where('is_active', true)
+            ->orderBy('roll_no')
+            ->get();
 
-        $statuses = AttendanceStatus::cases();
+        $todayStatuses = Attendance::whereDate('date', $date)
+            ->when($request->filled('class_id'), fn ($q) => $q->where('class_id', $request->class_id))
+            ->pluck('status', 'student_id');
 
-        return view('admin.attendance.create', compact('classes', 'students', 'date', 'statuses'));
+        $students = $students->map(function ($student) use ($todayStatuses) {
+            $student->today_status = $todayStatuses->get($student->id);
+
+            return $student;
+        });
+
+        $totalStudents = Student::where('is_active', true)
+            ->when($request->filled('class_id'), fn ($q) => $q->where('class_id', $request->class_id))
+            ->count();
+        $presentCount = Attendance::whereDate('date', $date)
+            ->when($request->filled('class_id'), fn ($q) => $q->where('class_id', $request->class_id))
+            ->where('status', AttendanceStatus::Present->value)
+            ->count();
+        $absentCount = Attendance::whereDate('date', $date)
+            ->when($request->filled('class_id'), fn ($q) => $q->where('class_id', $request->class_id))
+            ->where('status', AttendanceStatus::Absent->value)
+            ->count();
+        $lateCount = Attendance::whereDate('date', $date)
+            ->when($request->filled('class_id'), fn ($q) => $q->where('class_id', $request->class_id))
+            ->where('status', AttendanceStatus::Late->value)
+            ->count();
+
+        return view('admin.attendance.index', compact('attendances', 'classes', 'students', 'totalStudents', 'presentCount', 'absentCount', 'lateCount'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -101,21 +113,37 @@ class AttendanceController extends Controller
         }
     }
 
-    public function show(int $id): View
+    public function show(int $id): JsonResponse
     {
         $attendance = Attendance::with(['student.user', 'classRoom', 'marker'])
             ->findOrFail($id);
 
-        return view('admin.attendance.show', compact('attendance'));
+        return response()->json([
+            'id' => $attendance->id,
+            'student_name' => $attendance->student?->name_bn ?? '-',
+            'roll_no' => $attendance->student?->roll_no ?? '-',
+            'class_name' => $attendance->classRoom?->name ?? '-',
+            'date' => $attendance->date->format('d/m/Y'),
+            'status' => AttendanceStatus::tryFrom($attendance->status)?->label() ?? $attendance->status,
+            'remarks' => $attendance->remarks ?? '-',
+            'marked_by' => $attendance->marker?->name ?? '-',
+        ]);
     }
 
-    public function edit(int $id): View
+    public function edit(int $id): JsonResponse
     {
         $attendance = Attendance::with('student')->findOrFail($id);
-        $classes = ClassRoom::orderBy('name')->get();
         $statuses = AttendanceStatus::cases();
 
-        return view('admin.attendance.edit', compact('attendance', 'classes', 'statuses'));
+        return response()->json([
+            'id' => $attendance->id,
+            'status' => $attendance->status,
+            'remarks' => $attendance->remarks ?? '',
+            'statuses' => collect($statuses)->map(fn ($status) => [
+                'value' => $status->value,
+                'label' => $status->label(),
+            ]),
+        ]);
     }
 
     public function update(Request $request, int $id): RedirectResponse

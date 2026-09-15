@@ -3,16 +3,29 @@
 namespace App\Features\Website\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\AcademicCalendar;
+use App\Models\AcademicYear;
 use App\Models\Admission;
+use App\Models\CampusNews;
 use App\Models\ClassRoom;
 use App\Models\ContactMessage;
+use App\Models\Exam;
+use App\Models\ExamResult;
+use App\Models\Faq;
+use App\Models\GalleryItem;
+use App\Models\HeroSlide;
+use App\Models\Message;
 use App\Models\Notice;
 use App\Models\Staff;
 use App\Models\Student;
+use App\Models\Testimonial;
 use App\Models\User;
+use App\Notifications\NewSubmission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -27,13 +40,289 @@ class WebsiteController extends Controller
             'total_staff' => Staff::count(),
         ];
 
+        $heroSlides = $this->heroSlides();
+
+        $campusNews = $this->campusNews();
+
         $notices = Notice::where('is_active', true)
             ->where('published_at', '<=', now())
             ->orderByDesc('published_at')
             ->take(5)
+            ->get()
+            ->map(fn (Notice $notice, int $index): array => [
+                'title' => $notice->title,
+                'date' => $this->banglaDate($notice->published_at ?? $notice->created_at),
+                'category' => $notice->category ?? 'general',
+                'category_label' => Notice::CATEGORIES[$notice->category ?? 'general'] ?? 'সাধারণ',
+                'highlight' => $index === 0,
+            ])
+            ->values()
+            ->all();
+
+        $testimonials = Testimonial::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->take(6)
             ->get();
 
-        return view('website.index', compact('stats', 'notices'));
+        $galleryItems = GalleryItem::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->take(8)
+            ->get();
+
+        $messages = Message::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        $faqs = Faq::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        return view('website.index', compact('stats', 'heroSlides', 'campusNews', 'notices', 'testimonials', 'galleryItems', 'messages', 'faqs'));
+    }
+
+    protected function campusNews(): array
+    {
+        $news = CampusNews::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->take(8)
+            ->get();
+
+        if ($news->isNotEmpty()) {
+            return $news->map(fn (CampusNews $item): array => [
+                'title' => $item->title,
+                'date' => $this->banglaDate($item->date),
+                'image' => $item->image ? Storage::url($item->image) : null,
+            ])->all();
+        }
+
+        return [
+            [
+                'title' => 'বিজ্ঞান ও প্রযুক্তি মেলা ২০২৬ অনুষ্ঠিত',
+                'date' => '৩১ আগস্ট, ২০২৬',
+                'image' => null,
+            ],
+            [
+                'title' => 'আন্তর্জাতিক ভাষা দিবস পালন',
+                'date' => '২৫ আগস্ট, ২০২৬',
+                'image' => null,
+            ],
+            [
+                'title' => 'ক্রীড়া প্রতিযোগিতা ২০২৬',
+                'date' => '১৭ আগস্ট, ২০২৬',
+                'image' => null,
+            ],
+            [
+                'title' => 'সাংস্কৃতিক অনুষ্ঠান — আমার সোনার বাংলা',
+                'date' => '১০ আগস্ট, ২০২৬',
+                'image' => null,
+            ],
+        ];
+    }
+
+    protected function banglaDate(?\DateTimeInterface $date): ?string
+    {
+        if (! $date) {
+            return null;
+        }
+
+        $months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+        $en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+        $carbon = Carbon::instance($date);
+
+        return str_replace($en, $bn, (string) $carbon->day).' '.$months[$carbon->month - 1].' '.str_replace($en, $bn, (string) $carbon->year);
+    }
+
+    protected function heroSlides(): array
+    {
+        $slides = HeroSlide::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->get();
+
+        if ($slides->isEmpty()) {
+            return array_map(fn (array $slide): array => [
+                'image' => asset($slide['image']),
+                'title' => $slide['title'],
+                'subtitle' => $slide['subtitle'],
+                'btn_text' => $slide['btn_text'],
+                'link' => $slide['link'],
+            ], HeroSlide::defaults());
+        }
+
+        return $slides->map(fn (HeroSlide $slide): array => [
+            'image' => Storage::url($slide->image),
+            'title' => $slide->title,
+            'subtitle' => $slide->subtitle,
+            'btn_text' => $slide->btn_text,
+            'link' => $slide->link,
+        ])->all();
+    }
+
+    public function testimonials(): View
+    {
+        $testimonials = Testimonial::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->paginate(12);
+
+        return view('website.testimonials', compact('testimonials'));
+    }
+
+    public function storeTestimonial(Request $request): RedirectResponse|JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'designation' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'message' => 'required|string',
+            'rating' => 'nullable|integer|min:1|max:5',
+        ], [
+            'name.required' => 'আপনার নাম আবশ্যক।',
+            'message.required' => 'আপনার মন্তব্য লিখুন।',
+            'photo.image' => 'সঠিক ছবি আপলোড করুন।',
+            'photo.mimes' => 'ছবির ফরম্যাট jpeg, jpg, png বা webp হতে হবে।',
+            'photo.max' => 'ছবির আকার ২ এমবির বেশি হতে পারবে না।',
+            'rating.min' => 'রেটিং ১ থেকে ৫ এর মধ্যে হতে হবে।',
+            'rating.max' => 'রেটিং ১ থেকে ৫ এর মধ্যে হতে হবে।',
+        ]);
+
+        $photoPath = null;
+
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('testimonial-photos', 'public');
+        }
+
+        try {
+            $testimonial = Testimonial::create([
+                'name' => $validated['name'],
+                'designation' => $validated['designation'] ?? null,
+                'photo' => $photoPath,
+                'message' => $validated['message'],
+                'rating' => $validated['rating'] ?? 5,
+                'sort_order' => 0,
+                'is_active' => false,
+            ]);
+
+            NewSubmission::sendToAdmins(
+                'testimonial',
+                'নতুন টেস্টিমোনিয়াল',
+                $testimonial->name.' একটি টেস্টিমোনিয়াল জমা দিয়েছেন।',
+                route('admin.testimonials.show', $testimonial),
+            );
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'আপনার টেস্টিমোনিয়াল জমা হয়েছে। প্রশাসকের অনুমোদনের পরে ওয়েবসাইটে প্রকাশিত হবে।',
+                ]);
+            }
+
+            return redirect()->route('testimonials')
+                ->with('success', 'আপনার টেস্টিমোনিয়াল জমা হয়েছে। অনুমোদনের পরে এটি ওয়েবসাইটে দেখানো হবে।');
+        } catch (\Exception $e) {
+            if ($photoPath) {
+                Storage::disk('public')->delete($photoPath);
+            }
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'টেস্টিমোনিয়াল জমা দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।',
+                ], 500);
+            }
+
+            return back()->withInput()
+                ->with('error', 'টেস্টিমোনিয়াল জমা দিতে সমস্যা হয়েছে. '.$e->getMessage());
+        }
+    }
+
+    public function gallery(): View
+    {
+        $items = GalleryItem::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->paginate(24);
+
+        $categories = GalleryItem::where('is_active', true)->pluck('category')->filter()->unique()->values();
+
+        return view('website.gallery', compact('items', 'categories'));
+    }
+
+    public function academicCalendar(): View
+    {
+        $calendars = AcademicCalendar::where('is_active', true)
+            ->orderBy('year')
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('website.academic.calendar', compact('calendars'));
+    }
+
+    public function academicFees(): View
+    {
+        $classes = ClassRoom::with(['feeStructures' => fn ($q) => $q->orderBy('fee_type')])
+            ->orderBy('name')
+            ->get();
+
+        $academicYear = AcademicYear::where('is_current', true)->first();
+
+        return view('website.academic.fees', compact('classes', 'academicYear'));
+    }
+
+    public function academicResults(Request $request): View
+    {
+        $classes = ClassRoom::orderBy('name')->get();
+        $exams = Exam::latest('start_date')->get();
+
+        $selectedClass = $request->input('class_id');
+        $search = trim((string) $request->input('search'));
+        $examId = $request->input('exam_id');
+
+        $student = null;
+        $results = new Collection;
+
+        if ($selectedClass && ($search !== '' || $request->filled('roll_no'))) {
+            $studentQuery = Student::with('user')->where('class_id', $selectedClass);
+
+            if ($request->filled('roll_no')) {
+                $studentQuery->where('roll_no', $request->input('roll_no'));
+            }
+
+            if ($search !== '') {
+                $studentQuery->where(function ($q) use ($search) {
+                    $q->where('admission_no', 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($uq) use ($search) {
+                            $uq->where('name', 'like', "%{$search}%");
+                        });
+                });
+            }
+
+            $student = $studentQuery->first();
+
+            if ($student) {
+                $resultQuery = ExamResult::with(['subject', 'exam'])
+                    ->where('student_id', $student->id);
+
+                if ($examId) {
+                    $resultQuery->where('exam_id', $examId);
+                }
+
+                $results = $resultQuery->orderBy('exam_id')->orderBy('subject_id')->get();
+            }
+        }
+
+        return view('website.academic.results', compact('classes', 'exams', 'student', 'results', 'selectedClass', 'search', 'examId'));
+    }
+
+    public function academicFacilities(): View
+    {
+        return view('website.academic.facilities');
     }
 
     public function about(): View
@@ -202,6 +491,13 @@ class WebsiteController extends Controller
                 'student_photo' => $photoPath,
             ]);
 
+            NewSubmission::sendToAdmins(
+                'admission',
+                'নতুন ভর্তি আবেদন',
+                $admission->student_name_bn.' ('.$admission->phone.') ভর্তি আবেদন করেছেন।',
+                route('admin.admission.show', $admission),
+            );
+
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => 'আপনার ভর্তি আবেদন সফলভাবে জমা হয়েছে। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।',
@@ -256,7 +552,14 @@ class WebsiteController extends Controller
             'message.required' => 'বার্তা আবশ্যক।',
         ]);
 
-        ContactMessage::create($validated);
+        $contact = ContactMessage::create($validated);
+
+        NewSubmission::sendToAdmins(
+            'contact',
+            'নতুন কনটাক্ট মেসেজ',
+            $contact->name.' ('.$contact->subject.') মেসেজ পাঠিয়েছেন।',
+            route('admin.contact-messages.show', $contact),
+        );
 
         return redirect()->route('contact')->with('success', 'আপনার বার্তা সফলভাবে পাঠানো হয়েছে। আমরা শীঘ্রই যোগাযোগ করব।');
     }

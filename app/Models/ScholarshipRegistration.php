@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Core\Traits\LogsActivity;
 use Database\Factories\ScholarshipRegistrationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ScholarshipRegistration extends Model
 {
     /** @use HasFactory<ScholarshipRegistrationFactory> */
-    use HasFactory;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     public const CLASSES = [
         1 => 'প্রথম',

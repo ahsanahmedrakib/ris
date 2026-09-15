@@ -287,11 +287,30 @@ class AdmissionAdminTest extends TestCase
             Admission::factory()->create(['admission_no' => $no]);
         }
 
-        $this->actingAs($admin)
+        $response = $this->actingAs($admin)
             ->get(route('admin.admission.download'))
             ->assertOk()
-            ->assertHeaderContains('Content-Type', 'text/csv')
-            ->assertHeaderContains('Content-Disposition', 'attachment');
+            ->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            ->assertHeaderContains('content-disposition', 'attachment');
+
+        $this->assertXlsxContainsText($response->getContent(), 'ADM-26-0102');
+    }
+
+    private function assertXlsxContainsText(string $xlsx, string $needle): void
+    {
+        $temp = tempnam(sys_get_temp_dir(), 'xlsx_test_');
+
+        file_put_contents($temp, $xlsx);
+
+        try {
+            $zip = new \ZipArchive;
+            $this->assertTrue($zip->open($temp) === true, 'Downloaded file is not a valid XLSX archive.');
+            $shared = $zip->getFromName('xl/sharedStrings.xml');
+            $this->assertStringContainsString($needle, $shared, 'Shared strings do not contain expected text.');
+            $zip->close();
+        } finally {
+            @unlink($temp);
+        }
     }
 
     #[Test]
@@ -306,7 +325,7 @@ class AdmissionAdminTest extends TestCase
             ->delete(route('admin.admission.destroy', $admission))
             ->assertRedirectToRoute('admin.admission.index');
 
-        $this->assertDatabaseMissing('admissions', [
+        $this->assertSoftDeleted('admissions', [
             'id' => $admission->id,
         ]);
     }

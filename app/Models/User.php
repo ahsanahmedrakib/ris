@@ -2,17 +2,20 @@
 
 namespace App\Models;
 
+use App\Core\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, LogsActivity, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'role',

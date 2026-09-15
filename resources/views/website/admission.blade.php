@@ -42,8 +42,8 @@
         <div
             class="absolute bottom-8 right-20 w-px h-16 bg-linear-to-b from-ris-primary/25 to-transparent pointer-events-none">
         </div>
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div class="text-center max-w-2xl mx-auto mb-10 reveal">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center max-w-2xl mx-auto mb-10">
                 <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">ভর্তি
                     ফরম</span>
                 <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">প্রাথমিক আবেদন ফরম পূরণ করুন</h2>
@@ -51,7 +51,7 @@
                     দিন।</p>
             </div>
 
-            <div class="reveal">
+            <div>
                 <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden border border-gray-300">
 
                     {{-- Header --}}
@@ -474,7 +474,7 @@
                             {{-- Submit --}}
                             <div class="pt-4 text-center">
                                 <button type="submit" id="admissionSubmitBtn"
-                                    class="bg-pink-700 hover:bg-pink-800 text-white font-semibold px-8 py-3.5 rounded shadow transition">
+                                    class="bg-pink-700 hover:bg-pink-800 text-white font-semibold px-8 py-3.5 rounded shadow transition cursor-pointer">
                                     আবেদন জমা দিন
                                 </button>
                             </div>

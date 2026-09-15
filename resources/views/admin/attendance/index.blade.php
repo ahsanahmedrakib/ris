@@ -10,13 +10,13 @@
                 <h1 class="text-2xl font-heading font-bold text-gray-900">উপস্থিতি ব্যবস্থাপনা</h1>
                 <p class="text-sm text-gray-500 mt-1">দৈনিক উপস্থিতি রেকর্ড করুন ও পরিচালনা করুন</p>
             </div>
-            <a href="{{ route('admin.attendance.create') }}"
+            <button type="button" @click="document.getElementById('attendance-table').scrollIntoView({ behavior: 'smooth' })"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
                 নতুন উপস্থিতি নিন
-            </a>
+            </button>
         </div>
 
         {{-- Filters --}}
@@ -70,7 +70,7 @@
         </div>
 
         {{-- Attendance Table --}}
-        <form method="POST" action="{{ route('admin.attendance.store') }}" x-on:submit="saving = true">
+        <form id="attendance-table" method="POST" action="{{ route('admin.attendance.store') }}" x-on:submit="saving = true">
             @csrf
             <input type="hidden" name="date" value="{{ request('date', date('Y-m-d')) }}">
             <input type="hidden" name="class_id" value="{{ request('class_id') }}">
@@ -119,21 +119,23 @@
                                     <td class="px-5 py-3.5 text-gray-600">{{ $student->roll_no }}</td>
                                     <td class="px-5 py-3.5 text-center">
                                         <label class="inline-flex items-center justify-center cursor-pointer">
-                                            <input type="radio" name="attendance[{{ $student->id }}]" value="present"
+                                            <input type="hidden" name="attendances[{{ $student->id }}][student_id]"
+                                                value="{{ $student->id }}">
+                                            <input type="radio" name="attendances[{{ $student->id }}][status]" value="present"
                                                 {{ ($student->today_status ?? '') === 'present' ? 'checked' : '' }}
                                                 class="w-4 h-4 text-emerald-600 border-gray-300 focus:ring-emerald-500">
                                         </label>
                                     </td>
                                     <td class="px-5 py-3.5 text-center">
                                         <label class="inline-flex items-center justify-center cursor-pointer">
-                                            <input type="radio" name="attendance[{{ $student->id }}]" value="absent"
+                                            <input type="radio" name="attendances[{{ $student->id }}][status]" value="absent"
                                                 {{ ($student->today_status ?? '') === 'absent' ? 'checked' : '' }}
                                                 class="w-4 h-4 text-red-600 border-gray-300 focus:ring-red-500">
                                         </label>
                                     </td>
                                     <td class="px-5 py-3.5 text-center">
                                         <label class="inline-flex items-center justify-center cursor-pointer">
-                                            <input type="radio" name="attendance[{{ $student->id }}]" value="late"
+                                            <input type="radio" name="attendances[{{ $student->id }}][status]" value="late"
                                                 {{ ($student->today_status ?? '') === 'late' ? 'checked' : '' }}
                                                 class="w-4 h-4 text-amber-600 border-gray-300 focus:ring-amber-500">
                                         </label>

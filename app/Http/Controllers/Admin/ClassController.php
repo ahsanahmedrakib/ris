@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\ClassRoom;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -19,15 +20,10 @@ class ClassController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.classes.index', compact('classes'));
-    }
-
-    public function create(): View
-    {
         $academicYears = AcademicYear::orderByDesc('is_current')->orderByDesc('name')->get();
         $teachers = User::where('role', 'teacher')->where('is_active', true)->orderBy('name')->get();
 
-        return view('admin.classes.create', compact('academicYears', 'teachers'));
+        return view('admin.classes.index', compact('classes', 'academicYears', 'teachers'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -58,25 +54,35 @@ class ClassController extends Controller
         }
     }
 
-    public function show(int $id): View
+    public function show(int $id): JsonResponse
     {
-        $class = ClassRoom::with([
-            'academicYear',
-            'classTeacher',
-            'students' => fn ($q) => $q->with('user')->orderBy('roll_no'),
-            'subjects' => fn ($q) => $q->with('teacher'),
-        ])->withCount('students')->findOrFail($id);
+        $class = ClassRoom::with(['academicYear', 'classTeacher'])
+            ->withCount('students')
+            ->findOrFail($id);
 
-        return view('admin.classes.show', compact('class'));
+        return response()->json([
+            'id' => $class->id,
+            'name' => $class->name,
+            'section' => $class->section,
+            'academic_year_id' => $class->academic_year_id,
+            'academic_year' => $class->academicYear?->name,
+            'class_teacher_id' => $class->class_teacher_id,
+            'class_teacher' => $class->classTeacher?->name,
+            'students_count' => $class->students_count,
+        ]);
     }
 
-    public function edit(int $id): View
+    public function edit(int $id): JsonResponse
     {
         $class = ClassRoom::findOrFail($id);
-        $academicYears = AcademicYear::orderByDesc('is_current')->orderByDesc('name')->get();
-        $teachers = User::where('role', 'teacher')->where('is_active', true)->orderBy('name')->get();
 
-        return view('admin.classes.edit', compact('class', 'academicYears', 'teachers'));
+        return response()->json([
+            'id' => $class->id,
+            'name' => $class->name,
+            'section' => $class->section ?? '',
+            'academic_year_id' => $class->academic_year_id,
+            'class_teacher_id' => $class->class_teacher_id ?? '',
+        ]);
     }
 
     public function update(Request $request, int $id): RedirectResponse

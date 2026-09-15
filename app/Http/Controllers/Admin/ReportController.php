@@ -33,7 +33,7 @@ class ReportController extends Controller
 
     public function studentReport(Request $request): View
     {
-        $students = Student::with(['user', 'classRoom'])->where('is_active', true)->orderBy('roll_no')->paginate(20);
+        $students = Student::with(['user', 'classRoom'])->where('is_active', true)->orderBy('roll_no')->paginate(10);
         $classes = ClassRoom::orderBy('name')->get();
 
         $selectedStudent = null;
@@ -90,7 +90,7 @@ class ReportController extends Controller
             $query->where('status', $request->status);
         }
 
-        $attendances = $query->latest('date')->paginate(20)->withQueryString();
+        $attendances = $query->latest('date')->paginate(10)->withQueryString();
         $classes = ClassRoom::orderBy('name')->get();
         $statuses = AttendanceStatus::cases();
 
@@ -121,7 +121,7 @@ class ReportController extends Controller
 
     public function examReport(Request $request): View
     {
-        $exams = Exam::with(['classRoom', 'academicYear'])->orderByDesc('created_at')->paginate(20);
+        $exams = Exam::with(['classRoom', 'academicYear'])->orderByDesc('created_at')->paginate(10);
         $classes = ClassRoom::orderBy('name')->get();
 
         return view('admin.reports.exam', compact('exams', 'classes'));
@@ -139,7 +139,7 @@ class ReportController extends Controller
             $query->whereDate('paid_at', '<=', $request->end_date);
         }
 
-        $payments = $query->latest('paid_at')->paginate(20)->withQueryString();
+        $payments = $query->latest('paid_at')->paginate(10)->withQueryString();
 
         $summary = [
             'total_collected' => FeePayment::sum('amount'),
@@ -154,14 +154,14 @@ class ReportController extends Controller
 
     public function staffReport(): View
     {
-        $staff = Staff::with('user')->orderBy('employee_id')->paginate(20);
+        $staff = Staff::with('user')->orderBy('employee_id')->paginate(10);
 
         return view('admin.reports.staff', compact('staff'));
     }
 
     public function transportReport(): View
     {
-        $buses = Bus::withCount('studentTransports')->orderBy('bus_no')->paginate(20);
+        $buses = Bus::withCount('studentTransports')->orderBy('bus_no')->paginate(10);
 
         return view('admin.reports.transport', compact('buses'));
     }

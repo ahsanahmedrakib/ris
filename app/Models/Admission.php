@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use App\Core\Traits\LogsActivity;
 use Database\Factories\AdmissionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Admission extends Model
 {
     /** @use HasFactory<AdmissionFactory> */
-    use HasFactory;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     public const STATUSES = [
         'pending' => 'পেন্ডিং',

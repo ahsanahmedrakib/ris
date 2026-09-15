@@ -2,17 +2,27 @@
 
 namespace App\Models;
 
+use App\Core\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Notice extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity, SoftDeletes;
+
+    public const CATEGORIES = [
+        'admission' => 'ভর্তি',
+        'exam' => 'পরীক্ষা',
+        'holiday' => 'ছুটি',
+        'general' => 'সাধারণ',
+    ];
 
     protected $fillable = [
         'title',
         'content',
         'type',
+        'category',
         'target_role',
         'published_by',
         'published_at',

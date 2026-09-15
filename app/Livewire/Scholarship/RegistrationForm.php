@@ -3,6 +3,7 @@
 namespace App\Livewire\Scholarship;
 
 use App\Models\ScholarshipRegistration;
+use App\Notifications\NewSubmission;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -112,6 +113,15 @@ class RegistrationForm extends Component
                 ]);
 
                 DB::commit();
+
+                if (! $this->adminMode) {
+                    NewSubmission::sendToAdmins(
+                        'scholarship',
+                        'নতুন মেধাবৃত্তি রেজিস্ট্রেশন',
+                        $registration->student_name.' ('.$registration->mobile_no.') মেধাবৃত্তির জন্য রেজিস্ট্রেশন করেছেন।',
+                        route('admin.scholarship.show', $registration),
+                    );
+                }
 
                 $this->registrationNo = $registration->registration_no;
                 $this->confirming = false;

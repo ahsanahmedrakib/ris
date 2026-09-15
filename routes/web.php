@@ -3,14 +3,22 @@
 use App\Features\Auth\Http\Controllers\AuthController;
 use App\Features\Auth\Http\Controllers\DashboardController;
 use App\Features\Website\Http\Controllers\WebsiteController;
+use App\Http\Controllers\Admin\AcademicCalendarController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AdmissionController;
 use App\Http\Controllers\Admin\AttendanceController;
+use App\Http\Controllers\Admin\CampusNewsController;
 use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\ExamController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FeeController;
+use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\LibraryController;
+use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\NoticeController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PayrollController;
 use App\Http\Controllers\Admin\QrCodeController;
 use App\Http\Controllers\Admin\ReportController;
@@ -19,22 +27,37 @@ use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\TeacherController;
+use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TransportController;
+use App\Http\Controllers\Admin\TrashController;
 use App\Http\Controllers\Parent\ParentController;
 use App\Http\Controllers\Website\TeacherController as WebsiteTeacherController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public Website ──
-Route::get('/', [WebsiteController::class, 'index'])->name('home');
-Route::get('/about', [WebsiteController::class, 'about'])->name('about');
-Route::get('/admission', [WebsiteController::class, 'admission'])->name('admission');
-Route::post('/admission', [WebsiteController::class, 'storeAdmission'])->name('admission.store');
-Route::get('/scholarship', [WebsiteController::class, 'scholarship'])->name('scholarship');
-Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
-Route::post('/contact', [WebsiteController::class, 'sendContact'])->name('contact.send');
-Route::get('/notices', [WebsiteController::class, 'notices'])->name('notices');
-Route::get('/teachers', [WebsiteTeacherController::class, 'index'])->name('teachers');
-Route::get('/teacher/{slug}', [WebsiteTeacherController::class, 'single'])->name('teacher.single');
+Route::middleware('track.visitor')->group(function () {
+    Route::get('/', [WebsiteController::class, 'index'])->name('home');
+    Route::get('/about', [WebsiteController::class, 'about'])->name('about');
+    Route::get('/admission', [WebsiteController::class, 'admission'])->name('admission');
+    Route::post('/admission', [WebsiteController::class, 'storeAdmission'])->name('admission.store');
+    Route::get('/scholarship', [WebsiteController::class, 'scholarship'])->name('scholarship');
+    Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
+    Route::post('/contact', [WebsiteController::class, 'sendContact'])->name('contact.send');
+    Route::get('/notices', [WebsiteController::class, 'notices'])->name('notices');
+    Route::get('/teachers', [WebsiteTeacherController::class, 'index'])->name('teachers');
+    Route::get('/teacher/{slug}', [WebsiteTeacherController::class, 'single'])->name('teacher.single');
+    Route::get('/testimonials', [WebsiteController::class, 'testimonials'])->name('testimonials');
+    Route::post('/testimonials', [WebsiteController::class, 'storeTestimonial'])->middleware('throttle:5,1')->name('testimonials.submit');
+    Route::get('/gallery', [WebsiteController::class, 'gallery'])->name('gallery');
+
+    // ── Academic ──
+    Route::prefix('academic')->name('academic.')->group(function () {
+        Route::get('/calendar', [WebsiteController::class, 'academicCalendar'])->name('calendar');
+        Route::get('/fees', [WebsiteController::class, 'academicFees'])->name('fees');
+        Route::get('/results', [WebsiteController::class, 'academicResults'])->name('results');
+        Route::get('/facilities', [WebsiteController::class, 'academicFacilities'])->name('facilities');
+    });
+});
 
 // ── Auth ──
 Route::middleware('guest')->group(function () {
@@ -49,9 +72,37 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->prefix('admin')->group(function () {
     Route::get('/', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
 
-    Route::resource('students', StudentController::class)->names('admin.students');
-    Route::resource('classes', ClassController::class)->names('admin.classes');
-    Route::resource('subjects', SubjectController::class)->names('admin.subjects');
+    // Notifications
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
+    Route::get('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('admin.notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('admin.notifications.read-all');
+
+    // Activity Logs
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('admin.activity-logs.index');
+
+    // Website content
+    Route::resource('testimonials', TestimonialController::class)->names('admin.testimonials');
+    Route::patch('testimonials/{testimonial}/toggle-active', [TestimonialController::class, 'toggleActive'])->name('admin.testimonials.toggle-active');
+    Route::resource('gallery', GalleryController::class)->names('admin.gallery');
+    Route::patch('gallery/{galleryItem}/toggle-active', [GalleryController::class, 'toggleActive'])->name('admin.gallery.toggle-active');
+    Route::resource('hero-slides', HeroSlideController::class)->names('admin.hero-slides');
+    Route::patch('hero-slides/{heroSlide}/toggle-active', [HeroSlideController::class, 'toggleActive'])->name('admin.hero-slides.toggle-active');
+    Route::resource('academic-calendars', AcademicCalendarController::class)->names('admin.academic-calendars');
+    Route::patch('academic-calendars/{academicCalendar}/toggle-active', [AcademicCalendarController::class, 'toggleActive'])->name('admin.academic-calendars.toggle-active');
+    Route::resource('messages', MessageController::class)->names('admin.messages');
+    Route::patch('messages/{message}/toggle-active', [MessageController::class, 'toggleActive'])->name('admin.messages.toggle-active');
+    Route::resource('faqs', FaqController::class)->names('admin.faqs');
+    Route::patch('faqs/{faq}/toggle-active', [FaqController::class, 'toggleActive'])->name('admin.faqs.toggle-active');
+
+    // Trash / Soft Deleted Data
+    Route::get('/trash', [TrashController::class, 'index'])->name('admin.trash.index');
+    Route::post('/trash/{type}/{id}/restore', [TrashController::class, 'restore'])->name('admin.trash.restore');
+    Route::delete('/trash/{type}/{id}/force-delete', [TrashController::class, 'forceDelete'])->name('admin.trash.force-delete');
+
+    Route::resource('students', StudentController::class)->except(['create'])->names('admin.students');
+    Route::patch('students/{student}/toggle-active', [StudentController::class, 'toggleActive'])->name('admin.students.toggle-active');
+    Route::resource('classes', ClassController::class)->except(['create'])->names('admin.classes');
+    Route::resource('subjects', SubjectController::class)->except(['create'])->names('admin.subjects');
 
     // Teachers (custom routes)
     Route::get('/teachers', [TeacherController::class, 'index'])->name('admin.teachers.index');
@@ -61,8 +112,22 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
     Route::get('/teachers/{teacher}', [TeacherController::class, 'show'])->name('admin.teachers.show');
     Route::put('/teachers/{teacher}', [TeacherController::class, 'update'])->name('admin.teachers.update');
     Route::delete('/teachers/{teacher}', [TeacherController::class, 'destroy'])->name('admin.teachers.destroy');
+    Route::patch('/teachers/{teacher}/toggle-active', [TeacherController::class, 'toggleActive'])->name('admin.teachers.toggle-active');
 
+    // Notices (download before resource to avoid {notice} capture)
+    Route::get('notices/download', [NoticeController::class, 'downloadAll'])->name('admin.notices.download');
+    Route::patch('notices/{notice}/toggle-active', [NoticeController::class, 'toggleActive'])->name('admin.notices.toggle-active');
     Route::resource('notices', NoticeController::class)->names('admin.notices');
+
+    // Campus News (custom routes before resource)
+    Route::get('/campus-news', [CampusNewsController::class, 'index'])->name('admin.campus-news.index');
+    Route::post('/campus-news', [CampusNewsController::class, 'store'])->name('admin.campus-news.store');
+    Route::get('/campus-news/download', [CampusNewsController::class, 'downloadAll'])->name('admin.campus-news.download');
+    Route::get('/campus-news/{campusNews}/edit', [CampusNewsController::class, 'edit'])->name('admin.campus-news.edit');
+    Route::get('/campus-news/{campusNews}/show', [CampusNewsController::class, 'show'])->name('admin.campus-news.show');
+    Route::put('/campus-news/{campusNews}', [CampusNewsController::class, 'update'])->name('admin.campus-news.update');
+    Route::patch('/campus-news/{campusNews}/toggle-active', [CampusNewsController::class, 'toggleActive'])->name('admin.campus-news.toggle-active');
+    Route::delete('/campus-news/{campusNews}', [CampusNewsController::class, 'destroy'])->name('admin.campus-news.destroy');
 
     // Scholarship (custom routes before anything else)
     Route::get('/scholarship', [ScholarshipController::class, 'index'])->name('admin.scholarship.index');
@@ -90,14 +155,15 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
     Route::get('/library/borrowings', [LibraryController::class, 'borrowings'])->name('admin.library.borrowings');
     Route::post('/library/borrow', [LibraryController::class, 'borrow'])->name('admin.library.borrow');
     Route::post('/library/return/{borrowing}', [LibraryController::class, 'returnBook'])->name('admin.library.return');
-    Route::resource('library', LibraryController::class)->names('admin.library');
+    Route::resource('library', LibraryController::class)->except(['create'])->names('admin.library');
 
     // Transport (custom routes before resource)
     Route::get('/transport/{bus}/routes', [TransportController::class, 'routes'])->name('admin.transport.routes');
     Route::post('/transport/{bus}/routes', [TransportController::class, 'storeRoute'])->name('admin.transport.routes.store');
     Route::post('/transport/assign', [TransportController::class, 'assignStudent'])->name('admin.transport.assign');
-    Route::resource('transport', TransportController::class)->names('admin.transport');
-    Route::resource('staff', StaffController::class)->names('admin.staff');
+    Route::resource('transport', TransportController::class)->except(['create'])->names('admin.transport');
+    Route::resource('staff', StaffController::class)->except(['create'])->names('admin.staff');
+    Route::patch('staff/{staff}/toggle-active', [StaffController::class, 'toggleActive'])->name('admin.staff.toggle-active');
 
     // Contact Messages
     Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('admin.contact-messages.index');
@@ -110,13 +176,12 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
     Route::get('/qrcode/generate', [QrCodeController::class, 'generate'])->name('admin.qrcode.generate');
 
     // Attendance (custom routes before resource)
-    Route::get('/attendance/select', [AttendanceController::class, 'selectClass'])->name('admin.attendance.select');
-    Route::resource('attendance', AttendanceController::class)->names('admin.attendance');
+    Route::resource('attendance', AttendanceController::class)->except(['create'])->names('admin.attendance');
 
     // Exams (custom routes before resource)
     Route::get('/exams/{exam}/results', [ExamController::class, 'results'])->name('admin.exams.results');
     Route::post('/exams/{exam}/results', [ExamController::class, 'storeResults'])->name('admin.exams.results.store');
-    Route::resource('exams', ExamController::class)->names('admin.exams');
+    Route::resource('exams', ExamController::class)->except(['create'])->names('admin.exams');
 
     // Fees (custom routes before resource)
     Route::get('/fees/structures', [FeeController::class, 'structures'])->name('admin.fees.structures');
@@ -126,11 +191,12 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
     Route::post('/fees/invoices/generate', [FeeController::class, 'generateInvoices'])->name('admin.fees.invoices.generate');
     Route::get('/fees/payments', [FeeController::class, 'payments'])->name('admin.fees.payments');
     Route::post('/fees/payments', [FeeController::class, 'recordPayment'])->name('admin.fees.payments.record');
-    Route::resource('fees', FeeController::class)->except(['create', 'store'])->names('admin.fees');
+    Route::resource('fees', FeeController::class)->except(['create', 'store', 'show', 'update'])->names('admin.fees');
 
     // Payroll (custom routes before resource)
     Route::post('/payroll/process', [PayrollController::class, 'process'])->name('admin.payroll.process');
-    Route::resource('payroll', PayrollController::class)->names('admin.payroll');
+    Route::patch('/payroll/{payroll}/toggle-status', [PayrollController::class, 'toggleStatus'])->name('admin.payroll.toggle-status');
+    Route::resource('payroll', PayrollController::class)->except(['edit', 'destroy'])->names('admin.payroll');
 
     // Reports (custom routes)
     Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');

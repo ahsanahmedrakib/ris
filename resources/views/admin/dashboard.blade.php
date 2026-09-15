@@ -12,7 +12,7 @@
                 <p class="text-sm text-gray-500 mt-1">রেশমা ইন্টারন্যাশনাল স্কুল প্রশাসনিক প্যানেল</p>
             </div>
             <div class="flex gap-2">
-                <a href="{{ route('admin.students.create') }}"
+<a href="{{ route('admin.students.index') }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -39,7 +39,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-500">মোট ছাত্র</p>
                         <p class="text-2xl font-heading font-bold text-gray-900 mt-1">
-                            {{ number_format($totalStudents ?? 1250) }}</p>
+                            {{ number_format($stats['total_students'] ?? 0) }}</p>
                     </div>
                     <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
                         <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-500">মোট শিক্ষক</p>
                         <p class="text-2xl font-heading font-bold text-gray-900 mt-1">
-                            {{ number_format($totalTeachers ?? 68) }}</p>
+                            {{ number_format($stats['total_teachers'] ?? 0) }}</p>
                     </div>
                     <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
                         <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +95,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-500">মোট ক্লাস</p>
                         <p class="text-2xl font-heading font-bold text-gray-900 mt-1">
-                            {{ number_format($totalClasses ?? 24) }}</p>
+                            {{ number_format($stats['total_classes'] ?? 0) }}</p>
                     </div>
                     <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
                         <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +119,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-500">মোট আয়</p>
                         <p class="text-2xl font-heading font-bold text-gray-900 mt-1">
-                            ৳{{ number_format($totalIncome ?? 4580000) }}</p>
+                            ৳{{ number_format($stats['fees_collected'] ?? 0) }}</p>
                     </div>
                     <div class="w-12 h-12 rounded-xl bg-ris-primary/10 flex items-center justify-center">
                         <svg class="w-6 h-6 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@
 
         {{-- Quick Actions --}}
         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-            <a href="{{ route('admin.students.create') }}"
+            <a href="{{ route('admin.students.index') }}"
                 class="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-ris-primary hover:shadow-md transition-all text-center group">
                 <div
                     class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center group-hover:bg-ris-primary/10 transition-colors">
@@ -169,7 +169,7 @@
                 </div>
                 <span class="text-xs font-medium text-gray-600">উপস্থিতি</span>
             </a>
-            <a href="{{ route('admin.exams.create') }}"
+            <a href="{{ route('admin.exams.index') }}"
                 class="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-ris-primary hover:shadow-md transition-all text-center group">
                 <div
                     class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center group-hover:bg-ris-primary/10 transition-colors">
@@ -229,7 +229,7 @@
                         class="text-sm text-ris-primary hover:text-ris-dark font-medium transition-colors">সব দেখুন</a>
                 </div>
                 <div class="divide-y divide-gray-50">
-                    @forelse(($recentNotices ?? []) as $notice)
+                    @forelse(($stats['recent_notices'] ?? collect()) as $notice)
                         <div class="px-5 py-3.5 hover:bg-gray-50 transition-colors">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
@@ -267,27 +267,27 @@
                         <div class="flex items-center justify-between text-sm mb-1.5">
                             <span class="text-gray-600">সংগৃহীত</span>
                             <span
-                                class="font-medium text-emerald-600">৳{{ number_format($feesCollected ?? 3200000) }}</span>
+                                class="font-medium text-emerald-600">৳{{ number_format($stats['fees_collected'] ?? 0) }}</span>
                         </div>
                         <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
                             <div class="h-full bg-emerald-500 rounded-full"
-                                style="width: {{ (($feesCollected ?? 3200000) / ($feesTotal ?? 4580000)) * 100 }}%"></div>
+                                style="width: {{ ($stats['fees_total'] ?? 0) > 0 ? (($stats['fees_collected'] ?? 0) / ($stats['fees_total'] ?? 1)) * 100 : 0 }}%"></div>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center justify-between text-sm mb-1.5">
                             <span class="text-gray-600">বকেয়</span>
-                            <span class="font-medium text-amber-600">৳{{ number_format($feesPending ?? 890000) }}</span>
+                            <span class="font-medium text-amber-600">৳{{ number_format($stats['fees_pending'] ?? 0) }}</span>
                         </div>
                         <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
                             <div class="h-full bg-amber-500 rounded-full"
-                                style="width: {{ (($feesPending ?? 890000) / ($feesTotal ?? 4580000)) * 100 }}%"></div>
+                                style="width: {{ ($stats['fees_total'] ?? 0) > 0 ? (($stats['fees_pending'] ?? 0) / ($stats['fees_total'] ?? 1)) * 100 : 0 }}%"></div>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center justify-between text-sm mb-1.5">
                             <span class="text-gray-600">মোট</span>
-                            <span class="font-medium text-gray-900">৳{{ number_format($feesTotal ?? 4580000) }}</span>
+                            <span class="font-medium text-gray-900">৳{{ number_format($stats['fees_total'] ?? 0) }}</span>
                         </div>
                     </div>
                     <hr class="border-gray-100">
@@ -319,7 +319,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                        @forelse(($recentAdmissions ?? []) as $student)
+                        @forelse(($stats['recent_admissions'] ?? collect()) as $student)
                             <tr class="hover:bg-gray-50 transition-colors">
                                 <td class="px-5 py-3 font-medium text-gray-900">{{ $student->admission_no }}</td>
                                 <td class="px-5 py-3">
@@ -331,7 +331,7 @@
                                         <span class="text-gray-900">{{ $student->name_bn }}</span>
                                     </div>
                                 </td>
-                                <td class="px-5 py-3 text-gray-600">{{ $student->class->name ?? '-' }}</td>
+                                <td class="px-5 py-3 text-gray-600">{{ $student->classRoom->name ?? '-' }}</td>
                                 <td class="px-5 py-3 text-gray-600">{{ $student->guardian_name }}</td>
                                 <td class="px-5 py-3 text-gray-500">{{ $student->created_at?->format('d/m/Y') ?? '-' }}
                                 </td>

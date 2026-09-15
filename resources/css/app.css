@@ -564,6 +564,35 @@ html {
     transform: scaleX(1);
 }
 
+/* ── Testimonial cards ── */
+.testimonial-card {
+    position: relative;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+.testimonial-card:hover {
+    transform: translateY(-4px) rotate(-0.5deg);
+    box-shadow:
+        0 18px 40px rgba(217, 119, 6, 0.18),
+        0 8px 20px rgba(163, 28, 66, 0.1);
+}
+.testimonial-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s ease;
+}
+.testimonial-card:hover::after {
+    transform: scaleX(1);
+}
+
 /* ── Promo video section ── */
 .promo-section {
     position: relative;
@@ -632,8 +661,15 @@ html {
 }
 
 /* ── Campus Life Swiper ── */
+.campus-life-swiper .swiper-wrapper {
+    align-items: stretch;
+}
 .campus-life-swiper .swiper-slide {
     height: auto;
+    display: flex;
+}
+.campus-life-swiper .swiper-slide > div {
+    width: 100%;
 }
 .campus-life-swiper .swiper-pagination {
     position: relative;
@@ -706,6 +742,117 @@ html {
     opacity: 1;
     width: 26px;
     border-radius: 9999px;
+}
+
+/* ── Teacher Card ── */
+.teacher-card {
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.teacher-card:hover {
+    transform: translateY(-6px);
+}
+.teacher-card-cta {
+    position: absolute;
+    inset-inline-end: 1rem;
+    bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    color: #fff;
+    background: var(--color-ris-primary);
+    box-shadow: 0 8px 16px -4px rgb(163 28 66 / 0.4);
+    transform: translateX(10px);
+    opacity: 0;
+    transition: all 0.35s ease;
+}
+.teacher-card:hover .teacher-card-cta {
+    opacity: 1;
+    transform: translateX(0);
+}
+.teacher-card-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+.teacher-card:hover .teacher-card-bar {
+    transform: scaleX(1);
+}
+
+/* ── Swiper nav buttons (below content) ── */
+.ris-swiper-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light));
+    box-shadow: 0 10px 25px -5px rgb(163 28 66 / 0.35);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.ris-swiper-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 16px 35px -8px rgb(163 28 66 / 0.5);
+}
+.ris-swiper-btn:active {
+    transform: scale(0.95);
+}
+.ris-swiper-btn.swiper-button-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+.ris-swiper-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* ── Swiper nav bar (pagination between buttons) ── */
+.ris-swiper-nav .swiper-pagination {
+    position: static;
+    flex: 1;
+    text-align: center;
+}
+.ris-swiper-nav .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: var(--color-ris-primary);
+    opacity: 0.25;
+    transition: all 0.3s ease;
+}
+.ris-swiper-nav.swiper-pagination-bullet-active,
+.ris-swiper-nav .swiper-pagination-bullet-active {
+    opacity: 1;
+    width: 26px;
+    border-radius: 9999px;
+}
+
+.program-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+.program-card:hover::after {
+    transform: scaleX(1);
 }
 
 /* ── Event cards ── */

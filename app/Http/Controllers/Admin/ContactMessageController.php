@@ -32,9 +32,9 @@ class ContactMessageController extends Controller
             });
         }
 
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = (int) $request->input('per_page', 10);
         if (! in_array($perPage, [10, 25, 50, 100])) {
-            $perPage = 15;
+            $perPage = 10;
         }
 
         $messages = $query->latest()->paginate($perPage)->withQueryString();

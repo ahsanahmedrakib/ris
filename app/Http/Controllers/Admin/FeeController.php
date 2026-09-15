@@ -96,7 +96,7 @@ class FeeController extends Controller
             $query->whereHas('student', fn ($q) => $q->where('class_id', $request->class_id));
         }
 
-        $invoices = $query->latest()->paginate(20)->withQueryString();
+        $invoices = $query->latest()->paginate(10)->withQueryString();
         $classes = ClassRoom::orderBy('name')->get();
         $statuses = FeeStatus::cases();
 
@@ -149,7 +149,7 @@ class FeeController extends Controller
     {
         $payments = FeePayment::with(['student.user', 'invoice.feeStructure', 'payer'])
             ->latest('paid_at')
-            ->paginate(20);
+            ->paginate(10);
 
         return view('admin.fees.payments', compact('payments'));
     }

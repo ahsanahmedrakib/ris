@@ -51,13 +51,13 @@
                         x-data="{ submitting: false, showPassword: false }" @submit="submitting = true">
                         @csrf
 
-                        {{-- Email --}}
+                        {{-- Email or Username --}}
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">ইমেইল</label>
-                            <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                                autofocus
+                            <label for="email"
+                                class="block text-sm font-medium text-gray-700 mb-1.5">ইমেইল / ইউজারনেম</label>
+                            <input type="text" id="email" name="email" value="{{ old('email') }}" required autofocus
                                 class="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
-                                placeholder="আপনার ইমেইল লিখুন">
+                                placeholder="আপনার ইমেইল বা ইউজারনেম লিখুন">
                         </div>
 
                         {{-- Password --}}

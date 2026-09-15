@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admission;
+use App\Support\XlsxExport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -32,10 +32,10 @@ class AdmissionController extends Controller
                     ->orWhere('mother_name_bn', 'like', "%{$search}%");
             });
         }
+        $perPage = (int) $request->input('per_page', 10);
 
-        $perPage = (int) $request->input('per_page', 15);
         if (! in_array($perPage, [10, 25, 50, 100])) {
-            $perPage = 15;
+            $perPage = 10;
         }
 
         $admissions = $query->latest()->paginate($perPage)->withQueryString();
@@ -281,38 +281,24 @@ class AdmissionController extends Controller
 
         $admissions = $query->latest()->get();
 
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="admissions_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.csv"',
-        ];
+        $rows = $admissions->map(fn ($admission, $index) => [
+            $index + 1,
+            $admission->admission_no,
+            $admission->student_name_bn,
+            $admission->class_label,
+            $admission->batch_label,
+            $admission->roll_no ?? '-',
+            $admission->phone ?? '-',
+            $admission->email ?? '-',
+            Admission::STATUSES[$admission->status] ?? $admission->status,
+            $admission->created_at->format('d/m/Y'),
+        ])->all();
 
-        $callback = function () use ($admissions) {
-            $file = fopen('php://output', 'w');
-
-            // UTF-8 BOM for Excel Bangla support
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
-
-            fputcsv($file, ['ক্রমিক', 'ভর্তি নং', 'শিক্ষার্থীর নাম', 'শ্রেণি', 'ব্যাচ', 'রোল', 'ফোন', 'ইমেইল', 'স্ট্যাটাস', 'তারিখ']);
-
-            foreach ($admissions as $index => $admission) {
-                fputcsv($file, [
-                    $index + 1,
-                    $admission->admission_no,
-                    $admission->student_name_bn,
-                    $admission->class_label,
-                    $admission->batch_label,
-                    $admission->roll_no ?? '-',
-                    $admission->phone ?? '-',
-                    $admission->email ?? '-',
-                    Admission::STATUSES[$admission->status] ?? $admission->status,
-                    $admission->created_at->format('d/m/Y'),
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return Response::stream($callback, 200, $headers);
+        return XlsxExport::download(
+            ['ক্রমিক', 'ভর্তি নং', 'শিক্ষার্থীর নাম', 'শ্রেণি', 'ব্যাচ', 'রোল', 'ফোন', 'ইমেইল', 'স্ট্যাটাস', 'তারিখ'],
+            $rows,
+            'admissions_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.xlsx',
+        );
     }
 
     public function destroy(Admission $admission): RedirectResponse
@@ -320,14 +306,10 @@ class AdmissionController extends Controller
         try {
             $admissionNo = $admission->admission_no;
 
-            if ($admission->student_photo) {
-                Storage::disk('public')->delete($admission->student_photo);
-            }
-
             $admission->delete();
 
             return redirect()->route('admin.admission.index')
-                ->with('success', 'ভর্তি আবেদন ('.$admissionNo.') মুছে ফেলা হয়েছে।');
+                ->with('success', 'ভর্তি আবেদন ('.$admissionNo.') ট্র্যাশে পাঠানো হয়েছে।');
         } catch (\Exception $e) {
             return back()
                 ->with('error', 'ভর্তি আবেদন মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());

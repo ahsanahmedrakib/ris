@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ScholarshipRegistration;
+use App\Support\XlsxExport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 use Illuminate\View\View;
 
 class ScholarshipController extends Controller
@@ -40,9 +40,9 @@ class ScholarshipController extends Controller
             });
         }
 
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = (int) $request->input('per_page', 10);
         if (! in_array($perPage, [10, 25, 50, 100])) {
-            $perPage = 15;
+            $perPage = 10;
         }
 
         $registrations = $query->latest()->paginate($perPage)->withQueryString();
@@ -242,40 +242,26 @@ class ScholarshipController extends Controller
 
         $registrations = $query->latest()->get();
 
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="scholarship_registrations_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.csv"',
-        ];
+        $rows = $registrations->map(fn ($reg, $index) => [
+            $index + 1,
+            $reg->registration_no,
+            $reg->student_name,
+            $reg->father_name,
+            $reg->mother_name,
+            $reg->school_name,
+            ScholarshipRegistration::CLASSES[$reg->class_no] ?? '-',
+            $reg->roll_no ?? '-',
+            $reg->mobile_no,
+            $reg->payment_method === 'cash' ? 'ক্যাশ' : 'বিকাশ',
+            self::STATUSES[$reg->status] ?? $reg->status,
+            $reg->created_at->format('d/m/Y'),
+        ])->all();
 
-        $callback = function () use ($registrations) {
-            $file = fopen('php://output', 'w');
-
-            // UTF-8 BOM for Excel Bangla support
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
-
-            fputcsv($file, ['ক্রমিক', 'রেজি নং', 'শিক্ষার্থীর নাম', 'পিতার নাম', 'মাতার নাম', 'স্কুল', 'শ্রেণি', 'রোল', 'মোবাইল', 'পেমেন্ট', 'স্ট্যাটাস', 'তারিখ']);
-
-            foreach ($registrations as $index => $reg) {
-                fputcsv($file, [
-                    $index + 1,
-                    $reg->registration_no,
-                    $reg->student_name,
-                    $reg->father_name,
-                    $reg->mother_name,
-                    $reg->school_name,
-                    ScholarshipRegistration::CLASSES[$reg->class_no] ?? '-',
-                    $reg->roll_no ?? '-',
-                    $reg->mobile_no,
-                    $reg->payment_method === 'cash' ? 'ক্যাশ' : 'বিকাশ',
-                    self::STATUSES[$reg->status] ?? $reg->status,
-                    $reg->created_at->format('d/m/Y'),
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return Response::stream($callback, 200, $headers);
+        return XlsxExport::download(
+            ['ক্রমিক', 'রেজি নং', 'শিক্ষার্থীর নাম', 'পিতার নাম', 'মাতার নাম', 'স্কুল', 'শ্রেণি', 'রোল', 'মোবাইল', 'পেমেন্ট', 'স্ট্যাটাস', 'তারিখ'],
+            $rows,
+            'scholarship_registrations_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.xlsx',
+        );
     }
 
     public function destroy(ScholarshipRegistration $scholarshipRegistration): RedirectResponse

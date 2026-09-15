@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
 use App\Models\Student;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,17 +41,10 @@ class StudentController extends Controller
             $query->where('is_active', $request->boolean('status'));
         }
 
-        $students = $query->latest()->paginate(15)->withQueryString();
+        $students = $query->latest()->paginate(10)->withQueryString();
         $classes = ClassRoom::orderBy('name')->get();
 
         return view('admin.students.index', compact('students', 'classes'));
-    }
-
-    public function create(): View
-    {
-        $classes = ClassRoom::orderBy('name')->get();
-
-        return view('admin.students.create', compact('classes'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -118,27 +112,70 @@ class StudentController extends Controller
         }
     }
 
-    public function show(int $id): View
+    public function show(int $id): JsonResponse
     {
-        $student = Student::with([
-            'user',
-            'classRoom',
-            'parents',
-            'attendances' => fn ($q) => $q->latest('date')->take(30),
-            'examResults' => fn ($q) => $q->with('exam', 'subject')->latest(),
-            'feeInvoices' => fn ($q) => $q->with('feeStructure')->latest(),
-            'bookBorrowings' => fn ($q) => $q->with('book')->latest(),
-        ])->findOrFail($id);
+        $student = Student::with(['user', 'classRoom'])->findOrFail($id);
 
-        return view('admin.students.show', compact('student'));
+        $attendances = Attendance::where('student_id', $student->id)
+            ->get('status')
+            ->countBy('status');
+
+        $present = (int) ($attendances['present'] ?? 0);
+        $absent = (int) ($attendances['absent'] ?? 0);
+        $late = (int) ($attendances['late'] ?? 0);
+        $total = $present + $absent + $late;
+
+        return response()->json([
+            'id' => $student->id,
+            'admission_no' => $student->admission_no,
+            'name' => $student->user?->name,
+            'email' => $student->user?->email,
+            'phone' => $student->user?->phone,
+            'photo' => $student->user?->avatar ? Storage::url($student->user->avatar) : null,
+            'class' => $student->classRoom?->name,
+            'section' => $student->section,
+            'roll_no' => $student->roll_no,
+            'date_of_birth' => $student->date_of_birth?->format('d/m/Y'),
+            'gender' => match ($student->gender) {
+                'male' => 'পুরুষ',
+                'female' => 'মহিলা',
+                'other' => 'অন্যান্য',
+                default => null,
+            },
+            'blood_group' => $student->blood_group,
+            'address' => $student->address,
+            'guardian_name' => $student->guardian_name,
+            'guardian_phone' => $student->guardian_phone,
+            'guardian_email' => $student->guardian_email,
+            'is_active' => (bool) $student->is_active,
+            'attendance_summary' => compact('present', 'absent', 'late', 'total'),
+            'created_at' => $student->created_at?->format('d/m/Y h:i A'),
+        ]);
     }
 
-    public function edit(int $id): View
+    public function edit(int $id): JsonResponse
     {
         $student = Student::with('user')->findOrFail($id);
-        $classes = ClassRoom::orderBy('name')->get();
 
-        return view('admin.students.edit', compact('student', 'classes'));
+        return response()->json([
+            'id' => $student->id,
+            'name' => $student->user?->name ?? '',
+            'email' => $student->user?->email ?? '',
+            'phone' => $student->user?->phone ?? '',
+            'photo' => $student->user?->avatar ? Storage::url($student->user->avatar) : null,
+            'admission_no' => $student->admission_no ?? '',
+            'class_id' => $student->class_id ?? '',
+            'section' => $student->section ?? '',
+            'roll_no' => $student->roll_no ?? '',
+            'date_of_birth' => $student->date_of_birth?->format('d/m/Y') ?? '',
+            'gender' => $student->gender ?? '',
+            'blood_group' => $student->blood_group ?? '',
+            'address' => $student->address ?? '',
+            'guardian_name' => $student->guardian_name ?? '',
+            'guardian_phone' => $student->guardian_phone ?? '',
+            'guardian_email' => $student->guardian_email ?? '',
+            'is_active' => (bool) $student->is_active,
+        ]);
     }
 
     public function update(Request $request, int $id): RedirectResponse
@@ -206,14 +243,29 @@ class StudentController extends Controller
     {
         try {
             $student = Student::findOrFail($id);
-            $student->user->update(['is_active' => false]);
-            $student->update(['is_active' => false]);
+            $student->user?->update(['is_active' => false]);
+            $student->delete();
 
             return redirect()->route('admin.students.index')
-                ->with('success', 'ছাত্র/ছাত্রী সফলভাবে মুছে ফেলা হয়েছে।');
+                ->with('success', 'ছাত্র/ছাত্রী সফলভাবে ট্র্যাশে পাঠানো হয়েছে।');
         } catch (\Exception $e) {
             return back()
                 ->with('error', 'ছাত্র/ছাত্রী মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
+    }
+
+    public function toggleActive(int $id): JsonResponse
+    {
+        $student = Student::with('user')->findOrFail($id);
+        $student->is_active = ! $student->is_active;
+        $student->save();
+
+        $student->user?->update(['is_active' => $student->is_active]);
+
+        return response()->json([
+            'id' => $student->id,
+            'is_active' => $student->is_active,
+            'status_label' => $student->is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়',
+        ]);
     }
 }

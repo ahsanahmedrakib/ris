@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Core\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Staff extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     protected $table = 'staff';
 

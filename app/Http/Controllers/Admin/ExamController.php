@@ -10,6 +10,7 @@ use App\Models\Exam;
 use App\Models\ExamResult;
 use App\Models\Student;
 use App\Models\Subject;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ use Illuminate\View\View;
 
 class ExamController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $query = Exam::with(['classRoom', 'academicYear']);
 
@@ -25,19 +26,12 @@ class ExamController extends Controller
             $query->where('class_id', $request->class_id);
         }
 
-        $exams = $query->latest()->paginate(15)->withQueryString();
+        $exams = $query->latest()->paginate(10)->withQueryString();
         $classes = ClassRoom::orderBy('name')->get();
-
-        return view('admin.exams.index', compact('exams', 'classes'));
-    }
-
-    public function create(): View
-    {
-        $classes = ClassRoom::orderBy('name')->get();
-        $academicYears = AcademicYear::orderByDesc('is_current')->orderByDesc('name')->get();
+        $academicYears = AcademicYear::orderByDesc('is_current')->get();
         $examTypes = ExamType::cases();
 
-        return view('admin.exams.create', compact('classes', 'academicYears', 'examTypes'));
+        return view('admin.exams.index', compact('exams', 'classes', 'academicYears', 'examTypes'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -79,15 +73,91 @@ class ExamController extends Controller
         }
     }
 
-    public function show(int $id): View
+    public function show(int $id): JsonResponse
     {
-        $exam = Exam::with([
-            'classRoom',
-            'academicYear',
-            'examResults' => fn ($q) => $q->with(['student.user', 'subject'])->orderBy('student_id'),
-        ])->withCount('examResults')->findOrFail($id);
+        $exam = Exam::with(['classRoom', 'academicYear'])->findOrFail($id);
 
-        return view('admin.exams.show', compact('exam'));
+        return response()->json([
+            'id' => $exam->id,
+            'name' => $exam->name,
+            'type' => $exam->type,
+            'type_label' => ExamType::tryFrom($exam->type)?->label() ?? $exam->type,
+            'class_id' => $exam->class_id,
+            'class_name' => $exam->classRoom?->name ?? '-',
+            'academic_year_id' => $exam->academic_year_id,
+            'academic_year_name' => $exam->academicYear?->name ?? '-',
+            'start_date' => $exam->start_date?->format('d/m/Y') ?? '-',
+            'end_date' => $exam->end_date?->format('d/m/Y') ?? '-',
+            'total_marks' => $exam->total_marks,
+            'passing_marks' => $exam->passing_marks,
+            'created_at' => $exam->created_at->format('d/m/Y h:i A'),
+        ]);
+    }
+
+    public function edit(int $id): JsonResponse
+    {
+        $exam = Exam::findOrFail($id);
+
+        return response()->json([
+            'id' => $exam->id,
+            'name' => $exam->name ?? '',
+            'type' => $exam->type ?? '',
+            'class_id' => (string) $exam->class_id,
+            'academic_year_id' => (string) $exam->academic_year_id,
+            'start_date' => $exam->start_date?->format('d/m/Y') ?? '',
+            'end_date' => $exam->end_date?->format('d/m/Y') ?? '',
+            'total_marks' => (string) ($exam->total_marks ?? ''),
+            'passing_marks' => (string) ($exam->passing_marks ?? ''),
+        ]);
+    }
+
+    public function update(Request $request, int $id): RedirectResponse
+    {
+        $exam = Exam::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|in:quiz,midterm,final,assignment',
+            'class_id' => 'required|exists:classes,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'total_marks' => 'required|integer|min:1',
+            'passing_marks' => 'required|integer|min:1|lte:total_marks',
+        ], [
+            'name.required' => 'পরীক্ষার নাম আবশ্যক।',
+            'type.required' => 'পরীক্ষার ধরন আবশ্যক।',
+            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
+            'academic_year_id.required' => 'শিক্ষাবর্ষ নির্বাচন আবশ্যক।',
+            'start_date.required' => 'শুরুর তারিখ আবশ্যক।',
+            'end_date.required' => 'শেষ তারিখ আবশ্যক।',
+            'total_marks.required' => 'মোট নম্বর আবশ্যক।',
+            'passing_marks.required' => 'পাসের নম্বর আবশ্যক।',
+            'passing_marks.lte' => 'পাসের নম্বর মোট নম্বরের সমান বা কম হতে হবে।',
+        ]);
+
+        try {
+            $exam->update($validated);
+
+            return redirect()->route('admin.exams.index')
+                ->with('success', 'পরীক্ষা সফলভাবে আপডেট হয়েছে।');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', 'পরীক্ষা আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+        }
+    }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        try {
+            Exam::findOrFail($id)->delete();
+
+            return redirect()->route('admin.exams.index')
+                ->with('success', 'পরীক্ষা সফলভাবে মুছে ফেলা হয়েছে।');
+        } catch (\Exception $e) {
+            return back()
+                ->with('error', 'পরীক্ষা মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+        }
     }
 
     public function results(int $id): View
@@ -143,70 +213,11 @@ class ExamController extends Controller
                 );
             }
 
-            return redirect()->route('admin.exams.show', $id)
+            return redirect()->route('admin.exams.index')
                 ->with('success', 'পরীক্ষার ফলাফল সফলভাবে সংরক্ষিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
                 ->with('error', 'ফলাফল সংরক্ষণ করতে সমস্যা হয়েছে। '.$e->getMessage());
-        }
-    }
-
-    public function edit(int $id): View
-    {
-        $exam = Exam::findOrFail($id);
-        $classes = ClassRoom::orderBy('name')->get();
-        $academicYears = AcademicYear::orderByDesc('is_current')->orderByDesc('name')->get();
-        $examTypes = ExamType::cases();
-
-        return view('admin.exams.edit', compact('exam', 'classes', 'academicYears', 'examTypes'));
-    }
-
-    public function update(Request $request, int $id): RedirectResponse
-    {
-        $exam = Exam::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|in:quiz,midterm,final,assignment',
-            'class_id' => 'required|exists:classes,id',
-            'academic_year_id' => 'required|exists:academic_years,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'total_marks' => 'required|integer|min:1',
-            'passing_marks' => 'required|integer|min:1|lte:total_marks',
-        ], [
-            'name.required' => 'পরীক্ষার নাম আবশ্যক।',
-            'type.required' => 'পরীক্ষার ধরন আবশ্যক।',
-            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
-            'academic_year_id.required' => 'শিক্ষাবর্ষ নির্বাচন আবশ্যক।',
-            'start_date.required' => 'শুরুর তারিখ আবশ্যক।',
-            'end_date.required' => 'শেষ তারিখ আবশ্যক।',
-            'total_marks.required' => 'মোট নম্বর আবশ্যক।',
-            'passing_marks.required' => 'পাসের নম্বর আবশ্যক।',
-            'passing_marks.lte' => 'পাসের নম্বর মোট নম্বরের সমান বা কম হতে হবে।',
-        ]);
-
-        try {
-            $exam->update($validated);
-
-            return redirect()->route('admin.exams.index')
-                ->with('success', 'পরীক্ষা সফলভাবে আপডেট হয়েছে।');
-        } catch (\Exception $e) {
-            return back()->withInput()
-                ->with('error', 'পরীক্ষা আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
-        }
-    }
-
-    public function destroy(int $id): RedirectResponse
-    {
-        try {
-            Exam::findOrFail($id)->delete();
-
-            return redirect()->route('admin.exams.index')
-                ->with('success', 'পরীক্ষা সফলভাবে মুছে ফেলা হয়েছে।');
-        } catch (\Exception $e) {
-            return back()
-                ->with('error', 'পরীক্ষা মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

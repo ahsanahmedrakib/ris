@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Staff;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,14 +32,9 @@ class StaffController extends Controller
             });
         }
 
-        $staff = $query->latest()->paginate(15)->withQueryString();
+        $staff = $query->latest()->paginate(10)->withQueryString();
 
         return view('admin.staff.index', compact('staff'));
-    }
-
-    public function create(): View
-    {
-        return view('admin.staff.create');
     }
 
     public function store(Request $request): RedirectResponse
@@ -96,22 +92,43 @@ class StaffController extends Controller
         }
     }
 
-    public function show(int $id): View
-    {
-        $staff = Staff::with([
-            'user',
-            'payrolls' => fn ($q) => $q->latest('year')->latest('month'),
-            'leaveRequests' => fn ($q) => $q->latest('start_date'),
-        ])->findOrFail($id);
-
-        return view('admin.staff.show', compact('staff'));
-    }
-
-    public function edit(int $id): View
+    public function show(int $id): JsonResponse
     {
         $staff = Staff::with('user')->findOrFail($id);
 
-        return view('admin.staff.edit', compact('staff'));
+        return response()->json([
+            'id' => $staff->id,
+            'employee_id' => $staff->employee_id,
+            'name' => $staff->user?->name ?? '',
+            'email' => $staff->user?->email ?? '',
+            'phone' => $staff->user?->phone ?? '',
+            'is_active' => $staff->user?->is_active ?? false,
+            'designation' => $staff->designation,
+            'department' => $staff->department,
+            'joining_date' => $staff->joining_date?->format('d/m/Y'),
+            'salary' => $staff->salary,
+            'qualification' => $staff->qualification,
+            'created_at' => $staff->created_at->format('d/m/Y h:i A'),
+        ]);
+    }
+
+    public function edit(int $id): JsonResponse
+    {
+        $staff = Staff::with('user')->findOrFail($id);
+
+        return response()->json([
+            'id' => $staff->id,
+            'employee_id' => $staff->employee_id,
+            'name' => $staff->user?->name ?? '',
+            'email' => $staff->user?->email ?? '',
+            'phone' => $staff->user?->phone ?? '',
+            'is_active' => $staff->user?->is_active ?? false,
+            'designation' => $staff->designation ?? '',
+            'department' => $staff->department ?? '',
+            'joining_date' => $staff->joining_date?->format('d/m/Y') ?? '',
+            'salary' => $staff->salary ?? '',
+            'qualification' => $staff->qualification ?? '',
+        ]);
     }
 
     public function update(Request $request, int $id): RedirectResponse
@@ -180,5 +197,24 @@ class StaffController extends Controller
             return back()
                 ->with('error', 'কর্মচারী মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
+    }
+
+    public function toggleActive(int $id): JsonResponse
+    {
+        $staff = Staff::with('user')->findOrFail($id);
+        $user = $staff->user;
+
+        if (! $user) {
+            return response()->json(['message' => 'কর্মচারীর লগইন অ্যাকাউন্ট পাওয়া যায়নি।'], 404);
+        }
+
+        $user->is_active = ! $user->is_active;
+        $user->save();
+
+        return response()->json([
+            'id' => $staff->id,
+            'is_active' => $user->is_active,
+            'status_label' => $user->is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়',
+        ]);
     }
 }

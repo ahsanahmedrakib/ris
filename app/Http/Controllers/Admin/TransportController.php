@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bus;
 use App\Models\BusRoute;
 use App\Models\StudentTransport;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -17,11 +18,6 @@ class TransportController extends Controller
         $buses = Bus::withCount(['busRoutes', 'studentTransports'])->latest()->get();
 
         return view('admin.transport.index', compact('buses'));
-    }
-
-    public function create(): View
-    {
-        return view('admin.transport.create');
     }
 
     public function store(Request $request): RedirectResponse
@@ -55,14 +51,21 @@ class TransportController extends Controller
         }
     }
 
-    public function show(int $id): View
+    public function show(int $id): JsonResponse
     {
-        $bus = Bus::with([
-            'busRoutes' => fn ($q) => $q->orderBy('stop_order'),
-            'studentTransports' => fn ($q) => $q->with('student.user'),
-        ])->withCount(['busRoutes', 'studentTransports'])->findOrFail($id);
+        $bus = Bus::withCount(['busRoutes', 'studentTransports'])->findOrFail($id);
 
-        return view('admin.transport.show', compact('bus'));
+        return response()->json([
+            'id' => $bus->id,
+            'bus_no' => $bus->bus_no,
+            'driver_name' => $bus->driver_name,
+            'driver_phone' => $bus->driver_phone,
+            'capacity' => $bus->capacity,
+            'route_name' => $bus->route_name,
+            'bus_routes_count' => $bus->bus_routes_count,
+            'student_transports_count' => $bus->student_transports_count,
+            'created_at' => $bus->created_at->format('d/m/Y h:i A'),
+        ]);
     }
 
     public function routes(int $busId): View
@@ -100,11 +103,18 @@ class TransportController extends Controller
         }
     }
 
-    public function edit(int $id): View
+    public function edit(int $id): JsonResponse
     {
         $bus = Bus::findOrFail($id);
 
-        return view('admin.transport.edit', compact('bus'));
+        return response()->json([
+            'id' => $bus->id,
+            'bus_no' => $bus->bus_no,
+            'driver_name' => $bus->driver_name,
+            'driver_phone' => $bus->driver_phone,
+            'capacity' => $bus->capacity,
+            'route_name' => $bus->route_name,
+        ]);
     }
 
     public function update(Request $request, int $id): RedirectResponse

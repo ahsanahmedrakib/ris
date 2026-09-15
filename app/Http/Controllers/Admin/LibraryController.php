@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\BookBorrowing;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -25,14 +26,9 @@ class LibraryController extends Controller
             });
         }
 
-        $books = $query->latest()->paginate(15)->withQueryString();
+        $books = $query->latest()->paginate(10)->withQueryString();
 
         return view('admin.library.index', compact('books'));
-    }
-
-    public function create(): View
-    {
-        return view('admin.library.create');
     }
 
     public function store(Request $request): RedirectResponse
@@ -68,24 +64,50 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বই যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বই যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
-    public function show(int $id): View
+    public function show(int $id): JsonResponse
     {
         $book = Book::with([
-            'bookBorrowings' => fn($q) => $q->with('student.user')->latest('borrowed_at'),
+            'bookBorrowings' => fn ($q) => $q->with('student.user')->latest('borrowed_at'),
         ])->withCount('bookBorrowings')->findOrFail($id);
 
-        return view('admin.library.show', compact('book'));
+        return response()->json([
+            'id' => $book->id,
+            'title' => $book->title,
+            'author' => $book->author,
+            'isbn' => $book->isbn,
+            'category' => $book->category,
+            'total_copies' => $book->total_copies,
+            'available_copies' => $book->available_copies,
+            'location' => $book->location,
+            'description' => $book->description,
+            'borrowings_count' => $book->book_borrowings_count,
+            'borrowings' => $book->bookBorrowings->map(fn ($b) => [
+                'student_name' => $b->student?->user?->name ?? '-',
+                'borrowed_at' => $b->borrowed_at?->format('d/m/Y'),
+                'returned_at' => $b->returned_at?->format('d/m/Y') ?? null,
+            ]),
+        ]);
     }
 
-    public function edit(int $id): View
+    public function edit(int $id): JsonResponse
     {
         $book = Book::findOrFail($id);
 
-        return view('admin.library.edit', compact('book'));
+        return response()->json([
+            'id' => $book->id,
+            'title' => $book->title,
+            'author' => $book->author,
+            'isbn' => $book->isbn,
+            'category' => $book->category ?? '',
+            'total_copies' => $book->total_copies,
+            'available_copies' => $book->available_copies,
+            'location' => $book->location ?? '',
+            'description' => $book->description ?? '',
+        ]);
     }
 
     public function update(Request $request, int $id): RedirectResponse
@@ -120,7 +142,7 @@ class LibraryController extends Controller
                 ->with('success', 'বইয়ের তথ্য সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বই আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বই আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -144,7 +166,7 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'বই মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বই মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -152,7 +174,7 @@ class LibraryController extends Controller
     {
         $borrowings = BookBorrowing::with(['book', 'student.user'])
             ->latest('borrowed_at')
-            ->paginate(20);
+            ->paginate(10);
 
         return view('admin.library.borrowings', compact('borrowings'));
     }
@@ -194,7 +216,7 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে ধার দেওয়া হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বই ধার দিতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বই ধার দিতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -219,7 +241,7 @@ class LibraryController extends Controller
                 ->with('success', 'বই সফলভাবে ফেরত নেওয়া হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'বই ফেরত নিতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'বই ফেরত নিতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

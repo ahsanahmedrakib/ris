@@ -21,10 +21,22 @@ class AuthController extends Controller
 
     public function login(Request $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
+        $validated = $request->validate([
+            'email' => 'required|string',
             'password' => 'required',
+        ], [
+            'email.required' => 'ইমেইল অথবা ইউজারনেম আবশ্যক।',
+            'password.required' => 'পাসওয়ার্ড আবশ্যক।',
         ]);
+
+        $login = trim($validated['email']);
+        $password = $validated['password'];
+
+        $credentials = filter_var($login, FILTER_VALIDATE_EMAIL) !== false
+            ? ['email' => $login]
+            : ['username' => $login];
+
+        $credentials['password'] = $password;
 
         if (! Auth::attempt($credentials)) {
             return back()->withErrors([

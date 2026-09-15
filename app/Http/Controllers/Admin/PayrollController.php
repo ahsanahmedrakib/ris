@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Payroll;
 use App\Models\Staff;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -23,12 +24,16 @@ class PayrollController extends Controller
             $query->where('year', $request->year);
         }
 
-        $payrolls = $query->latest('year')->latest('month')->paginate(20)->withQueryString();
+        $payrolls = $query->latest('year')->latest('month')->paginate(10)->withQueryString();
 
         $currentYear = date('Y');
         $years = range($currentYear - 2, $currentYear + 1);
 
-        return view('admin.payroll.index', compact('payrolls', 'years'));
+        $totalStaff = Staff::count();
+        $totalPayroll = Payroll::where('year', $currentYear)->where('month', date('m'))->sum('net_salary');
+        $paidPayroll = Payroll::where('year', $currentYear)->where('month', date('m'))->where('status', 'paid')->sum('net_salary');
+
+        return view('admin.payroll.index', compact('payrolls', 'years', 'totalStaff', 'totalPayroll', 'paidPayroll'));
     }
 
     public function create(): View
@@ -159,5 +164,19 @@ class PayrollController extends Controller
             return back()->withInput()
                 ->with('error', 'বেতন আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
+    }
+
+    public function toggleStatus(int $id): JsonResponse
+    {
+        $payroll = Payroll::findOrFail($id);
+        $payroll->status = $payroll->status === 'paid' ? 'pending' : 'paid';
+        $payroll->paid_at = $payroll->status === 'paid' ? now() : null;
+        $payroll->save();
+
+        return response()->json([
+            'id' => $payroll->id,
+            'is_active' => $payroll->status === 'paid',
+            'status_label' => $payroll->status === 'paid' ? 'পরিশোধিত' : 'বকেয়',
+        ]);
     }
 }
