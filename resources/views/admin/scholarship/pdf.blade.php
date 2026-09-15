@@ -65,19 +65,23 @@
             <div class="space-y-4 mt-6 text-base">
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">শিক্ষার্থীর নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->student_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
+                        {{ $registration->student_name }}</div>
                 </div>
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">পিতার নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->father_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
+                        {{ $registration->father_name }}</div>
                 </div>
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">মাতার নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->mother_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
+                        {{ $registration->mother_name }}</div>
                 </div>
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">স্কুলের নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->school_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
+                        {{ $registration->school_name }}</div>
                 </div>
                 <div class="flex items-end gap-4">
                     <div class="flex items-end flex-1">
@@ -87,17 +91,20 @@
                     </div>
                     <div class="flex items-end flex-1">
                         <span class="font-bold whitespace-nowrap">রোল নং</span>
-                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->roll_no ?? '-' }}</div>
+                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
+                            {{ $registration->roll_no ?? '-' }}</div>
                     </div>
                     <div class="flex items-end flex-1">
                         <span class="font-bold whitespace-nowrap">মোবাইল নং</span>
-                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->mobile_no }}</div>
+                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
+                            {{ $registration->mobile_no }}</div>
                     </div>
                 </div>
             </div>
 
             <div class="flex justify-between items-end mt-16 text-base font-bold">
                 <div class="border-t border-black pt-1 px-4 text-center">শিক্ষার্থীর স্বাক্ষর</div>
+                <p class="text-red-400">This is auto generated admit card, no sign needed.</p>
                 <div class="border-t border-black pt-1 px-4 text-center">প্রধান শিক্ষক</div>
             </div>
         </div>
@@ -123,11 +130,13 @@
             <div class="space-y-4 mt-6 text-base">
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">শিক্ষার্থীর নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->student_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
+                        {{ $registration->student_name }}</div>
                 </div>
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">স্কুলের নামঃ</span>
-                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->school_name }}</div>
+                    <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
+                        {{ $registration->school_name }}</div>
                 </div>
                 <div class="flex items-end gap-6">
                     <div class="flex items-end flex-1">
@@ -137,7 +146,8 @@
                     </div>
                     <div class="flex items-end flex-1">
                         <span class="font-bold whitespace-nowrap">রোল নং</span>
-                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">{{ $registration->roll_no ?? '-' }}</div>
+                        <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
+                            {{ $registration->roll_no ?? '-' }}</div>
                     </div>
                 </div>
             </div>
@@ -156,7 +166,9 @@
                 <p class="text-base">মোবাইলঃ ০১৬১৯ ০০৭ ০০৮</p>
             </div>
 
-            <div class="flex justify-end items-end mt-12 text-base font-bold">
+            <div class="flex justify-between items-end mt-12 text-base font-bold">
+                <div class="border-t border-black pt-1 px-4 text-center">শিক্ষার্থীর স্বাক্ষর</div>
+                <p class="text-red-400">This is auto generated admit card, no sign needed.</p>
                 <div class="border-t border-black pt-1 px-4 text-center">প্রধান শিক্ষক</div>
             </div>
         </div>
