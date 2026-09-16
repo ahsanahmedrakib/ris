@@ -69,12 +69,12 @@
     <div class="print-page text-black text-sm relative p-10">
 
         <!-- ================= REGISTRATION FORM ================= -->
-        <div class="relative pb-6 border-b-2 border-dashed border-gray-500">
+        <div class="relative pb-8 border-b-2 border-dashed border-gray-500">
 
             <div class="flex justify-between items-start mb-2">
                 <div>
                     <img src="{{ asset('logo.png') }}" alt="রেশমা ইন্টারন্যাশনাল স্কুল"
-                        class="h-14 lg:h-16 w-auto mx-auto mb-4 object-contain">
+                        class="h-14 lg:h-16 w-auto mx-auto mb-6 object-contain">
                 </div>
                 <div class="border-2 border-black px-4 py-1.5 text-base font-bold w-62.5">
                     রেজিস্ট্রেশন নং: {{ $registration->registration_no }}
@@ -82,13 +82,13 @@
             </div>
 
             <div class="text-center my-3">
-                <h1 class="text-2xl font-bold text-black tracking-normal">আক্‌রামুন্নেছা-জলিল ও রেশমা-রেফাউল মেধাবৃত্তি
+                <h1 class="text-3xl font-bold text-black tracking-normal">আক্‌রামুন্নেছা-জলিল ও রেশমা-রেফাউল মেধাবৃত্তি
                     ২০২৬</h1>
                 <h2 class="text-xl font-bold text-black underline decoration-2 underline-offset-4 mt-1">রেজিস্ট্রেশন ফরম
                 </h2>
             </div>
 
-            <div class="space-y-4 mt-6 text-base">
+            <div class="space-y-4 mt-4 text-base">
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">শিক্ষার্থীর নামঃ</span>
                     <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
@@ -128,32 +128,32 @@
                 </div>
             </div>
 
-            <div class="flex justify-between items-end mt-16 text-base font-bold">
+            <div class="flex justify-between items-center mt-8 text-base font-bold">
                 <div class="border-t border-black pt-1 px-4 text-center">শিক্ষার্থীর স্বাক্ষর</div>
-                <p class="text-red-400">This is auto generated admit card, no sign needed.</p>
+                <p class="pt-12 italic">This is auto generated admit card, no sign needed.</p>
                 <div class="border-t border-black pt-1 px-4 text-center">প্রধান শিক্ষক</div>
             </div>
         </div>
 
         <!-- ================= ADMIT CARD ================= -->
-        <div class="relative pt-6">
+        <div class="relative pt-4">
 
             <div class="flex justify-between items-start mb-2">
                 <div>
                     <img src="{{ asset('logo.png') }}" alt="রেশমা ইন্টারন্যাশনাল স্কুল"
-                        class="h-14 lg:h-16 w-auto mx-auto mb-4 object-contain">
+                        class="h-14 lg:h-16 w-auto mx-auto object-contain">
                 </div>
                 <div class="border-2 border-black px-4 py-1.5 text-base font-bold w-62.5">
                     রেজিস্ট্রেশন নং: {{ $registration->registration_no }}
                 </div>
             </div>
             <div class="text-center my-3">
-                <h1 class="text-2xl font-bold text-black tracking-normal">আক্‌রামুন্নেছা-জলিল ও রেশমা-রেফাউল মেধাবৃত্তি
+                <h1 class="text-3xl font-bold text-black tracking-normal">আক্‌রামুন্নেছা-জলিল ও রেশমা-রেফাউল মেধাবৃত্তি
                     ২০২৬</h1>
                 <h2 class="text-xl font-bold text-black underline decoration-2 underline-offset-4 mt-1">প্রবেশপত্র</h2>
             </div>
 
-            <div class="space-y-4 mt-6 text-base">
+            <div class="space-y-4 mt-4 text-base">
                 <div class="flex items-end">
                     <span class="font-bold whitespace-nowrap">শিক্ষার্থীর নামঃ</span>
                     <div class="border-b-2 border-black grow ml-2 text-xl font-bold text-center">
@@ -178,7 +178,7 @@
                 </div>
             </div>
 
-            <div class="text-center mt-6 space-y-2 text-base font-bold">
+            <div class="text-center mt-4 space-y-2 text-base font-bold">
                 <p class="underline decoration-1 underline-offset-2">পরীক্ষার তারিখ ও সময়ঃ</p>
                 <p class="text-xl font-bold">
                     ৩০ অক্টোবর ২০২৬, শুক্রবার,
@@ -189,12 +189,10 @@
                     @endif
                 </p>
                 <p class="text-xl font-bold">স্থানঃ রেশমা ইন্টারন্যাশনাল স্কুল, গোপালগঞ্জ</p>
-                <p class="text-base">মোবাইলঃ ০১৬১৯ ০০৭ ০০৮</p>
+                <p class="text-xl font-bold">মোবাইলঃ ০১৬১৯ ০০৭ ০০৮</p>
             </div>
 
-            <div class="flex justify-between items-end mt-12 text-base font-bold">
-                <div class="border-t border-black pt-1 px-4 text-center">শিক্ষার্থীর স্বাক্ষর</div>
-                <p class="text-red-400">This is auto generated admit card, no sign needed.</p>
+            <div class="flex justify-end items-end mt-4 text-base font-bold">
                 <div class="border-t border-black pt-1 px-4 text-center">প্রধান শিক্ষক</div>
             </div>
         </div>
