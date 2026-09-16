@@ -128,9 +128,8 @@
                 </div>
             </div>
 
-            <div class="flex justify-between items-center mt-8 text-base font-bold">
+            <div class="flex justify-between items-end mt-12 text-base font-bold">
                 <div class="border-t border-black pt-1 px-4 text-center">শিক্ষার্থীর স্বাক্ষর</div>
-                <p class="pt-12 italic">This is auto generated admit card, no sign needed.</p>
                 <div class="border-t border-black pt-1 px-4 text-center">প্রধান শিক্ষক</div>
             </div>
         </div>
@@ -183,16 +182,18 @@
                 <p class="text-xl font-bold">
                     ৩০ অক্টোবর ২০২৬, শুক্রবার,
                     @if (in_array($registration->class_no, [1, 2]))
-                        ৯টা থেকে ১১টা
+                        সকাল ৯:০০টা - ১০:০০টা
                     @else
-                        ১২টা থেকে ২টা ৩০ মিনিট
+                        সকাল ১০:৩০টা - দুপুর ১২:৩০টা
                     @endif
                 </p>
                 <p class="text-xl font-bold">স্থানঃ রেশমা ইন্টারন্যাশনাল স্কুল, গোপালগঞ্জ</p>
-                <p class="text-xl font-bold">মোবাইলঃ ০১৬১৯ ০০৭ ০০৮</p>
+                <p class="text-xl font-bold">মোবাইলঃ ০১৬১৯ ০০৭ ০০৬</p>
             </div>
 
-            <div class="flex justify-end items-end mt-4 text-base font-bold">
+            <div class="flex justify-between items-center mt-8 text-base font-bold">
+                <div class="border-t border-black pt-1 px-4 text-center invisible">শিক্ষার্থীর স্বাক্ষর</div>
+                <p class="pt-12 italic">This is system generated admit card, no sign required.</p>
                 <div class="border-t border-black pt-1 px-4 text-center">প্রধান শিক্ষক</div>
             </div>
         </div>

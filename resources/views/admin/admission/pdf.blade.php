@@ -66,7 +66,7 @@
             <div class="flex-1 text-center">
                 <h1 class="text-lg font-bold text-pink-700 tracking-normal">রেশমা ইন্টারন্যাশনাল স্কুল</h1>
                 <p class="text-[11px] text-gray-600 font-medium">প্রি-প্রাইমারি / প্রাইমারি স্কুল</p>
-                <p class="text-[10px] text-gray-500 mt-0.5">গোপালগঞ্জ &nbsp;|&nbsp; মোবাইল: ০১৬১৯ ০০৭ ০০৮</p>
+                <p class="text-[10px] text-gray-500 mt-0.5">গোপালগঞ্জ &nbsp;|&nbsp; মোবাইল: ০১৬১৯ ০০৭ ০০৬</p>
             </div>
             <div class="shrink-0">
                 @if ($admission->student_photo)
@@ -499,7 +499,7 @@
             <div class="flex-1 text-center">
                 <h1 class="text-lg font-bold text-pink-700 tracking-normal">রেশমা ইন্টারন্যাশনাল স্কুল</h1>
                 <p class="text-[11px] text-gray-600 font-medium">প্রি-প্রাইমারি / প্রাইমারি স্কুল</p>
-                <p class="text-[10px] text-gray-500 mt-0.5">গোপালগঞ্জ &nbsp;|&nbsp; মোবাইল: ০১৬১৯ ০০৭ ০০৮</p>
+                <p class="text-[10px] text-gray-500 mt-0.5">গোপালগঞ্জ &nbsp;|&nbsp; মোবাইল: ০১৬১৯ ০০৭ ০০৬</p>
             </div>
             <div class="shrink-0 text-center">
                 @if ($admission->student_photo)
