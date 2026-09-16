@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Admission;
+use App\Models\ClassRoom;
+use App\Models\Student;
+use App\Models\User;
 use App\Support\XlsxExport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class AdmissionController extends Controller
@@ -40,6 +46,8 @@ class AdmissionController extends Controller
 
         $admissions = $query->latest()->paginate($perPage)->withQueryString();
 
+        $admittedNos = Student::pluck('admission_no')->map(fn ($no) => (string) $no)->all();
+
         $defaultAcademicYear = strtr((string) ((now()->format('n') >= 3 ? now()->addYear()->year : now()->year) % 100), [
             '0' => '০',
             '1' => '১',
@@ -59,6 +67,7 @@ class AdmissionController extends Controller
             'statuses' => Admission::STATUSES,
             'batches' => Admission::BATCHES,
             'classes' => Admission::CLASS_OPTIONS,
+            'admittedNos' => $admittedNos,
             'breadcrumbs' => ['ভর্তি আবেদন' => null],
         ]);
     }
@@ -142,6 +151,7 @@ class AdmissionController extends Controller
             'student_photo' => $admission->student_photo ? Storage::disk('public')->url($admission->student_photo) : null,
             'created_at' => $admission->created_at->format('d/m/Y h:i A'),
             'creator_name' => $admission->creator?->name ?? 'অনলাইন (শিক্ষার্থী)',
+            'admitted' => Student::where('admission_no', $admission->admission_no)->exists(),
         ]);
     }
 
@@ -249,6 +259,101 @@ class AdmissionController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
+    }
+
+    public function admit(Request $request, Admission $admission): RedirectResponse
+    {
+        $validated = $request->validate([
+            'gender' => 'required|in:male,female,other',
+        ], [
+            'gender.required' => 'লিঙ্গ নির্বাচন আবশ্যক।',
+            'gender.in' => 'সঠিক লিঙ্গ নির্বাচন করুন।',
+        ]);
+
+        if ($admission->status !== 'approved') {
+            return back()->with('error', 'শুধুমাত্র অনুমোদিত ভর্তি আবেদনকে ভর্তি করা যাবে।');
+        }
+
+        if (Student::where('admission_no', $admission->admission_no)->exists()) {
+            return back()->with('error', 'এই শিক্ষার্থী ('.$admission->admission_no.') ইতিমধ্যে ভর্তি হয়ে গেছে।');
+        }
+
+        $classLevel = $admission->class_level[0] ?? null;
+
+        if (! $classLevel) {
+            return back()->with('error', 'শ্রেণি নির্ধারণ করা যায়নি।');
+        }
+
+        $class = ClassRoom::where('name', $classLevel)
+            ->orWhere('name', trim(str_replace('শ্রেণি', '', $classLevel)))
+            ->first();
+
+        if (! $class) {
+            return back()->with('error', '"'.$classLevel.'" শ্রেণির সাথে মিলে যাওয়া শ্রেণি পাওয়া যায়নি। আগে শ্রেণি তৈরি করুন।');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $user = User::create([
+                'name' => $admission->student_name_en ?: ($admission->student_name_bn ?: 'শিক্ষার্থী'),
+                'email' => $this->uniqueStudentEmail($admission),
+                'phone' => $admission->phone,
+                'password' => Str::random(10),
+                'role' => UserRole::Student->value,
+                'avatar' => $admission->student_photo,
+                'is_active' => true,
+            ]);
+
+            Student::create([
+                'user_id' => $user->id,
+                'admission_no' => $admission->admission_no,
+                'class_id' => $class->id,
+                'section' => $admission->section ?: '-',
+                'roll_no' => (int) ($admission->roll_no ?: 0),
+                'date_of_birth' => $admission->dob,
+                'gender' => $validated['gender'],
+                'blood_group' => $admission->blood_group,
+                'address' => $admission->present_address ?: ($admission->permanent_address ?: ''),
+                'guardian_name' => $admission->father_name_bn ?: ($admission->legal_guardian_name ?: ''),
+                'guardian_phone' => $admission->phone ?: ($admission->legal_guardian_phone ?: ''),
+                'guardian_email' => $admission->email,
+                'is_active' => true,
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('admin.admission.index')
+                ->with('success', 'শিক্ষার্থী "'.$admission->student_name_bn.'" সফলভাবে ভর্তি করা হয়েছে।');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return back()
+                ->with('error', 'শিক্ষার্থী ভর্তি করতে সমস্যা হয়েছে। '.$e->getMessage());
+        }
+    }
+
+    private function uniqueStudentEmail(Admission $admission): string
+    {
+        if ($admission->email && ! User::where('email', $admission->email)->exists()) {
+            return $admission->email;
+        }
+
+        $base = Str::slug((string) $admission->student_name_en, '-');
+
+        if ($base === '') {
+            $base = 'student-'.$admission->id;
+        }
+
+        $email = $base.'@ris.local';
+        $i = 2;
+
+        while (User::where('email', $email)->exists()) {
+            $email = $base.'-'.$i.'@ris.local';
+            $i++;
+        }
+
+        return $email;
     }
 
     public function print(Admission $admission): View

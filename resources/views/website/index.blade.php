@@ -733,7 +733,10 @@
                         @foreach ($galleryItems as $item)
                             <div class="swiper-slide">
                                 <div
-                                    class="gallery-card group relative rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-64">
+                                    class="gallery-card lightbox-trigger group relative rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-64 cursor-pointer"
+                                    data-title="{{ $item->title }}"
+                                    data-category="{{ $item->category ?? '' }}"
+                                    data-caption="{{ $item->description ?? '' }}">
                                     <img src="{{ Storage::url($item->image) }}" alt="{{ $item->title }}"
                                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                     <div
@@ -903,7 +906,7 @@
             <div
                 class="absolute bottom-10 left-10 w-32 h-32 border border-ris-primary/10 rounded-2xl rotate-12 pointer-events-none">
             </div>
-            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                     <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">সাধারণ
                         জিজ্ঞাসা</span>

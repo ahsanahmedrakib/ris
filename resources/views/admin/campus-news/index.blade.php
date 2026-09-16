@@ -185,7 +185,7 @@
         <div x-show="showCreateModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/60" @click="showCreateModal = false"></div>
             <div
-                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
+                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">নতুন ক্যাম্পাস লাইফ</h3>
                     <button @click="showCreateModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
@@ -223,20 +223,22 @@
                                 <p class="mt-1 text-xs text-red-600" x-text="createErrors.date || 'তারিখ আবশ্যক'"></p>
                             </template>
                         </div>
-                        <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">বিবরণ</label>
-                            <input type="hidden" name="description">
-                            <div id="campusCreateQuill" class="ris-quill bg-white border border-gray-200 rounded-lg"></div>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">ছবি</label>
-                            <img x-show="createImagePreview" :src="createImagePreview"
-                                class="max-h-52 w-auto rounded-lg border border-gray-200 shadow-sm mb-3">
-                            <input type="file" name="image" accept="image/*" id="create_image"
-                                @change="createImagePreview = URL.createObjectURL($event.target.files[0])"
-                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
-                            <p class="mt-1 text-xs text-gray-400">JPG, PNG, WEBP — সর্বোচ্চ 5MB। ছবি না দিলে ডিফল্ট আইকন দেখাবে।</p>
-                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">বিবরণ</label>
+                        <input type="hidden" name="description">
+                        <div id="campusCreateQuill" class="ris-quill bg-white border border-gray-200 rounded-lg"></div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ছবি</label>
+                        <img x-show="createImagePreview" :src="createImagePreview"
+                            class="max-h-52 w-auto rounded-lg border border-gray-200 shadow-sm mb-3">
+                        <input type="file" name="image" accept="image/*" id="create_image"
+                            @change="createImagePreview = URL.createObjectURL($event.target.files[0])"
+                            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
+                        <p class="mt-1 text-xs text-gray-400">JPG, PNG, WEBP — সর্বোচ্চ 5MB। ছবি না দিলে ডিফল্ট আইকন দেখাবে।</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">সাজানোর ক্রম</label>
                             <input type="number" name="sort_order" x-model="createForm.sort_order"
@@ -267,7 +269,7 @@
         <div x-show="showViewModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/60" @click="showViewModal = false"></div>
             <div
-                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
+                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">ক্যাম্পাস লাইফের তথ্য</h3>
                     <button @click="showViewModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
@@ -338,7 +340,7 @@
         <div x-show="showEditModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/60" @click="showEditModal = false"></div>
             <div
-                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
+                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">ক্যাম্পাস লাইফ সম্পাদনা</h3>
                     <button @click="showEditModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
@@ -379,29 +381,31 @@
                                         <p class="mt-1 text-xs text-red-600" x-text="editErrors.date || 'তারিখ আবশ্যক'"></p>
                                     </template>
                                 </div>
-                                <div class="sm:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">বিবরণ</label>
-                                    <input type="hidden" name="description">
-                                    <div id="campusEditQuill" class="ris-quill bg-white border border-gray-200 rounded-lg"></div>
-                                </div>
-                                <div class="sm:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">নতুন ছবি</label>
-                                    <input type="file" name="image" accept="image/*"
-                                        @change="editImagePreview = URL.createObjectURL($event.target.files[0])"
-                                        class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
-                                    <p class="mt-1 text-xs text-gray-400">JPG, PNG, WEBP — সর্বোচ্চ 5MB। ফাইল নির্বাচন না করলে
-                                        পুরাতন থাকবে।</p>
-                                    <div class="mt-3 flex items-center gap-3">
-                                        <div class="flex items-center gap-3" x-show="editData.image">
-                                            <img :src="editImagePreview || editData.image"
-                                                class="w-40 h-20 rounded-lg object-cover border border-gray-200">
-                                            <span class="text-sm text-gray-500" x-text="editImagePreview ? 'নতুন ছবি' : 'বর্তমান ছবি'"></span>
-                                        </div>
-                                        <div class="w-40 h-20 rounded-lg bg-ris-primary/10 flex items-center justify-center" x-show="!editData.image">
-                                            <svg class="w-8 h-8 text-ris-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                        </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">বিবরণ</label>
+                                <input type="hidden" name="description">
+                                <div id="campusEditQuill" class="ris-quill bg-white border border-gray-200 rounded-lg"></div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">নতুন ছবি</label>
+                                <input type="file" name="image" accept="image/*"
+                                    @change="editImagePreview = URL.createObjectURL($event.target.files[0])"
+                                    class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
+                                <p class="mt-1 text-xs text-gray-400">JPG, PNG, WEBP — সর্বোচ্চ 5MB। ফাইল নির্বাচন না করলে
+                                    পুরাতন থাকবে।</p>
+                                <div class="mt-3 flex items-center gap-3">
+                                    <div class="flex items-center gap-3" x-show="editData.image">
+                                        <img :src="editImagePreview || editData.image"
+                                            class="w-40 h-20 rounded-lg object-cover border border-gray-200">
+                                        <span class="text-sm text-gray-500" x-text="editImagePreview ? 'নতুন ছবি' : 'বর্তমান ছবি'"></span>
+                                    </div>
+                                    <div class="w-40 h-20 rounded-lg bg-ris-primary/10 flex items-center justify-center" x-show="!editData.image">
+                                        <svg class="w-8 h-8 text-ris-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">সাজানোর ক্রম</label>
                                     <input type="number" name="sort_order" x-model="editData.sort_order"

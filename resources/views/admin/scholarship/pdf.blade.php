@@ -12,19 +12,46 @@
             font-family: 'Tiro Bangla', serif;
         }
 
-        @media print {
-            .no-print {
-                display: none;
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        @media screen {
+            .print-page {
+                width: 210mm;
+                min-height: 297mm;
+                background: white;
+                border: 1px solid #ccc;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             }
 
             body {
-                background: white;
+                padding: 40px 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
             }
 
-            .page-container {
-                box-shadow: none;
-                padding: 0;
-                margin: 0;
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+            }
+
+            .print-page {
+                width: 210mm;
+                zoom: 0.99;
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
             }
         }
     </style>
@@ -39,10 +66,9 @@
         </button>
     </div>
 
-    <div
-        class="page-container w-[210mm] min-h-[297mm] bg-white p-10 border border-gray-300 shadow-lg text-black text-sm relative">
+    <div class="print-page text-black text-sm relative p-10">
 
-        <!-- ================= TOP SECTION: REGISTRATION FORM ================= -->
+        <!-- ================= REGISTRATION FORM ================= -->
         <div class="relative pb-6 border-b-2 border-dashed border-gray-500">
 
             <div class="flex justify-between items-start mb-2">
@@ -109,7 +135,7 @@
             </div>
         </div>
 
-        <!-- ================= BOTTOM SECTION: ADMIT CARD ================= -->
+        <!-- ================= ADMIT CARD ================= -->
         <div class="relative pt-6">
 
             <div class="flex justify-between items-start mb-2">

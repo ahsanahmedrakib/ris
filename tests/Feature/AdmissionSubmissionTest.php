@@ -238,7 +238,7 @@ class AdmissionSubmissionTest extends TestCase
         $photo = Admission::first()->student_photo;
 
         $this->assertNotNull($photo);
-        Storage::disk('public')->assertExists($photo);
+        $this->assertTrue(Storage::disk('public')->exists($photo));
     }
 
     #[Test]

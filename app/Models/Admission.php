@@ -22,7 +22,7 @@ class Admission extends Model
 
     public const BATCHES = ['প্রভাতী', 'দিবা'];
 
-    public const CLASS_OPTIONS = ['প্লে', 'নার্সারি', 'কেজি', '১ম শ্রেণি', '২য় শ্রেণি', '৩য় শ্রেণি', '৪র্থ শ্রেণি', '৫ম শ্রেণি'];
+    public const CLASS_OPTIONS = ['প্লে', 'নার্সারি', 'কেজি', '১ম', '২য়', '৩য়', '৪র্থ', '৫ম'];
 
     /** @var array<string, string> Class label → admission-number leading key. */
     public const CLASS_KEYS = [

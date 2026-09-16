@@ -539,3 +539,130 @@ document.addEventListener('DOMContentLoaded', () => {
         countEls.forEach((el) => ioCount.observe(el));
     }
 });
+
+(() => {
+    const getSrc = (el) => {
+        if (el.dataset.src) return el.dataset.src.trim();
+        const img = el.querySelector('img');
+        return img ? (img.getAttribute('src') || '').trim() : '';
+    };
+
+    const collect = () => {
+        const seen = new Set();
+        return [...document.querySelectorAll('.lightbox-trigger')].filter((el) => {
+            const src = getSrc(el);
+            if (!src || seen.has(src)) return false;
+            seen.add(src);
+            return true;
+        });
+    };
+
+    let lightbox = null;
+    let group = [];
+    let currentIndex = 0;
+
+    const buildLightbox = () => {
+        const wrap = document.createElement('div');
+        wrap.className = 'lightbox hidden fixed inset-0 z-[999] items-center justify-center p-4 sm:p-6';
+        wrap.innerHTML = `
+            <div class="lightbox-backdrop absolute inset-0 bg-black/90"></div>
+            <button type="button" class="lightbox-close absolute top-4 right-4 sm:top-5 sm:right-5 z-10 w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/20 flex items-center justify-center cursor-pointer transition-colors" aria-label="বন্ধ করুন">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <button type="button" class="lightbox-prev absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/20 flex items-center justify-center cursor-pointer transition-colors" aria-label="পূর্ববর্তী">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <figure class="relative max-w-6xl w-full mx-auto">
+                <img class="lightbox-img max-h-[82vh] w-auto max-w-full mx-auto rounded-xl object-contain shadow-2xl" alt="">
+                <figcaption class="lightbox-caption hidden text-center text-white mt-4"></figcaption>
+                <div class="lightbox-counter absolute -top-9 right-0 text-white/70 text-sm font-medium"></div>
+            </figure>
+            <button type="button" class="lightbox-next absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/20 flex items-center justify-center cursor-pointer transition-colors" aria-label="পরবর্তী">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+        `;
+        document.body.appendChild(wrap);
+        return wrap;
+    };
+
+    const renderCaption = (g) => {
+        const fig = lightbox.querySelector('.lightbox-caption');
+        fig.innerHTML = '';
+        if (g.category) {
+            const chip = document.createElement('span');
+            chip.className = 'inline-block px-2.5 py-0.5 bg-ris-primary text-white text-xs font-medium rounded-full mb-2';
+            chip.textContent = g.category;
+            fig.appendChild(chip);
+        }
+        if (g.title) {
+            const t = document.createElement('h4');
+            t.className = 'font-heading font-bold text-white text-lg';
+            t.textContent = g.title;
+            fig.appendChild(t);
+        }
+        if (g.caption) {
+            const p = document.createElement('p');
+            p.className = 'text-white/75 text-sm mt-1';
+            p.textContent = g.caption;
+            fig.appendChild(p);
+        }
+        fig.classList.toggle('hidden', fig.children.length === 0);
+    };
+
+    const showSlide = () => {
+        const g = group[currentIndex];
+        const img = lightbox.querySelector('.lightbox-img');
+        img.src = g.src;
+        img.alt = g.title || 'গ্যালারির ছবি';
+        lightbox.querySelector('.lightbox-counter').textContent = `${currentIndex + 1} / ${group.length}`;
+        renderCaption(g);
+    };
+
+    const openLightbox = (el, all) => {
+        group = all.map((e) => ({
+            src: getSrc(e),
+            title: e.dataset.title || '',
+            category: e.dataset.category || '',
+            caption: e.dataset.caption || '',
+        }));
+        if (!lightbox) lightbox = buildLightbox();
+        const idx = group.findIndex((g) => g.src === getSrc(el));
+        currentIndex = idx >= 0 ? idx : 0;
+        showSlide();
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeLightbox = () => {
+        if (!lightbox) return;
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        document.body.style.overflow = '';
+    };
+
+    const shift = (delta) => {
+        currentIndex = (currentIndex + delta + group.length) % group.length;
+        showSlide();
+    };
+
+    document.addEventListener('click', (e) => {
+        const trigger = e.target.closest('.lightbox-trigger');
+        if (trigger) {
+            e.preventDefault();
+            openLightbox(trigger, collect());
+            return;
+        }
+        if (!lightbox || lightbox.classList.contains('hidden')) return;
+        if (e.target.closest('.lightbox-backdrop') || e.target.closest('.lightbox-close')) closeLightbox();
+        else if (e.target.closest('.lightbox-prev')) shift(-1);
+        else if (e.target.closest('.lightbox-next')) shift(1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox || lightbox.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeLightbox();
+        else if (e.key === 'ArrowLeft') shift(-1);
+        else if (e.key === 'ArrowRight') shift(1);
+    });
+})();

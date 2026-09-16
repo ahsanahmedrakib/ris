@@ -53,6 +53,7 @@ Route::middleware('track.visitor')->group(function () {
     // ── Academic ──
     Route::prefix('academic')->name('academic.')->group(function () {
         Route::get('/calendar', [WebsiteController::class, 'academicCalendar'])->name('calendar');
+        Route::get('/calendar/{academicCalendar}/pdf', [WebsiteController::class, 'academicCalendarPdf'])->name('calendar.pdf');
         Route::get('/fees', [WebsiteController::class, 'academicFees'])->name('fees');
         Route::get('/results', [WebsiteController::class, 'academicResults'])->name('results');
         Route::get('/facilities', [WebsiteController::class, 'academicFacilities'])->name('facilities');
@@ -99,6 +100,7 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
     Route::post('/trash/{type}/{id}/restore', [TrashController::class, 'restore'])->name('admin.trash.restore');
     Route::delete('/trash/{type}/{id}/force-delete', [TrashController::class, 'forceDelete'])->name('admin.trash.force-delete');
 
+    Route::get('students/download', [StudentController::class, 'downloadAll'])->name('admin.students.download');
     Route::resource('students', StudentController::class)->except(['create'])->names('admin.students');
     Route::patch('students/{student}/toggle-active', [StudentController::class, 'toggleActive'])->name('admin.students.toggle-active');
     Route::resource('classes', ClassController::class)->except(['create'])->names('admin.classes');
@@ -147,6 +149,7 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
     Route::get('/admission/{admission}/edit', [AdmissionController::class, 'edit'])->name('admin.admission.edit');
     Route::put('/admission/{admission}', [AdmissionController::class, 'update'])->name('admin.admission.update');
     Route::patch('/admission/{admission}/status', [AdmissionController::class, 'updateStatus'])->name('admin.admission.status');
+    Route::post('/admission/{admission}/admit', [AdmissionController::class, 'admit'])->name('admin.admission.admit');
     Route::delete('/admission/{admission}', [AdmissionController::class, 'destroy'])->name('admin.admission.destroy');
     Route::get('/admission/{admission}/pdf', [AdmissionController::class, 'print'])->name('admin.admission.pdf');
     Route::get('/admission/download', [AdmissionController::class, 'downloadAll'])->name('admin.admission.download');

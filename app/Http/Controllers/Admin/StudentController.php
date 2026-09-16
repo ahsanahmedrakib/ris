@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
 use App\Models\Student;
 use App\Models\User;
+use App\Support\XlsxExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -252,6 +253,64 @@ class StudentController extends Controller
             return back()
                 ->with('error', 'ছাত্র/ছাত্রী মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
+    }
+
+    public function downloadAll(Request $request)
+    {
+        $query = Student::with(['classRoom', 'user']);
+
+        if ($request->filled('class_id')) {
+            $query->where('class_id', $request->class_id);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('admission_no', 'like', "%{$search}%")
+                    ->orWhere('guardian_name', 'like', "%{$search}%")
+                    ->orWhere('guardian_phone', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->boolean('status'));
+        }
+
+        $students = $query->latest()->get();
+
+        $rows = $students->map(fn ($student, $index) => [
+            $index + 1,
+            $student->admission_no,
+            $student->user?->name,
+            $student->classRoom?->name,
+            $student->roll_no ?? '-',
+            $student->section ?? '-',
+            match ($student->gender) {
+                'male' => 'পুরুষ',
+                'female' => 'মহিলা',
+                'other' => 'অন্যান্য',
+                default => '-',
+            },
+            $student->date_of_birth?->format('d/m/Y'),
+            $student->blood_group ?? '-',
+            $student->user?->phone ?? '-',
+            $student->user?->email ?? '-',
+            $student->guardian_name ?? '-',
+            $student->guardian_phone ?? '-',
+            $student->address ?? '-',
+            $student->is_active ? 'সক্রিয়' : 'ডিলিট',
+            $student->created_at?->format('d/m/Y'),
+        ])->all();
+
+        return XlsxExport::download(
+            ['ক্রমিক', 'ভর্তি নং', 'নাম', 'শ্রেণি', 'রোল নং', 'সেকশন', 'লিঙ্গ', 'জন্ম তারিখ', 'রক্তের গ্রুপ', 'মোবাইল', 'ইমেইল', 'অভিভাবক', 'অভিভাবকের মোবাইল', 'ঠিকানা', 'স্ট্যাটাস', 'যোগদানের তারিখ'],
+            $rows,
+            'students_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.xlsx',
+        );
     }
 
     public function toggleActive(int $id): JsonResponse

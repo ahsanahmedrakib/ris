@@ -12,12 +12,19 @@
                 <p class="text-sm text-gray-500 mt-1">সকল ছাত্র/ছাত্রীদের তথ্য পরিচালনা করুন</p>
             </div>
             <div class="flex items-center gap-2">
+                <a href="{{ route('admin.students.download', request()->query()) }}" target="_blank"
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors shadow-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Excel ডাউনলোড
+                </a>
                 <button @click="openCreateModal()"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    নতুন ছাত্র
+                    নতুন ছাত্র/ছাত্রী
                 </button>
             </div>
         </div>
@@ -183,8 +190,8 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                     </svg>
-                                    <p class="text-gray-500 font-medium">কোনো ছাত্র পাওয়া যায়নি</p>
-                                    <p class="text-sm text-gray-400 mt-1">নতুন ছাত্র যোগ করুন বা ফিল্টার পরিবর্তন করুন</p>
+                                    <p class="text-gray-500 font-medium">কোনো ছাত্র/ছাত্রী পাওয়া যায়নি</p>
+                                    <p class="text-sm text-gray-400 mt-1">নতুন ছাত্র/ছাত্রী যোগ করুন বা ফিল্টার পরিবর্তন করুন</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -232,7 +239,7 @@
             <div
                 class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
-                    <h3 class="font-heading font-bold text-white text-lg">নতুন ছাত্র যোগ</h3>
+                    <h3 class="font-heading font-bold text-white text-lg">নতুন ছাত্র/ছাত্রী যোগ</h3>
                     <button @click="showCreateModal = false" class="text-white/80 hover:text-white transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

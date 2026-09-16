@@ -111,6 +111,11 @@
                                     <button @click="openViewModal({{ $admission->id }})" class="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors" title="দেখুন">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     </button>
+                                    @if($admission->status === 'approved' && ! in_array($admission->admission_no, $admittedNos))
+                                        <button @click="openAdmitModal({{ $admission->id }})" class="p-1.5 rounded-lg text-emerald-700 bg-emerald-100 hover:bg-emerald-200 transition-colors" title="ভর্তি করুন">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        </button>
+                                    @endif
                                     <button @click="openEditModal({{ $admission->id }})" class="p-1.5 rounded-lg text-amber-600 bg-amber-50 hover:bg-amber-100 transition-colors" title="সম্পাদনা">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </button>
@@ -607,6 +612,7 @@
                         </dl>
                         <div class="mt-6 pt-5 border-t border-gray-100 flex justify-end gap-3">
                             <button @click="showViewModal = false" class="px-5 py-2.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">বন্ধ করুন</button>
+                            <button x-show="viewData && viewData.status === 'approved' && ! viewData.admitted" @click="showViewModal = false; openAdmitModal(viewData.id)" class="px-5 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors" x-cloak>ভর্তি করুন</button>
                             <button @click="showViewModal = false; openEditModal(viewData.id)" class="px-5 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors">সম্পাদনা</button>
                         </div>
                     </div>
@@ -940,6 +946,73 @@
         </div>
     </div>
 
+    {{-- ═══════════════ MARK AS ADMITTED MODAL ═══════════════ --}}
+    <div x-show="showAdmitModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60" @click="showAdmitModal = false"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-slide-up">
+            <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
+                <h3 class="font-heading font-bold text-white text-lg">ভর্তি নিশ্চিত করুন</h3>
+                <button @click="showAdmitModal = false" class="text-white/80 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <template x-if="admitData">
+                <form :action="'{{ url('admin/admission') }}/' + admitData.id + '/admit'" method="POST" class="p-6 space-y-5" @submit.prevent="submitAdmit($el)">
+                    @csrf
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-14 h-14 rounded-lg bg-ris-primary/10 flex items-center justify-center text-ris-primary font-heading font-bold text-xl shrink-0" x-text="admitData.student_name_bn ? admitData.student_name_bn.charAt(0) : ''"></div>
+                            <div class="min-w-0">
+                                <p class="text-lg font-semibold text-gray-900 truncate" x-text="admitData.student_name_bn"></p>
+                                <p class="text-sm text-gray-500" x-text="admitData.admission_no"></p>
+                            </div>
+                        </div>
+                        <dl class="mt-4 grid grid-cols-2 gap-3 bg-gray-50 rounded-xl p-4">
+                            <div>
+                                <dt class="text-xs text-gray-500 mb-0.5">শ্রেণি</dt>
+                                <dd class="text-sm font-medium text-gray-900" x-text="admitData.class_level"></dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs text-gray-500 mb-0.5">রোল নং</dt>
+                                <dd class="text-sm font-medium text-gray-900" x-text="admitData.roll_no || '-'"></dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs text-gray-500 mb-0.5">ব্যাচ</dt>
+                                <dd class="text-sm font-medium text-gray-900" x-text="admitData.batch"></dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs text-gray-500 mb-0.5">জন্ম তারিখ</dt>
+                                <dd class="text-sm font-medium text-gray-900" x-text="admitData.dob"></dd>
+                            </div>
+                        </dl>
+                    </div>
+                    <div>
+                        <label class="block text-lg font-medium text-gray-700 mb-1.5">লিঙ্গ <span class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="gender" value="male" x-model="admitGender" class="accent-ris-primary">
+                                <span class="text-lg text-gray-700">পুরুষ</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="gender" value="female" x-model="admitGender" class="accent-ris-primary">
+                                <span class="text-lg text-gray-700">মহিলা</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="gender" value="other" x-model="admitGender" class="accent-ris-primary">
+                                <span class="text-lg text-gray-700">অন্যান্য</span>
+                            </label>
+                        </div>
+                    </div>
+                    <p class="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">এই শিক্ষার্থী শিক্ষার্থীদের তালিকায় যুক্ত হবে (শিক্ষার্থী অ্যাকাউন্টসহ)।</p>
+                    <div class="flex justify-end gap-3 pt-2">
+                        <button type="button" @click="showAdmitModal = false" class="px-5 py-2.5 bg-gray-100 text-gray-700 text-base font-medium rounded-lg hover:bg-gray-200 transition-colors">বাতিল</button>
+                        <button type="submit" :disabled="admitSubmitting" class="px-6 py-2.5 bg-emerald-600 text-white text-base font-medium rounded-lg hover:bg-emerald-700 transition-colors shadow-sm" x-text="admitSubmitting ? 'ভর্তি হচ্ছে...' : 'ভর্তি করুন'"></button>
+                    </div>
+                </form>
+            </template>
+        </div>
+    </div>
+
 </div>
 
 @section('scripts')
@@ -949,8 +1022,12 @@ function admissionApp() {
         showCreateModal: false,
         showViewModal: false,
         showEditModal: false,
+        showAdmitModal: false,
         viewData: null,
         editData: null,
+        admitData: null,
+        admitGender: 'male',
+        admitSubmitting: false,
         viewLoading: false,
         editLoading: false,
         createPhotoPreview: null,
@@ -986,6 +1063,32 @@ function admissionApp() {
             } finally {
                 this.viewLoading = false;
             }
+        },
+
+        async openAdmitModal(id) {
+            this.showAdmitModal = true;
+            this.admitData = null;
+            this.admitGender = 'male';
+            this.admitSubmitting = false;
+            try {
+                const res = await fetch(`{{ url('admin/admission') }}/${id}/show`);
+                const data = await res.json();
+                if (data.admitted || data.status !== 'approved') {
+                    this.showAdmitModal = false;
+                    alert(data.admitted ? 'এই শিক্ষার্থী ইতিমধ্যে ভর্তি হয়ে গেছে।' : 'শুধুমাত্র অনুমোদিত ভর্তি আবেদন ভর্তি করা যাবে।');
+                    return;
+                }
+                this.admitData = data;
+            } catch (e) {
+                this.showAdmitModal = false;
+                alert('তথ্য লোড করতে সমস্যা হয়েছে।');
+            }
+        },
+
+        submitAdmit(el) {
+            if (this.admitSubmitting) return;
+            this.admitSubmitting = true;
+            el.submit();
         },
 
         async openEditModal(id) {

@@ -37,8 +37,10 @@
             @if ($items->count())
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 reveal-stagger">
                     @foreach ($items as $item)
-                        <div class="gallery-item group relative rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 aspect-square reveal"
-                            data-category="{{ $item->category ?? '' }}">
+                        <div class="gallery-item lightbox-trigger group relative rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 aspect-square reveal cursor-pointer"
+                            data-category="{{ $item->category ?? '' }}"
+                            data-title="{{ $item->title }}"
+                            data-caption="{{ $item->description ?? '' }}">
                             <img src="{{ Storage::url($item->image) }}" alt="{{ $item->title }}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -52,9 +54,7 @@
                                     @endif
                                 </div>
                             </div>
-                            {{-- Lightbox trigger --}}
-                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                x-data="{ show: false }" @click="show = true">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>

@@ -171,6 +171,7 @@ class WebsiteNotificationsTest extends TestCase
     #[Test]
     public function admin_can_view_notifications_list(): void
     {
+        /** @var User $admin */
         $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
         $admin->notify(new NewSubmission('contact', 'নতুন কনটাক্ট মেসেজ', 'রাকিব মেসেজ পাঠিয়েছেন।', route('admin.contact-messages.show', 1)));
 
@@ -183,6 +184,7 @@ class WebsiteNotificationsTest extends TestCase
     #[Test]
     public function reading_notification_marks_as_read_and_redirects_to_target(): void
     {
+        /** @var User $admin */
         $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
         $target = route('admin.contact-messages.show', 1);
         $admin->notify(new NewSubmission('contact', 'নতুন কনটাক্ট মেসেজ', 'রাকিব মেসেজ পাঠিয়েছেন।', $target));
@@ -199,7 +201,9 @@ class WebsiteNotificationsTest extends TestCase
     #[Test]
     public function admin_cannot_read_another_users_notification(): void
     {
+        /** @var User $owner */
         $owner = User::factory()->create(['role' => 'admin', 'email' => 'owner@example.com']);
+        /** @var User $other */
         $other = User::factory()->create(['role' => 'admin', 'email' => 'other@example.com']);
         $owner->notify(new NewSubmission('contact', 'নতুন কনটাক্ট মেসেজ', 'বার্তা।', route('admin.contact-messages.show', 1)));
 
@@ -213,6 +217,7 @@ class WebsiteNotificationsTest extends TestCase
     #[Test]
     public function read_all_marks_every_notification_as_read(): void
     {
+        /** @var User $admin */
         $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
         $admin->notify(new NewSubmission('contact', 'নতুন কনটাক্ট মেসেজ', 'বার্তা ১।', route('admin.contact-messages.show', 1)));
         $admin->notify(new NewSubmission('admission', 'নতুন ভর্তি আবেদন', 'আবেদন ১।', route('admin.admission.show', 1)));

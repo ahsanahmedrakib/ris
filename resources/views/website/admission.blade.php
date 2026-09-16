@@ -42,7 +42,7 @@
         <div
             class="absolute bottom-8 right-20 w-px h-16 bg-linear-to-b from-ris-primary/25 to-transparent pointer-events-none">
         </div>
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div class="text-center max-w-2xl mx-auto mb-10">
                 <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">ভর্তি
                     ফরম</span>
@@ -110,6 +110,28 @@
                             <div>
                                 <div class="section-title">ছাত্র/ছাত্রীর ও পিতা-মাতার বিবরণ</div>
                                 <div class="border border-t-0 border-gray-300 p-4 space-y-4 text-base">
+
+                                    {{-- 0. Class --}}
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div class="md:col-span-2">
+                                            <label class="font-medium">কোন শ্রেণিতে ভর্তি হতে চান? <span
+                                                    class="text-red-600">*</span></label>
+                                            <select name="class_level[]" class="form-input">
+                                                <option value="">-- শ্রেণি নির্বাচন করুন --</option>
+                                                @foreach ($classes as $class)
+                                                    <option value="{{ $class->name }}"
+                                                        {{ collect(old('class_level', []))->contains($class->name) ? 'selected' : '' }}>
+                                                        {{ $class->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('class_level')
+                                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                            @enderror
+                                            @error('class_level.0')
+                                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
 
                                     {{-- 1. Student Name --}}
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -530,6 +552,7 @@
                             };
 
                             const requiredFields = {
+                                'class_level[]': 'কোন শ্রেণিতে ভর্তি হতে চান তা নির্বাচন করুন।',
                                 academic_year: 'শিক্ষাবর্ষ আবশ্যক।',
                                 student_name_bn: 'ছাত্র/ছাত্রীর নাম (বাংলায়) আবশ্যক।',
                                 student_name_en: 'ইংরেজিতে নাম আবশ্যক।',
@@ -804,6 +827,7 @@
                             $fees = [
                                 ['class' => 'প্লে', 'amount' => '১০,০০০ টাকা'],
                                 ['class' => 'নার্সারি', 'amount' => '১১,০০০ টাকা'],
+                                ['class' => 'কেজি', 'amount' => '১১,০০০ টাকা'],
                                 ['class' => 'প্রাথমিক (১ম-৫ম)', 'amount' => '১২,০০০ টাকা'],
                             ];
                         @endphp
@@ -823,7 +847,7 @@
     {{-- CTA --}}
     <section class="py-16 sm:py-20 relative overflow-hidden">
         <div class="absolute inset-0 bg-linear-to-r from-ris-dark via-ris-accent to-ris-light"></div>
-        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
             <h2 class="font-heading font-bold text-3xl sm:text-4xl text-white">এখনই ভর্তি করুন</h2>
             <p class="mt-4 text-white/70 text-lg">আজই যোগাযোগ করুন বা স্কুল ক্যাম্পাসে আসুন</p>
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">

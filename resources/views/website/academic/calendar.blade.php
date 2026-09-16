@@ -14,7 +14,7 @@
 
     <section class="py-16 sm:py-20 bg-white section-pattern-grid relative overflow-hidden">
         <div class="absolute top-10 left-10 w-40 h-40 bg-ris-primary/5 rounded-full pointer-events-none"></div>
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @if ($calendars->count())
                 <div class="space-y-6 reveal-stagger">
@@ -38,13 +38,28 @@
                                     @endif
                                     <p class="mt-1 text-xs text-gray-400">আপলোড: {{ $calendar->created_at->format('d M, Y') }}</p>
                                 </div>
-                                <a href="{{ Storage::url($calendar->file_path) }}" target="_blank"
-                                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm shrink-0">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    দেখুন / ডাউনলোড
-                                </a>
+                                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                    <a href="{{ route('academic.calendar.pdf', $calendar) }}" target="_blank"
+                                        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-ris-primary text-ris-primary text-sm font-medium rounded-lg hover:bg-ris-primary/5 transition-colors shadow-sm">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        ব্রাউজারে দেখুন
+                                    </a>
+                                    <a href="{{ route('academic.calendar.pdf', $calendar) }}" download="{{ $calendar->file_name }}"
+                                        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.293.707l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        ডাউনলোড
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="border-t border-gray-100 px-6 pb-6">
+                                <iframe src="{{ route('academic.calendar.pdf', $calendar) }}#toolbar=0&navpanes=0" loading="lazy"
+                                    class="w-full h-[70vh] min-h-100 border border-gray-200 bg-gray-50"
+                                    title="{{ $calendar->title }}"></iframe>
                             </div>
                         </div>
                     @endforeach

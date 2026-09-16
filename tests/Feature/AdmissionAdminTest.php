@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\AcademicYear;
 use App\Models\Admission;
+use App\Models\ClassRoom;
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -328,5 +331,154 @@ class AdmissionAdminTest extends TestCase
         $this->assertSoftDeleted('admissions', [
             'id' => $admission->id,
         ]);
+    }
+
+    private function admittedSchoolData(): array
+    {
+        $year = AcademicYear::create([
+            'name' => '2026',
+            'start_date' => '2026-01-01',
+            'end_date' => '2026-12-31',
+            'is_current' => true,
+        ]);
+
+        $class = ClassRoom::create([
+            'name' => '১ম',
+            'section' => 'ক',
+            'academic_year_id' => $year->id,
+        ]);
+
+        return ['year' => $year, 'class' => $class];
+    }
+
+    #[Test]
+    public function admin_can_mark_approved_admission_as_admitted(): void
+    {
+        /** @var User $admin */
+        $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
+        $school = $this->admittedSchoolData();
+
+        $admission = Admission::factory()->create([
+            'admission_no' => 'ADM-26-0100',
+            'status' => 'approved',
+            'class_level' => ['১ম শ্রেণি'],
+            'student_name_bn' => 'আয়েশা সিদ্দিকা',
+            'student_name_en' => 'AYESHA SIDDIKA',
+            'roll_no' => '5',
+            'section' => 'ক',
+            'dob' => '2018-05-12',
+            'phone' => '01712345678',
+            'blood_group' => 'O+',
+            'present_address' => 'গোপালগঞ্জ',
+            'father_name_bn' => 'আব্দুল করিম',
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.admission.admit', $admission), ['gender' => 'female'])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $student = Student::where('admission_no', 'ADM-26-0100')->first();
+
+        $this->assertNotNull($student);
+        $this->assertSame($school['class']->id, $student->class_id);
+        $this->assertSame('female', $student->gender);
+        $this->assertSame('ক', $student->section);
+        $this->assertSame(5, $student->roll_no);
+        $this->assertSame('O+', $student->blood_group);
+        $this->assertSame('আব্দুল করিম', $student->guardian_name);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $student->user_id,
+            'role' => 'student',
+            'phone' => '01712345678',
+        ]);
+    }
+
+    #[Test]
+    public function admin_cannot_admit_pending_admission(): void
+    {
+        /** @var User $admin */
+        $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
+        $this->admittedSchoolData();
+
+        $admission = Admission::factory()->create([
+            'admission_no' => 'ADM-26-0101',
+            'status' => 'pending',
+            'class_level' => ['১ম শ্রেণি'],
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.admission.admit', $admission), ['gender' => 'male'])
+            ->assertRedirect()
+            ->assertSessionHas('error');
+
+        $this->assertDatabaseMissing('students', ['admission_no' => 'ADM-26-0101']);
+    }
+
+    #[Test]
+    public function admin_cannot_admit_same_admission_twice(): void
+    {
+        /** @var User $admin */
+        $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
+        $this->admittedSchoolData();
+
+        $admission = Admission::factory()->create([
+            'admission_no' => 'ADM-26-0102',
+            'status' => 'approved',
+            'class_level' => ['১ম শ্রেণি'],
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.admission.admit', $admission), ['gender' => 'male'])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->actingAs($admin)
+            ->post(route('admin.admission.admit', $admission), ['gender' => 'male'])
+            ->assertRedirect()
+            ->assertSessionHas('error');
+
+        $this->assertDatabaseCount('students', 1);
+    }
+
+    #[Test]
+    public function admit_requires_gender(): void
+    {
+        /** @var User $admin */
+        $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
+        $this->admittedSchoolData();
+
+        $admission = Admission::factory()->create([
+            'admission_no' => 'ADM-26-0103',
+            'status' => 'approved',
+            'class_level' => ['১ম শ্রেণি'],
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.admission.admit', $admission))
+            ->assertSessionHasErrors('gender');
+
+        $this->assertDatabaseMissing('students', ['admission_no' => 'ADM-26-0103']);
+    }
+
+    #[Test]
+    public function cannot_admit_when_no_matching_class_exists(): void
+    {
+        /** @var User $admin */
+        $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
+
+        $admission = Admission::factory()->create([
+            'admission_no' => 'ADM-26-0104',
+            'status' => 'approved',
+            'class_level' => ['কেজি'],
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.admission.admit', $admission), ['gender' => 'male'])
+            ->assertRedirect()
+            ->assertSessionHas('error');
+
+        $this->assertDatabaseMissing('students', ['admission_no' => 'ADM-26-0104']);
     }
 }

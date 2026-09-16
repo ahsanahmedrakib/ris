@@ -264,6 +264,20 @@ class WebsiteController extends Controller
         return view('website.academic.calendar', compact('calendars'));
     }
 
+    public function academicCalendarPdf(AcademicCalendar $academicCalendar)
+    {
+        abort_unless($academicCalendar->is_active, 404);
+
+        $path = Storage::disk('public')->path($academicCalendar->file_path);
+
+        abort_unless(file_exists($path), 404);
+
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$academicCalendar->file_name.'"',
+        ]);
+    }
+
     public function academicFees(): View
     {
         $classes = ClassRoom::with(['feeStructures' => fn ($q) => $q->orderBy('fee_type')])
@@ -363,8 +377,8 @@ class WebsiteController extends Controller
             'admission_date' => 'nullable|date',
             'form_collect_date' => 'nullable|date',
             'form_submit_date' => 'nullable|date',
-            'class_level' => 'nullable|array',
-            'class_level.*' => 'string|max:50',
+            'class_level' => 'required|array|min:1',
+            'class_level.*' => 'required|string|max:50',
             'student_name_bn' => 'required|string|max:255',
             'student_name_en' => 'required|string|max:255',
             'dob' => 'required|date',
@@ -402,6 +416,8 @@ class WebsiteController extends Controller
             'student_photo' => 'required|image|mimes:jpeg,jpg,png|max:2048',
         ], [
             'academic_year.required' => 'শিক্ষাবর্ষ আবশ্যক।',
+            'class_level.required' => 'শ্রেণি নির্বাচন করুন।',
+            'class_level.*.required' => 'শ্রেণি নির্বাচন করুন।',
             'student_name_bn.required' => 'ছাত্র/ছাত্রীর নাম (বাংলায়) আবশ্যক।',
             'student_name_en.required' => 'ইংরেজিতে নাম আবশ্যক।',
             'dob.required' => 'জন্ম তারিখ আবশ্যক।',

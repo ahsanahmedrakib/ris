@@ -14,7 +14,7 @@
 
     <section class="py-16 sm:py-20 bg-white section-pattern-grid relative overflow-hidden">
         <div class="absolute top-10 left-10 w-40 h-40 bg-ris-primary/5 rounded-full pointer-events-none"></div>
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @if ($academicYear)
                 <div class="mb-8 text-center reveal">
