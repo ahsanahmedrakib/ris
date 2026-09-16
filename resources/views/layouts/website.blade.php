@@ -298,8 +298,6 @@
                         <li><a href="{{ route('scholarship') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">মেধাবৃত্তি</a>
                         </li>
-                        <li><a href="{{ route('notices') }}"
-                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">নোটিশ</a></li>
                         <li><a href="{{ route('gallery') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">গ্যালারি</a></li>
                   

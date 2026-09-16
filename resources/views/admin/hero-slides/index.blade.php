@@ -230,7 +230,7 @@
                                 <option value="teachers">শিক্ষক</option>
                                 <option value="gallery">গ্যালারি</option>
                                 <option value="notices">নোটিশ</option>
-                                <option value="testimonials">টেস্টিমোনিয়াল</option>
+                                <option value="testimonials">শুভকামনা ও মতামত</option>
                                 <option value="fees">টিউশন ফি</option>
                                 <option value="calendar">একাডেমিক ক্যালেন্ডার</option>
                                 <option value="facilities">স্কুলের সুবিধা</option>
@@ -406,7 +406,7 @@
                                         <option value="teachers" x-bind:selected="editData.link === 'teachers'">শিক্ষক</option>
                                         <option value="gallery" x-bind:selected="editData.link === 'gallery'">গ্যালারি</option>
                                         <option value="notices" x-bind:selected="editData.link === 'notices'">নোটিশ</option>
-                                        <option value="testimonials" x-bind:selected="editData.link === 'testimonials'">টেস্টিমোনিয়াল</option>
+                                        <option value="testimonials" x-bind:selected="editData.link === 'testimonials'">শুভকামনা ও মতামত</option>
                                         <option value="fees" x-bind:selected="editData.link === 'fees'">টিউশন ফি</option>
                                         <option value="calendar" x-bind:selected="editData.link === 'calendar'">একাডেমিক ক্যালেন্ডার</option>
                                         <option value="facilities" x-bind:selected="editData.link === 'facilities'">স্কুলের সুবিধা</option>

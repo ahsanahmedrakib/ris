@@ -24,7 +24,27 @@ class WebsiteContentSeeder extends Seeder
             return;
         }
 
-        $testimonials = [
+        foreach (self::demoTestimonials() as $index => $testimonial) {
+            Testimonial::create([
+                'name' => $testimonial['name'],
+                'designation' => $testimonial['designation'],
+                'photo' => null,
+                'message' => $testimonial['message'],
+                'rating' => $testimonial['rating'],
+                'sort_order' => $index,
+                'is_active' => true,
+            ]);
+        }
+    }
+
+    /**
+     * Demo testimonials used by the seeder and as the admin/web fallback when the table is empty.
+     *
+     * @return array<int, array{name: string, designation: string, message: string, rating: int}>
+     */
+    public static function demoTestimonials(): array
+    {
+        return [
             [
                 'name' => 'মোঃ আব্দুল করিম',
                 'designation' => 'অভিভাবক',

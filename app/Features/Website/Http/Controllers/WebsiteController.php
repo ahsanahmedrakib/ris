@@ -65,6 +65,8 @@ class WebsiteController extends Controller
             ->take(6)
             ->get();
 
+        $testimonialStats = $this->testimonialStats();
+
         $galleryItems = GalleryItem::where('is_active', true)
             ->orderBy('sort_order')
             ->orderByDesc('id')
@@ -81,7 +83,7 @@ class WebsiteController extends Controller
             ->orderBy('id')
             ->get();
 
-        return view('website.index', compact('stats', 'heroSlides', 'campusNews', 'notices', 'testimonials', 'galleryItems', 'messages', 'faqs'));
+        return view('website.index', compact('stats', 'heroSlides', 'campusNews', 'notices', 'testimonials', 'testimonialStats', 'galleryItems', 'messages', 'faqs'));
     }
 
     protected function campusNews(): array
@@ -138,6 +140,14 @@ class WebsiteController extends Controller
         return str_replace($en, $bn, (string) $carbon->day).' '.$months[$carbon->month - 1].' '.str_replace($en, $bn, (string) $carbon->year);
     }
 
+    protected function banglaNumber(int|float $number): string
+    {
+        $en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+
+        return str_replace($en, $bn, (string) $number);
+    }
+
     protected function heroSlides(): array
     {
         $slides = HeroSlide::where('is_active', true)
@@ -171,7 +181,28 @@ class WebsiteController extends Controller
             ->orderByDesc('id')
             ->paginate(12);
 
-        return view('website.testimonials', compact('testimonials'));
+        $testimonialStats = $this->testimonialStats();
+
+        return view('website.testimonials', compact('testimonials', 'testimonialStats'));
+    }
+
+    /**
+     * Aggregate rating stats for the testimonial sections.
+     *
+     * @return array{total: int, average: int|float|null, bangla_total: string, bangla_average: string}
+     */
+    protected function testimonialStats(): array
+    {
+        $approved = Testimonial::where('is_active', true);
+        $total = $approved->count();
+        $average = $total > 0 ? round($approved->avg('rating'), 1) : null;
+
+        return [
+            'total' => $total,
+            'average' => $average,
+            'bangla_total' => $this->banglaNumber($total),
+            'bangla_average' => $average !== null ? $this->banglaNumber($average) : '০',
+        ];
     }
 
     public function storeTestimonial(Request $request): RedirectResponse|JsonResponse
@@ -211,20 +242,20 @@ class WebsiteController extends Controller
 
             NewSubmission::sendToAdmins(
                 'testimonial',
-                'নতুন টেস্টিমোনিয়াল',
-                $testimonial->name.' একটি টেস্টিমোনিয়াল জমা দিয়েছেন।',
+                'নতুন মতামত',
+                $testimonial->name.' একটি মতামত জমা দিয়েছেন।',
                 route('admin.testimonials.show', $testimonial),
             );
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'আপনার টেস্টিমোনিয়াল জমা হয়েছে। প্রশাসকের অনুমোদনের পরে ওয়েবসাইটে প্রকাশিত হবে।',
+                    'message' => 'আপনার মতামত জমা হয়েছে। প্রশাসকের অনুমোদনের পরে ওয়েবসাইটে প্রকাশিত হবে।',
                 ]);
             }
 
             return redirect()->route('testimonials')
-                ->with('success', 'আপনার টেস্টিমোনিয়াল জমা হয়েছে। অনুমোদনের পরে এটি ওয়েবসাইটে দেখানো হবে।');
+                ->with('success', 'আপনার মতামত জমা হয়েছে। অনুমোদনের পরে এটি ওয়েবসাইটে দেখানো হবে।');
         } catch (\Exception $e) {
             if ($photoPath) {
                 Storage::disk('public')->delete($photoPath);
@@ -233,12 +264,12 @@ class WebsiteController extends Controller
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'টেস্টিমোনিয়াল জমা দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।',
+                    'message' => 'মতামত জমা দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।',
                 ], 500);
             }
 
             return back()->withInput()
-                ->with('error', 'টেস্টিমোনিয়াল জমা দিতে সমস্যা হয়েছে. '.$e->getMessage());
+                ->with('error', 'মতামত জমা দিতে সমস্যা হয়েছে. '.$e->getMessage());
         }
     }
 
@@ -453,9 +484,9 @@ class WebsiteController extends Controller
             'student_photo.max' => 'ছবির আকার ২ এমবির বেশি হতে পারবে না।',
         ]);
 
-        try {
-            $photoPath = null;
+        $photoPath = null;
 
+        try {
             if ($request->hasFile('student_photo')) {
                 $photoPath = $request->file('student_photo')->store('admissions', 'public');
             }

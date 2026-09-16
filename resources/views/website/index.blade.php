@@ -62,80 +62,95 @@
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            {{-- Section header --}}
+            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+                <span
+                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-ris-primary/10 text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    পরিসংখ্যান
+                </span>
+                <h2 class="mt-4 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">আমাদের স্কুল এক নজরে</h2>
+                <p class="mt-3 text-gray-500">প্রতি বছর বেড়ে চলা আমাদের পরিবার — সংখ্যায় প্রকাশিত</p>
+            </div>
+
             @php
-                $studentCount = $stats['total_students'] ?? 0;
-                $teacherCount = $stats['total_teachers'] ?? 0;
-                $classCount = $stats['total_classes'] ?? 0;
+                $foundingYear = 2015;
 
-                $statItems = $studentCount
-                    ? [
-                        [
-                            'value' => $studentCount,
-                            'suffix' => '+',
-                            'label' => 'মোট ছাত্র-ছাত্রী',
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>',
-                        ],
-                        [
-                            'value' => $teacherCount,
-                            'suffix' => '+',
-                            'label' => 'শিক্ষকমণ্ডলী',
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
-                        ],
-                        [
-                            'value' => $classCount,
-                            'suffix' => '',
-                            'label' => 'শ্রেণি',
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>',
-                        ],
-                    ]
-                    : [
-                        [
-                            'value' => 500,
-                            'suffix' => '+',
-                            'label' => 'মোট ছাত্র-ছাত্রী',
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>',
-                        ],
-                        [
-                            'value' => 30,
-                            'suffix' => '+',
-                            'label' => 'শিক্ষকমণ্ডলী',
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
-                        ],
-                        [
-                            'value' => 8,
-                            'suffix' => '',
-                            'label' => 'শ্রেণি',
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>',
-                        ],
-                    ];
-
-                $statItems[] = [
-                    'value' => 11,
-                    'suffix' => '+',
-                    'label' => 'বছরের অভিজ্ঞতা',
-                    'icon' =>
-                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                $statItems = [
+                    [
+                        'value' => (int) ($stats['total_students'] ?? 500),
+                        'suffix' => '+',
+                        'label' => 'মোট ছাত্র-ছাত্রী',
+                        'theme' => 'from-sky-500 via-indigo-600 to-blue-700',
+                        'icon' =>
+                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>',
+                    ],
+                    [
+                        'value' => (int) ($stats['total_teachers'] ?? 20),
+                        'suffix' => '+',
+                        'label' => 'শিক্ষকমণ্ডলী',
+                        'theme' => 'from-emerald-500 via-teal-600 to-cyan-700',
+                        'icon' =>
+                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
+                    ],
+                    [
+                        'value' => (int) ($stats['total_classes'] ?? 8),
+                        'suffix' => '',
+                        'label' => 'শ্রেণি',
+                        'theme' => 'from-amber-500 via-orange-600 to-rose-600',
+                        'icon' =>
+                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>',
+                    ],
+                    [
+                        'value' => (int) ($stats['total_staff'] ?? 10),
+                        'suffix' => '+',
+                        'label' => 'কর্মচারী',
+                        'theme' => 'from-fuchsia-500 via-purple-600 to-violet-700',
+                        'icon' =>
+                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
+                    ],
+                    [
+                        'value' => max((int) date('Y') - $foundingYear, 1),
+                        'suffix' => '+',
+                        'label' => 'বছরের অভিজ্ঞতা',
+                        'theme' => 'from-rose-500 via-red-600 to-pink-700',
+                        'icon' =>
+                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                    ],
                 ];
             @endphp
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 reveal-stagger">
+
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 reveal-stagger">
                 @foreach ($statItems as $stat)
                     <div
-                        class="stat-card text-center p-6 sm:p-8 rounded-2xl bg-white border border-gray-100 shadow-card hover:shadow-card-hover transition-all duration-300 reveal">
-                        <div class="w-16 h-16 mx-auto rounded-2xl bg-ris-primary/10 flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                {!! $stat['icon'] !!}
-                            </svg>
+                        class="group relative overflow-hidden rounded-3xl bg-linear-to-br {{ $stat['theme'] }} p-6 sm:p-8 text-white shadow-lg shadow-ris-dark/5 hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 reveal">
+                        {{-- Decorative glows --}}
+                        <div
+                            class="absolute -top-10 -right-10 w-28 h-28 bg-white/10 rounded-full transition-transform duration-500 group-hover:scale-150 pointer-events-none">
                         </div>
-                        <div class="font-heading font-bold text-3xl sm:text-4xl text-gradient">
-                            <span data-count="{{ $stat['value'] }}">০</span>{{ $stat['suffix'] }}
+                        <div
+                            class="absolute -bottom-12 -left-6 w-32 h-32 bg-black/10 rounded-full transition-transform duration-500 group-hover:scale-125 pointer-events-none">
                         </div>
-                        <div class="mt-2 text-sm sm:text-base text-ris-gray font-medium">{{ $stat['label'] }}</div>
+
+                        <div class="relative">
+                            <div
+                                class="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center ring-1 ring-white/25 group-hover:bg-white/25 group-hover:rotate-6 transition-all duration-500">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    {!! $stat['icon'] !!}
+                                </svg>
+                            </div>
+                            <div class="mt-6 font-heading font-bold text-3xl sm:text-4xl leading-tight">
+                                <span data-count="{{ $stat['value'] }}">০</span><span
+                                    class="text-white/80">{{ $stat['suffix'] }}</span>
+                            </div>
+                            <div
+                                class="mt-3 h-1 w-10 rounded-full bg-white/40 transition-all duration-500 group-hover:w-16 group-hover:bg-white/70">
+                            </div>
+                            <div class="mt-3 text-sm sm:text-base font-medium text-white/90">{{ $stat['label'] }}</div>
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -799,70 +814,34 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                     <span
-                        class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">টেস্টিমোনিয়াল</span>
-                    <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">অভিভাবকদের ভালোবাসা</h2>
+                        class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">মতামত</span>
+                    <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">শুভকামনা ও মতামত</h2>
                     <p class="mt-3 text-gray-500">আমাদের অভিভাবক ও শিক্ষার্থীদের মূল্যবান অনুভূতি।</p>
+                </div>
+
+                {{-- Rating summary --}}
+                <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-10 reveal">
+                    <div
+                        class="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-white border border-amber-100 shadow-card">
+                        <div
+                            class="w-11 h-11 rounded-xl bg-linear-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-heading font-bold text-2xl leading-none text-amber-600">★ {{ $testimonialStats['bangla_average'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1">গড় রেটিং</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="swiper testimonial-swiper reveal">
                     <div class="swiper-wrapper">
                         @foreach ($testimonials as $testimonial)
                             <div class="swiper-slide">
-                                <div
-                                    class="testimonial-card group relative h-full flex flex-col overflow-hidden rounded-[1.6rem] bg-linear-to-br from-amber-50 via-orange-50/70 to-rose-50 border border-amber-100 px-6 sm:px-7 py-6 sm:py-7 shadow-card hover:shadow-card-hover transition-all duration-300">
-                                    <div
-                                        class="absolute top-5 -left-9 w-40 h-7 gradient-logo -rotate-45 flex items-center justify-center shadow-md z-10">
-                                        <span
-                                            class="text-[10px] font-heading font-semibold text-white uppercase tracking-widest">Review</span>
-                                    </div>
-                                    <div
-                                        class="absolute top-7 right-6 text-4xl leading-none select-none pointer-events-none text-amber-300/40">
-                                        ✦</div>
-                                    <div
-                                        class="absolute bottom-24 left-5 text-2xl leading-none select-none pointer-events-none text-ris-accent/15">
-                                        ✦</div>
-                                    <div
-                                        class="w-11 h-11 gradient-logo rounded-2xl flex items-center justify-center shadow-lg rotate-6 transition-transform duration-300 group-hover:rotate-0 mt-8 mb-4">
-                                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path
-                                                d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
-                                        </svg>
-                                    </div>
-                                    <p class="text-gray-700 leading-relaxed italic mb-5 flex-1 line-clamp-4 min-h-26"
-                                        title="{{ $testimonial->message }}">"{{ $testimonial->message }}"</p>
-                                    <div
-                                        class="pt-4 mt-auto border-t border-dashed border-amber-200 flex items-center gap-4 relative">
-                                        @if ($testimonial->photo)
-                                            <img src="{{ Storage::url($testimonial->photo) }}"
-                                                alt="{{ $testimonial->name }}"
-                                                class="w-12 h-12 rounded-full object-cover border-2 border-amber-200 shadow-sm shrink-0">
-                                        @else
-                                            <div
-                                                class="w-12 h-12 rounded-full bg-linear-to-br from-amber-200 to-orange-200 border-2 border-amber-300 flex items-center justify-center text-amber-900 font-semibold text-lg shrink-0">
-                                                {{ mb_substr($testimonial->name, 0, 1) }}
-                                            </div>
-                                        @endif
-                                        <div class="flex-1 min-w-0">
-                                            <p class="font-heading font-bold text-sm text-amber-900 truncate">
-                                                {{ $testimonial->name }}</p>
-                                            @if ($testimonial->designation)
-                                                <p class="text-xs text-amber-700/70 truncate">
-                                                    {{ $testimonial->designation }}
-                                                </p>
-                                            @endif
-                                        </div>
-                                        <div
-                                            class="flex items-center gap-0.5 bg-white/80 border border-amber-200 rounded-full px-2.5 py-1.5 shadow-sm shrink-0">
-                                            @for ($i = 0; $i < 5; $i++)
-                                                <svg class="w-3.5 h-3.5 {{ $i < $testimonial->rating ? 'text-amber-400' : 'text-gray-300' }}"
-                                                    fill="currentColor" viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                </svg>
-                                            @endfor
-                                        </div>
-                                    </div>
-                                </div>
+                                @include('website.partials.testimonial-card', ['testimonial' => $testimonial])
                             </div>
                         @endforeach
                     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
+use Database\Seeders\WebsiteContentSeeder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,6 +15,20 @@ class TestimonialController extends Controller
 {
     public function index(Request $request): View
     {
+        if (! Testimonial::exists()) {
+            foreach (WebsiteContentSeeder::demoTestimonials() as $index => $demo) {
+                Testimonial::create([
+                    'name' => $demo['name'],
+                    'designation' => $demo['designation'],
+                    'photo' => null,
+                    'message' => $demo['message'],
+                    'rating' => $demo['rating'],
+                    'sort_order' => $index,
+                    'is_active' => true,
+                ]);
+            }
+        }
+
         $query = Testimonial::query();
 
         if ($request->filled('search')) {
@@ -61,9 +76,9 @@ class TestimonialController extends Controller
             'photo.max' => 'ছবির আকার ২ এমবির বেশি হতে পারবে না।',
         ]);
 
-        try {
-            $photoPath = null;
+        $photoPath = null;
 
+        try {
             if ($request->hasFile('photo')) {
                 $photoPath = $request->file('photo')->store('testimonial-photos', 'public');
             }
@@ -79,14 +94,14 @@ class TestimonialController extends Controller
             ]);
 
             return redirect()->route('admin.testimonials.index')
-                ->with('success', 'টেস্টিমোনিয়াল সফলভাবে যোগ করা হয়েছে।');
+                ->with('success', 'শুভকামনা ও মতামত সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
             if ($photoPath) {
                 Storage::disk('public')->delete($photoPath);
             }
 
             return back()->withInput()
-                ->with('error', 'টেস্টিমোনিয়াল যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'শুভকামনা ও মতামত যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -159,10 +174,10 @@ class TestimonialController extends Controller
             $testimonial->update($validated);
 
             return redirect()->route('admin.testimonials.index')
-                ->with('success', 'টেস্টিমোনিয়াল সফলভাবে আপডেট হয়েছে।');
+                ->with('success', 'শুভকামনা ও মতামত সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'টেস্টিমোনিয়াল আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'শুভকামনা ও মতামত আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -185,10 +200,10 @@ class TestimonialController extends Controller
             Testimonial::findOrFail($id)->delete();
 
             return redirect()->route('admin.testimonials.index')
-                ->with('success', 'টেস্টিমোনিয়াল সফলভাবে মুছে ফেলা হয়েছে।');
+                ->with('success', 'শুভকামনা ও মতামত সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'টেস্টিমোনিয়াল মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'শুভকামনা ও মতামত মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 }

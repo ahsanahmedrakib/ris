@@ -73,6 +73,7 @@
                         <tr class="gradient-logo">
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">ক্রমিক</th>
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">ধরন</th>
+                            <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">টেবিলের নাম</th>
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">শিরোনাম / তথ্য</th>
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">মুছে ফেলার সময়</th>
                             <th
@@ -91,6 +92,11 @@
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700">
                                         {{ $item['label'] }}
                                     </span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <code class="text-xs font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                                        {{ $item['table'] }}
+                                    </code>
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center gap-2">
@@ -139,7 +145,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-5 py-12 text-center">
+                                <td colspan="6" class="px-5 py-12 text-center">
                                     <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none"
                                         stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"

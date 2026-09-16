@@ -788,6 +788,15 @@ html {
     transform: scaleX(1);
 }
 
+/* ── Testimonial swiper (room for the hover lift) ── */
+.testimonial-swiper {
+    padding-top: 12px;
+    margin-top: -12px;
+}
+.testimonial-swiper .swiper-slide {
+    padding-bottom: 6px;
+}
+
 /* ── Swiper nav buttons (below content) ── */
 .ris-swiper-btn {
     display: inline-flex;

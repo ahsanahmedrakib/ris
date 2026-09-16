@@ -48,6 +48,24 @@
                     @endif
 
                     <div>
+                        <h3 class="font-heading font-bold text-lg text-ris-dark mb-3">যোগাযোগ</h3>
+                        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <dt class="text-sm text-gray-500">মোবাইল নম্বর</dt>
+                                <dd class="font-medium text-gray-900 mt-1">
+                                    <a href="tel:{{ $teacher->phone }}" class="hover:text-ris-primary">{{ $teacher->phone ?? '-' }}</a>
+                                </dd>
+                            </div>
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <dt class="text-sm text-gray-500">ইমেইল</dt>
+                                <dd class="font-medium text-gray-900 mt-1 break-all">
+                                    <a href="mailto:{{ $teacher->email }}" class="hover:text-ris-primary">{{ $teacher->email ?? '-' }}</a>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+
+                    <div>
                         <h3 class="font-heading font-bold text-lg text-ris-dark mb-3">শিক্ষাগত ও পেশাদার তথ্য</h3>
                         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="bg-gray-50 rounded-xl p-4">

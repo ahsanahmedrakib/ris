@@ -41,7 +41,7 @@
                             $typeLabels = [
                                 'admission' => 'ভর্তি আবেদন',
                                 'scholarship' => 'মেধাবৃত্তি',
-                                'testimonial' => 'টেস্টিমোনিয়াল',
+                                'testimonial' => 'শুভকামনা ও মতামত',
                                 'contact' => 'কনটাক্ট মেসেজ',
                             ];
                             $typeColors = [

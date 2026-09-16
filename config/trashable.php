@@ -84,7 +84,7 @@ return [
     ],
     'testimonial' => [
         'model' => 'App\Models\Testimonial',
-        'label' => 'টেস্টিমোনিয়াল',
+        'label' => 'শুভকামনা ও মতামত',
     ],
     'gallery_item' => [
         'model' => 'App\Models\GalleryItem',

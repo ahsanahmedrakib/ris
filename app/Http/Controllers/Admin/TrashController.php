@@ -78,6 +78,7 @@ class TrashController extends Controller
                 $trashed->push([
                     'type' => $key,
                     'label' => $config['label'],
+                    'table' => (new $config['model'])->getTable(),
                     'record' => $record,
                     'title' => $this->resolveTitle($record),
                 ]);
