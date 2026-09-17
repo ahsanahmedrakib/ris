@@ -808,9 +808,8 @@
     {{-- ═══ Testimonials Section (swiper) ═══ --}}
     @if ($testimonials->count())
         <section
-            class="py-16 sm:py-20 bg-linear-to-br from-ris-primary-50/40 via-white to-ris-light-50/30 section-pattern-grid relative overflow-hidden">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-ris-primary/5 rounded-full pointer-events-none"></div>
-            <div class="absolute -bottom-10 -left-10 w-56 h-56 bg-ris-accent/5 rounded-full pointer-events-none"></div>
+            class="py-16 sm:py-20 testimonial-bg section-pattern-grid relative overflow-hidden">
+            @include('website.partials.decorative-shapes')
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                     <span

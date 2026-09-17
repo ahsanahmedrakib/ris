@@ -78,9 +78,9 @@
     --color-ris-gray-900: #323232;
 
     /* ── Font families ── */
-    --font-heading: "Kalpurush", "Poppins", ui-sans-serif, system-ui, sans-serif;
-    --font-body:
+    --font-heading:
         "Kalpurush", "Poppins", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Kalpurush", "Poppins", ui-sans-serif, system-ui, sans-serif;
     --font-bangla: "Kalpurush", ui-sans-serif, system-ui, sans-serif;
 
     /* ── Box shadows ── */
@@ -502,7 +502,13 @@ html {
     border: 2px solid transparent;
     background:
         linear-gradient(#ffffff, #ffffff) padding-box,
-        linear-gradient(135deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light)) border-box;
+        linear-gradient(
+                135deg,
+                var(--color-ris-dark),
+                var(--color-ris-accent),
+                var(--color-ris-light)
+            )
+            border-box;
 }
 
 /* ── Stat cards ── */
@@ -510,13 +516,18 @@ html {
     position: relative;
 }
 .stat-card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light));
+    background: linear-gradient(
+        90deg,
+        var(--color-ris-dark),
+        var(--color-ris-accent),
+        var(--color-ris-light)
+    );
     border-radius: 0.75rem 0.75rem 0 0;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -530,13 +541,17 @@ html {
     position: relative;
 }
 .message-card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, var(--color-ris-primary), var(--color-ris-accent));
+    background: linear-gradient(
+        180deg,
+        var(--color-ris-primary),
+        var(--color-ris-accent)
+    );
     border-radius: 0 0.5rem 0.5rem 0;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -551,13 +566,17 @@ html {
     overflow: hidden;
 }
 .program-card::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--color-ris-dark), var(--color-ris-accent));
+    background: linear-gradient(
+        90deg,
+        var(--color-ris-dark),
+        var(--color-ris-accent)
+    );
     transform: scaleX(0);
     transition: transform 0.3s ease;
 }
@@ -579,13 +598,18 @@ html {
         0 8px 20px rgba(163, 28, 66, 0.1);
 }
 .testimonial-card::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light));
+    background: linear-gradient(
+        90deg,
+        var(--color-ris-dark),
+        var(--color-ris-accent),
+        var(--color-ris-light)
+    );
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.45s ease;
@@ -599,13 +623,17 @@ html {
     position: relative;
 }
 .promo-section::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 80% 50%, rgba(163, 28, 66, 0.15), transparent 60%);
+    background: radial-gradient(
+        circle at 80% 50%,
+        rgba(163, 28, 66, 0.15),
+        transparent 60%
+    );
     pointer-events: none;
 }
 .play-btn-circle {
@@ -623,7 +651,11 @@ html {
 
 /* ── Section background patterns ── */
 .section-pattern-dots {
-    background-image: radial-gradient(circle, var(--color-ris-primary) 1px, transparent 1px);
+    background-image: radial-gradient(
+        circle,
+        var(--color-ris-primary) 1px,
+        transparent 1px
+    );
     background-size: 24px 24px;
 }
 
@@ -651,7 +683,11 @@ html {
         linear-gradient(315deg, rgba(163, 28, 66, 0.03) 25%, transparent 25%),
         linear-gradient(45deg, rgba(163, 28, 66, 0.03) 25%, transparent 25%);
     background-size: 40px 40px;
-    background-position: 0 0, 0 20px, 20px -20px, 20px 0;
+    background-position:
+        0 0,
+        0 20px,
+        20px -20px,
+        20px 0;
 }
 
 .section-pattern-waves {
@@ -747,7 +783,9 @@ html {
 
 /* ── Teacher Card ── */
 .teacher-card {
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
 }
 .teacher-card:hover {
     transform: translateY(-6px);
@@ -779,7 +817,12 @@ html {
     right: 0;
     bottom: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light));
+    background: linear-gradient(
+        90deg,
+        var(--color-ris-dark),
+        var(--color-ris-accent),
+        var(--color-ris-light)
+    );
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.4s ease;
@@ -788,13 +831,22 @@ html {
     transform: scaleX(1);
 }
 
-/* ── Testimonial swiper (room for the hover lift) ── */
-.testimonial-swiper {
-    padding-top: 12px;
-    margin-top: -12px;
-}
+/* ── Testimonial swiper (slide top padding keeps the floating avatar inside the clipped swiper box) ── */
 .testimonial-swiper .swiper-slide {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    padding-top: 28px;
     padding-bottom: 6px;
+}
+
+.testimonial-bg {
+    background: linear-gradient(
+        135deg,
+        #fef9f0 0%,
+        #fdf2f4 50%,
+        #f8f0f2 100%
+    ) !important;
 }
 
 /* ── Swiper nav buttons (below content) ── */
@@ -806,7 +858,12 @@ html {
     height: 3rem;
     border-radius: 9999px;
     color: #fff;
-    background: linear-gradient(135deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light));
+    background: linear-gradient(
+        135deg,
+        var(--color-ris-dark),
+        var(--color-ris-accent),
+        var(--color-ris-light)
+    );
     box-shadow: 0 10px 25px -5px rgb(163 28 66 / 0.35);
     transition: all 0.3s ease;
     cursor: pointer;
@@ -850,13 +907,18 @@ html {
 }
 
 .program-card::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--color-ris-dark), var(--color-ris-accent), var(--color-ris-light));
+    background: linear-gradient(
+        90deg,
+        var(--color-ris-dark),
+        var(--color-ris-accent),
+        var(--color-ris-light)
+    );
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.4s ease;
@@ -871,13 +933,17 @@ html {
     overflow: hidden;
 }
 .event-card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, var(--color-ris-primary), var(--color-ris-accent));
+    background: linear-gradient(
+        90deg,
+        var(--color-ris-primary),
+        var(--color-ris-accent)
+    );
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.4s ease;
@@ -891,14 +957,18 @@ html {
     position: relative;
 }
 .notice-item::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 20%;
     bottom: 20%;
     width: 3px;
     border-radius: 0 9999px 9999px 0;
-    background: linear-gradient(180deg, var(--color-ris-primary), var(--color-ris-light));
+    background: linear-gradient(
+        180deg,
+        var(--color-ris-primary),
+        var(--color-ris-light)
+    );
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -967,7 +1037,9 @@ html {
     font-size: 1.15rem;
     line-height: 1;
     cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
 }
 .ris-cal-nav:hover {
     background: var(--color-ris-primary);
@@ -1004,7 +1076,9 @@ html {
     background: transparent;
     color: var(--color-ris-gray-800);
     cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
 }
 .ris-cal-day:hover {
     background: var(--color-ris-primary);
@@ -1057,7 +1131,9 @@ html {
     font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
 }
 .ris-cal-today-btn {
     background: var(--color-ris-primary);

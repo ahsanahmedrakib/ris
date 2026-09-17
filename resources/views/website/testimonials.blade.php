@@ -43,11 +43,11 @@
 
     {{-- Testimonials --}}
     <section class="py-16 sm:py-20 bg-white section-pattern-grid relative overflow-hidden">
-        <div class="absolute top-10 left-10 w-40 h-40 bg-ris-primary/5 rounded-full pointer-events-none"></div>
+        @include('website.partials.decorative-shapes')
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @if ($testimonials->count())
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 reveal-stagger">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 auto-rows-fr reveal-stagger">
                     @foreach ($testimonials as $testimonial)
                         <div class="h-full reveal">
                             @include('website.partials.testimonial-card', ['testimonial' => $testimonial])
