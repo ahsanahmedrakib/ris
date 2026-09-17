@@ -2,7 +2,7 @@
 <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
     {{-- Big soft rings --}}
     <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full border-2 border-ris-primary/10"></div>
-    <div class="absolute -bottom-16 -left-14 w-56 h-56 rounded-full border-[10px] border-ris-accent/5"></div>
+    <div class="absolute -bottom-16 -left-14 w-56 h-56 rounded-full border-10 border-ris-accent/5"></div>
 
     {{-- Small filled dot + thin ring --}}
     <div class="absolute top-[14%] left-[5%] w-2 h-2 rounded-full bg-ris-accent/25"></div>
@@ -18,8 +18,8 @@
 
     {{-- Plus sign --}}
     <div class="absolute top-[6%] left-[18%] w-8 h-8 text-ris-primary/15">
-        <span class="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-current rounded-full block"></span>
-        <span class="absolute inset-y-0 left-1/2 w-[3px] -translate-x-1/2 bg-current rounded-full block"></span>
+        <span class="absolute inset-x-0 top-1/2 h-0.75 -translate-y-1/2 bg-current rounded-full block"></span>
+        <span class="absolute inset-y-0 left-1/2 w-0.75 -translate-x-1/2 bg-current rounded-full block"></span>
     </div>
 
     {{-- Dots cluster --}}

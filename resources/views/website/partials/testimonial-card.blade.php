@@ -6,6 +6,10 @@
     $accentThemes = [
         ['bg' => 'bg-[#f28b4d]', 'text' => 'text-[#f28b4d]', 'hex' => '#f28b4d'],
         ['bg' => 'bg-[#e6007e]', 'text' => 'text-[#e6007e]', 'hex' => '#e6007e'],
+        ['bg' => 'bg-[#7c5cff]', 'text' => 'text-[#7c5cff]', 'hex' => '#7c5cff'],
+        ['bg' => 'bg-[#12b8a6]', 'text' => 'text-[#12b8a6]', 'hex' => '#12b8a6'],
+        ['bg' => 'bg-[#2f6fed]', 'text' => 'text-[#2f6fed]', 'hex' => '#2f6fed'],
+        ['bg' => 'bg-[#22c55e]', 'text' => 'text-[#22c55e]', 'hex' => '#22c55e'],
     ];
 
     $cardIndex = isset($loop) ? $loop->index : 0;
@@ -46,10 +50,9 @@
 
     {{-- Footer Bar: colored wave (full-width bottom + left half) curving into white on the right --}}
     <div class="-mx-6 -mb-4 h-14 mt-6 relative overflow-hidden rounded-b-2xl">
-        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 220 56" preserveAspectRatio="none"
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 220 50" preserveAspectRatio="none"
             aria-hidden="true">
-            {{-- <path d="M0 0 H110 A 100 100 0 0 1 220 44 V56 H0 Z" fill="{{ $accent['hex'] }}" /> --}}
-            <path d="M0 0 H110 Q124 0 132 56 V56 H0 Z" fill="{{ $accent['hex'] }}" />
+            <path d="M0 0 H90 Q124 0 132 56 V56 H0 Z" fill="{{ $accent['hex'] }}" />
         </svg>
         <div class="relative h-full flex items-center justify-between px-6">
             <div class="flex space-x-1 shrink-0">
