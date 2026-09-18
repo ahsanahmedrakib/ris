@@ -24,54 +24,76 @@
                         পাঠান</span>
                     <h2 class="mt-3 font-heading font-bold text-2xl text-ris-dark">আমাদের লিখুন</h2>
 
-                    <form method="POST" action="{{ route('contact.send') }}" class="mt-6 space-y-5">
+                    @php
+                        $serverErrors = collect($errors->getMessages())
+                            ->map(fn ($messages) => $messages[0])
+                            ->all();
+                    @endphp
+
+                    <form method="POST" action="{{ route('contact.send') }}" class="mt-6 space-y-5"
+                        x-data="contactForm()" @submit.prevent="validateForm($el)" novalidate>
                         @csrf
                         <div class="grid sm:grid-cols-2 gap-5">
                             <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">নাম</label>
-                                <input type="text" id="name" name="name" value="{{ old('name') }}" required
-                                    class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('name') ? 'border-red-400' : 'border-gray-300' }} bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">নাম <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="name" name="name" x-model="form.name"
+                                    @blur="validateField('name')"
+                                    class="w-full px-4 py-2.5 rounded-xl border bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                                    :class="(errors.name || (attempted && !form.name)) ? 'border-red-400' : 'border-gray-300'"
                                     placeholder="আপনার নাম">
-                                @error('name')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
+                                <template x-if="errors.name || (attempted && !form.name)">
+                                    <p class="mt-1 text-sm text-red-600" x-text="errors.name || 'নাম আবশ্যক।'"></p>
+                                </template>
                             </div>
                             <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">ইমেইল</label>
-                                <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                                    class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('email') ? 'border-red-400' : 'border-gray-300' }} bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">ইমেইল <span
+                                        class="text-xs font-normal text-gray-400">(ঐচ্ছিক)</span></label>
+                                <input type="email" id="email" name="email" x-model="form.email"
+                                    @blur="validateField('email')"
+                                    class="w-full px-4 py-2.5 rounded-xl border bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                                    :class="errors.email ? 'border-red-400' : 'border-gray-300'"
                                     placeholder="example@email.com">
-                                @error('email')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
+                                <template x-if="errors.email">
+                                    <p class="mt-1 text-sm text-red-600" x-text="errors.email"></p>
+                                </template>
                             </div>
                         </div>
                         <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1.5">ফোন নম্বর</label>
-                            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}"
-                                class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('phone') ? 'border-red-400' : 'border-gray-300' }} bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1.5">ফোন নম্বর <span
+                                    class="text-red-500">*</span></label>
+                            <input type="tel" id="phone" name="phone" x-model="form.phone"
+                                @blur="validateField('phone')"
+                                class="w-full px-4 py-2.5 rounded-xl border bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                                :class="(errors.phone || (attempted && !form.phone)) ? 'border-red-400' : 'border-gray-300'"
                                 placeholder="+৮৮০-১৬১৯ ০০৭ ০০৬">
-                            @error('phone')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                            <template x-if="errors.phone || (attempted && !form.phone)">
+                                <p class="mt-1 text-sm text-red-600" x-text="errors.phone || 'ফোন নম্বর আবশ্যক।'"></p>
+                            </template>
                         </div>
                         <div>
-                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1.5">বিষয়</label>
-                            <input type="text" id="subject" name="subject" value="{{ old('subject') }}" required
-                                class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('subject') ? 'border-red-400' : 'border-gray-300' }} bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1.5">বিষয় <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" id="subject" name="subject" x-model="form.subject"
+                                @blur="validateField('subject')"
+                                class="w-full px-4 py-2.5 rounded-xl border bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all"
+                                :class="(errors.subject || (attempted && !form.subject)) ? 'border-red-400' : 'border-gray-300'"
                                 placeholder="বিষয় লিখুন">
-                            @error('subject')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                            <template x-if="errors.subject || (attempted && !form.subject)">
+                                <p class="mt-1 text-sm text-red-600" x-text="errors.subject || 'বিষয় আবশ্যক।'"></p>
+                            </template>
                         </div>
                         <div>
-                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1.5">বার্তা</label>
-                            <textarea id="message" name="message" rows="5" required
-                                class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('message') ? 'border-red-400' : 'border-gray-300' }} bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all resize-none"
-                                placeholder="আপনার বার্তা লিখুন...">{{ old('message') }}</textarea>
-                            @error('message')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1.5">বার্তা <span
+                                    class="text-red-500">*</span></label>
+                            <textarea id="message" name="message" rows="5" x-model="form.message"
+                                @blur="validateField('message')"
+                                class="w-full px-4 py-2.5 rounded-xl border bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-ris-primary/30 focus:border-ris-primary transition-all resize-none"
+                                :class="(errors.message || (attempted && !form.message)) ? 'border-red-400' : 'border-gray-300'"
+                                placeholder="আপনার বার্তা লিখুন..."></textarea>
+                            <template x-if="errors.message || (attempted && !form.message)">
+                                <p class="mt-1 text-sm text-red-600" x-text="errors.message || 'বার্তা আবশ্যক।'"></p>
+                            </template>
                         </div>
                         <button type="submit" class="btn-primary">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,6 +103,77 @@
                             পাঠান
                         </button>
                     </form>
+
+                    <script>
+                        function contactForm() {
+                            return {
+                                form: {
+                                    name: @js(old('name')),
+                                    email: @js(old('email')),
+                                    phone: @js(old('phone')),
+                                    subject: @js(old('subject')),
+                                    message: @js(old('message')),
+                                },
+                                errors: @js((object) $serverErrors),
+                                attempted: @js($errors->any()),
+
+                                validateField(field) {
+                                    delete this.errors[field];
+
+                                    const required = ['name', 'phone', 'subject', 'message'];
+                                    const messages = {
+                                        name: 'নাম আবশ্যক।',
+                                        phone: 'ফোন নম্বর আবশ্যক।',
+                                        subject: 'বিষয় আবশ্যক।',
+                                        message: 'বার্তা আবশ্যক।',
+                                    };
+                                    const value = this.form[field];
+
+                                    if (required.includes(field) && (!value || String(value).trim() === '')) {
+                                        this.errors[field] = messages[field];
+                                        return false;
+                                    }
+
+                                    if (field === 'email' && value && !/^\S+@\S+\.\S+$/.test(value)) {
+                                        this.errors.email = 'সঠিক ইমেইল দিন।';
+                                        return false;
+                                    }
+
+                                    return true;
+                                },
+
+                                validateForm(el) {
+                                    this.attempted = true;
+                                    this.errors = {};
+
+                                    let valid = true;
+                                    ['name', 'email', 'phone', 'subject', 'message'].forEach((field) => {
+                                        if (!this.validateField(field)) valid = false;
+                                    });
+
+                                    if (!valid) {
+                                        this.scrollToFirstError(el);
+                                        return;
+                                    }
+
+                                    el.submit();
+                                },
+
+                                scrollToFirstError(el) {
+                                    this.$nextTick(() => {
+                                        const firstKey = Object.keys(this.errors)[0];
+                                        if (!firstKey) return;
+
+                                        const target = el.querySelector(`[name="${firstKey}"]`);
+                                        if (target) target.scrollIntoView({
+                                            behavior: 'smooth',
+                                            block: 'center'
+                                        });
+                                    });
+                                },
+                            };
+                        }
+                    </script>
                 </div>
 
                 {{-- Contact Details --}}

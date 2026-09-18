@@ -10,6 +10,7 @@ use App\Models\Exam;
 use App\Models\ExamResult;
 use App\Models\Student;
 use App\Models\Subject;
+use App\Support\NumberConverter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,8 +28,8 @@ class ExamController extends Controller
         }
 
         $exams = $query->latest()->paginate(10)->withQueryString();
-        $classes = ClassRoom::orderBy('name')->get();
-        $academicYears = AcademicYear::orderByDesc('is_current')->get();
+        $classes = ClassRoom::get();
+        $academicYears = AcademicYear::forSessionDropdown();
         $examTypes = ExamType::cases();
 
         return view('admin.exams.index', compact('exams', 'classes', 'academicYears', 'examTypes'));
@@ -36,6 +37,11 @@ class ExamController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $request->merge([
+            'total_marks' => NumberConverter::toAscii($request->input('total_marks')),
+            'passing_marks' => NumberConverter::toAscii($request->input('passing_marks')),
+        ]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|in:quiz,midterm,final,assignment',
@@ -85,7 +91,7 @@ class ExamController extends Controller
             'class_id' => $exam->class_id,
             'class_name' => $exam->classRoom?->name ?? '-',
             'academic_year_id' => $exam->academic_year_id,
-            'academic_year_name' => $exam->academicYear?->name ?? '-',
+            'academic_year_name' => $exam->academicYear?->yearLabel() ?? '-',
             'start_date' => $exam->start_date?->format('d/m/Y') ?? '-',
             'end_date' => $exam->end_date?->format('d/m/Y') ?? '-',
             'total_marks' => $exam->total_marks,
@@ -114,6 +120,11 @@ class ExamController extends Controller
     public function update(Request $request, int $id): RedirectResponse
     {
         $exam = Exam::findOrFail($id);
+
+        $request->merge([
+            'total_marks' => NumberConverter::toAscii($request->input('total_marks')),
+            'passing_marks' => NumberConverter::toAscii($request->input('passing_marks')),
+        ]);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -173,47 +184,87 @@ class ExamController extends Controller
             ->get()
             ->keyBy(fn ($r) => "{$r->student_id}_{$r->subject_id}");
 
-        return view('admin.exams.results', compact('exam', 'students', 'subjects', 'existingResults'));
+        $marks = $students->mapWithKeys(function (Student $student) use ($subjects, $existingResults): array {
+            $subjectMarks = $subjects->mapWithKeys(function (Subject $subject) use ($student, $existingResults): array {
+                $existing = $existingResults["{$student->id}_{$subject->id}"] ?? null;
+
+                return [$subject->id => $existing ? (string) $existing->marks_obtained : ''];
+            });
+
+            return [$student->id => $subjectMarks->toArray()];
+        })->toArray();
+
+        return view('admin.exams.results', compact('exam', 'students', 'subjects', 'marks'));
     }
 
     public function storeResults(Request $request, int $id): RedirectResponse
     {
+        $exam = Exam::findOrFail($id);
+
+        if (is_array($request->input('result'))) {
+            $request->merge([
+                'result' => collect($request->input('result'))
+                    ->map(fn ($subjectMarks) => array_map(
+                        fn ($marks) => NumberConverter::toAscii($marks),
+                        $subjectMarks
+                    ))
+                    ->all(),
+            ]);
+        }
+
         $validated = $request->validate([
-            'results' => 'required|array',
-            'results.*.student_id' => 'required|exists:students,id',
-            'results.*.subject_id' => 'required|exists:subjects,id',
-            'results.*.marks_obtained' => 'required|numeric|min:0',
-            'results.*.grade' => 'nullable|string|max:5',
-            'results.*.remarks' => 'nullable|string|max:255',
+            'result' => 'nullable|array',
+            'result.*' => 'array',
+            'result.*.*' => 'nullable|numeric|min:0|max:'.$exam->total_marks,
         ], [
-            'results.required' => 'ফলাফল তালিকা আবশ্যক।',
-            'results.array' => 'ফলাফল তালিকা অবশ্যই একটি অ্যারে হতে হবে।',
-            'results.*.student_id.required' => 'ছাত্র/ছাত্রী নির্বাচন আবশ্যক।',
-            'results.*.student_id.exists' => 'নির্বাচিত ছাত্র/ছাত্রী বিদ্যমান নেই।',
-            'results.*.subject_id.required' => 'বিষয় নির্বাচন আবশ্যক।',
-            'results.*.subject_id.exists' => 'নির্বাচিত বিষয় বিদ্যমান নেই।',
-            'results.*.marks_obtained.required' => 'প্রাপ্ত নম্বর আবশ্যক।',
-            'results.*.marks_obtained.numeric' => 'প্রাপ্ত নম্বর অবশ্যই একটি সংখ্যা হতে হবে।',
+            'result.*.*.numeric' => 'প্রাপ্ত নম্বর অবশ্যই একটি সংখ্যা হতে হবে।',
+            'result.*.*.min' => 'প্রাপ্ত নম্বর ০ এর কম হতে পারবে না।',
+            'result.*.*.max' => 'প্রাপ্ত নম্বর মোট নম্বরের বেশি হতে পারবে না।',
         ]);
 
         try {
-            foreach ($validated['results'] as $result) {
-                ExamResult::updateOrCreate(
-                    [
-                        'exam_id' => $id,
-                        'student_id' => $result['student_id'],
-                        'subject_id' => $result['subject_id'],
-                    ],
-                    [
-                        'marks_obtained' => $result['marks_obtained'],
-                        'grade' => $result['grade'] ?? null,
-                        'remarks' => $result['remarks'] ?? null,
-                        'entered_by' => Auth::id(),
-                    ]
-                );
+            $rows = $validated['result'] ?? [];
+            $saved = 0;
+
+            foreach ($rows as $studentId => $subjectMarks) {
+                foreach ($subjectMarks as $subjectId => $marks) {
+                    if ($marks === null || $marks === '') {
+                        continue;
+                    }
+
+                    $student = Student::find($studentId);
+                    $subject = Subject::find($subjectId);
+
+                    if (! $student || $student->class_id !== $exam->class_id) {
+                        continue;
+                    }
+
+                    if (! $subject || $subject->class_id !== $exam->class_id) {
+                        continue;
+                    }
+
+                    ExamResult::updateOrCreate(
+                        [
+                            'exam_id' => $id,
+                            'student_id' => (int) $studentId,
+                            'subject_id' => (int) $subjectId,
+                        ],
+                        [
+                            'marks_obtained' => (float) $marks,
+                            'grade' => ExamResult::calculateGrade((float) $marks, (float) $exam->total_marks, (float) $exam->passing_marks),
+                            'entered_by' => Auth::id(),
+                        ]
+                    );
+
+                    $saved++;
+                }
             }
 
-            return redirect()->route('admin.exams.index')
+            if ($saved === 0) {
+                return back()->with('error', 'কোনো নম্বর প্রদান করা হয়নি।');
+            }
+
+            return redirect()->route('admin.exams.results', $exam)
                 ->with('success', 'পরীক্ষার ফলাফল সফলভাবে সংরক্ষিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()

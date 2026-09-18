@@ -56,7 +56,7 @@ class NoticeController extends Controller
         return response()->json($notice);
     }
 
-    public function update(Request $request, int  $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $notice = Notice::findOrFail($id);
 

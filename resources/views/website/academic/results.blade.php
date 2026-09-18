@@ -25,7 +25,7 @@
                             <select name="class_id" required class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
                                 <option value="">শ্রেণি নির্বাচন করুন</option>
                                 @foreach ($classes as $class)
-                                    <option value="{{ $class->id }}" {{ $selectedClass == $class->id ? 'selected' : '' }}>{{ $class->name }}{{ $class->section ? ' — '.$class->section : '' }}</option>
+                                    <option value="{{ $class->id }}" {{ $selectedClass == $class->id ? 'selected' : '' }}>{{ $class->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -64,60 +64,68 @@
             </div>
 
             {{-- Results --}}
-            @if ($student && $results->count())
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden mb-8 reveal">
-                    <div class="bg-ris-primary/5 px-6 py-4 border-b border-gray-100 flex flex-wrap items-center gap-4">
-                        <div>
-                            <p class="font-heading font-bold text-ris-dark text-lg">{{ $student->user->name }}</p>
-                            <p class="text-sm text-gray-500">রোল: {{ $student->roll_no ?? '-' }} | ভর্তি: {{ $student->admission_no }} | শ্রেণি: {{ $student->classRoom->name }}</p>
-                        </div>
-                    </div>
-
-                    @php
-                        $grouped = $results->groupBy('exam_id');
-                    @endphp
-
-                    @foreach ($grouped as $examResults)
+            @if ($students->isNotEmpty() && $examGroups->isNotEmpty())
+                <div class="space-y-8 mb-8">
+                    @foreach ($examGroups as $group)
                         @php
-                            $exam = $examResults->first()->exam;
-                            $totalMarks = $examResults->sum('marks_obtained');
+                            $exam = $group['exam'];
+                            $displaySubjects = $subjects->filter(fn ($s) => $group['subjectIds']->contains($s->id));
                         @endphp
-                        <div class="p-6 border-b border-gray-100 last:border-0">
-                            <div class="flex items-center justify-between mb-4">
-                                <h4 class="font-heading font-bold text-ris-dark">{{ $exam->name }}</h4>
-                                <span class="px-3 py-1 bg-ris-primary/10 text-ris-primary text-sm font-medium rounded-full">মোট: {{ number_format($totalMarks, 1) }}</span>
+                        <div class="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden reveal">
+                            <div class="bg-ris-primary/5 px-6 py-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-4">
+                                <div>
+                                    <h4 class="font-heading font-bold text-ris-dark text-lg">{{ $exam->name }}</h4>
+                                    <p class="text-sm text-gray-500">
+                                        পূর্ণমান: {{ $exam->total_marks }} | পাস নম্বর: {{ $exam->passing_marks }}
+                                    </p>
+                                </div>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-sm">
                                     <thead>
                                         <tr class="bg-gray-50">
-                                            <th class="text-left px-4 py-3 text-gray-500 font-medium">বিষয়</th>
-                                            <th class="text-center px-4 py-3 text-gray-500 font-medium">পূর্ণমান</th>
-                                            <th class="text-center px-4 py-3 text-gray-500 font-medium">প্রাপ্ত</th>
-                                            <th class="text-center px-4 py-3 text-gray-500 font-medium">গ্রেড</th>
-                                            <th class="text-left px-4 py-3 text-gray-500 font-medium">মন্তব্য</th>
+                                            <th class="text-left px-4 py-3 text-gray-500 font-medium">রোল</th>
+                                            <th class="text-left px-4 py-3 text-gray-500 font-medium">শিক্ষার্থীর নাম</th>
+                                            @foreach ($displaySubjects as $subject)
+                                                <th class="text-center px-4 py-3 text-gray-500 font-medium min-w-24">
+                                                    {{ $subject->name }}</th>
+                                            @endforeach
+                                            <th class="text-center px-4 py-3 text-gray-500 font-medium">মোট</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($examResults as $result)
+                                        @foreach ($students as $student)
+                                            @php
+                                                $studentRows = $group['rowsByStudent']->get($student->id, collect());
+                                            @endphp
                                             <tr class="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
-                                                <td class="px-4 py-3 font-medium text-ris-dark">{{ $result->subject->name ?? '-' }}</td>
-                                                <td class="px-4 py-3 text-center text-gray-500">{{ $exam->total_marks }}</td>
-                                                <td class="px-4 py-3 text-center font-semibold text-ris-dark">{{ number_format($result->marks_obtained, 1) }}</td>
-                                                <td class="px-4 py-3 text-center">
+                                                <td class="px-4 py-3 text-gray-500">{{ $student->roll_no ?? '-' }}</td>
+                                                <td class="px-4 py-3 font-medium text-ris-dark">{{ $student->user->name }}</td>
+                                                @foreach ($displaySubjects as $subject)
                                                     @php
-                                                        $gradeColor = match(true) {
-                                                            $result->grade === 'A+' || $result->grade === 'A' => 'bg-green-100 text-green-700',
-                                                            $result->grade === 'B' || $result->grade === 'B+' => 'bg-blue-100 text-blue-700',
-                                                            $result->grade === 'C' || $result->grade === 'C+' => 'bg-amber-100 text-amber-700',
+                                                        $result = $studentRows->get($subject->id);
+                                                        $marks = $result?->marks_obtained;
+                                                        $gradeColor = match ($result?->grade) {
+                                                            'A+', 'A' => 'bg-green-100 text-green-700',
+                                                            'B+', 'B' => 'bg-blue-100 text-blue-700',
+                                                            'C+', 'C' => 'bg-amber-100 text-amber-700',
                                                             default => 'bg-gray-100 text-gray-700',
                                                         };
                                                     @endphp
-                                                    <span class="inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full {{ $gradeColor }}">
-                                                        {{ $result->grade ?? '-' }}
-                                                    </span>
+                                                    <td class="px-4 py-3 text-center">
+                                                        @if ($marks !== null)
+                                                            <span class="font-semibold text-ris-dark">{{ number_format($marks, 1) }}</span>
+                                                            <span class="ml-1 inline-block px-2 py-0.5 text-xs font-semibold rounded-full align-middle {{ $gradeColor }}">
+                                                                {{ $result->grade }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-gray-300">-</span>
+                                                        @endif
+                                                    </td>
+                                                @endforeach
+                                                <td class="px-4 py-3 text-center">
+                                                    <span class="font-bold text-ris-primary">{{ number_format($group['studentTotals'][$student->id] ?? 0, 1) }}</span>
                                                 </td>
-                                                <td class="px-4 py-3 text-gray-500 text-xs">{{ $result->remarks ?? '-' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -126,15 +134,25 @@
                         </div>
                     @endforeach
                 </div>
-            @elseif ($selectedClass && $search !== '' || request('roll_no'))
+            @elseif ($selectedClass && $students->isEmpty())
                 <div class="text-center py-16 bg-gray-50 rounded-2xl reveal">
                     <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
                         <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <h3 class="font-heading font-bold text-lg text-ris-dark">কোনো ফলাফল পাওয়া যায়নি</h3>
+                    <h3 class="font-heading font-bold text-lg text-ris-dark">কোনো শিক্ষার্থী পাওয়া যায়নি</h3>
                     <p class="mt-2 text-gray-500 text-sm">দয়া করে সঠিক তথ্য দিয়ে আবার অনুসন্ধান করুন।</p>
+                </div>
+            @elseif ($selectedClass && $students->isNotEmpty() && $examGroups->isEmpty())
+                <div class="text-center py-16 bg-gray-50 rounded-2xl reveal">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-heading font-bold text-lg text-ris-dark">এখনো কোনো ফলাফল প্রবেশ করা হয়নি</h3>
+                    <p class="mt-2 text-gray-500 text-sm">এই শ্রেণির জন্য পরীক্ষার ফলাফল এখনো প্রকাশ করা হয়নি।</p>
                 </div>
             @endif
         </div>

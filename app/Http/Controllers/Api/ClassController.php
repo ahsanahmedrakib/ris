@@ -11,7 +11,7 @@ class ClassController extends Controller
 {
     public function index(): JsonResponse
     {
-        $classes = ClassRoom::with(['academicYear', 'classTeacher'])->withCount('students')->orderBy('name')->get();
+        $classes = ClassRoom::with(['academicYear', 'classTeacher'])->withCount('students')->get();
 
         return response()->json($classes);
     }

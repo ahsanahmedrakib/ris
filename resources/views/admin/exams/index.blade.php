@@ -111,12 +111,13 @@
                                             </svg>
                                         </button>
                                         <a href="{{ route('admin.exams.results', $exam) }}"
-                                            class="p-1.5 rounded-lg text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-                                            title="ফলাফল">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors text-xs font-medium"
+                                            title="ফলাফল প্রবেশ করুন">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                             </svg>
+                                            ফলাফল
                                         </a>
                                         <form method="POST" action="{{ route('admin.exams.destroy', $exam) }}"
                                             onsubmit="return confirm('আপনি কি নিশ্চিত এই পরীক্ষাটি মুছে ফেলতে চান?')">
@@ -219,7 +220,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">ধরন <span
                                     class="text-red-500">*</span></label>
-                            <select name="type"
+                            <select name="type" x-model="createForm.type" @change="validateCreateField('type')"
                                 class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white"
                                 :class="(createErrors.type || (createAttempted && !createForm.type)) ? 'border-red-400' :
                                 'border-gray-200'">
@@ -235,7 +236,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">শ্রেণি <span
                                     class="text-red-500">*</span></label>
-                            <select name="class_id"
+                            <select name="class_id" x-model="createForm.class_id" @change="validateCreateField('class_id')"
                                 class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white"
                                 :class="(createErrors.class_id || (createAttempted && !createForm.class_id)) ? 'border-red-400' :
                                 'border-gray-200'">
@@ -251,13 +252,13 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">শিক্ষাবর্ষ <span
                                     class="text-red-500">*</span></label>
-                            <select name="academic_year_id"
+                            <select name="academic_year_id" x-model="createForm.academic_year_id" @change="validateCreateField('academic_year_id')"
                                 class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white"
                                 :class="(createErrors.academic_year_id || (createAttempted && !createForm.academic_year_id)) ? 'border-red-400' :
                                 'border-gray-200'">
                                 <option value="">শিক্ষাবর্ষ নির্বাচন করুন</option>
                                 @foreach ($academicYears as $year)
-                                    <option value="{{ $year->id }}">{{ $year->name }}</option>
+                                    <option value="{{ $year->id }}">{{ $year->yearLabel() }}</option>
                                 @endforeach
                             </select>
                             <template x-if="createErrors.academic_year_id || (createAttempted && !createForm.academic_year_id)">
@@ -291,7 +292,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">মোট নম্বর <span
                                     class="text-red-500">*</span></label>
-                            <input type="number" name="total_marks" x-model="createForm.total_marks"
+                            <input name="total_marks" x-model="createForm.total_marks"
                                 @blur="validateCreateField('total_marks')" min="1"
                                 class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
                                 :class="(createErrors.total_marks || (createAttempted && !createForm.total_marks)) ? 'border-red-400' :
@@ -303,7 +304,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">পাস নম্বর <span
                                     class="text-red-500">*</span></label>
-                            <input type="number" name="passing_marks" x-model="createForm.passing_marks"
+                            <input name="passing_marks" x-model="createForm.passing_marks"
                                 @blur="validateCreateField('passing_marks')" min="1"
                                 class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
                                 :class="(createErrors.passing_marks || (createAttempted && !createForm.passing_marks)) ? 'border-red-400' :
@@ -440,7 +441,7 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">ধরন <span
                                             class="text-red-500">*</span></label>
-                                    <select name="type"
+                                    <select name="type" x-model="editData.type" @change="validateEditField('type')"
                                         class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white"
                                         :class="(editErrors.type || (editAttempted && !editData.type)) ? 'border-red-400' :
                                         'border-gray-200'">
@@ -457,7 +458,7 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">শ্রেণি <span
                                             class="text-red-500">*</span></label>
-                                    <select name="class_id"
+                                    <select name="class_id" x-model="editData.class_id" @change="validateEditField('class_id')"
                                         class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white"
                                         :class="(editErrors.class_id || (editAttempted && !editData.class_id)) ? 'border-red-400' :
                                         'border-gray-200'">
@@ -474,13 +475,13 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">শিক্ষাবর্ষ <span
                                             class="text-red-500">*</span></label>
-                                    <select name="academic_year_id"
+                                    <select name="academic_year_id" x-model="editData.academic_year_id" @change="validateEditField('academic_year_id')"
                                         class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white"
                                         :class="(editErrors.academic_year_id || (editAttempted && !editData.academic_year_id)) ? 'border-red-400' :
                                         'border-gray-200'">
                                         <option value="">শিক্ষাবর্ষ নির্বাচন করুন</option>
                                         @foreach ($academicYears as $year)
-                                            <option value="{{ $year->id }}" x-text="'{{ $year->name }}'"
+                                            <option value="{{ $year->id }}" x-text="'{{ $year->yearLabel() }}'"
                                                 :selected="editData.academic_year_id === '{{ $year->id }}'"></option>
                                         @endforeach
                                     </select>

@@ -42,7 +42,7 @@ class TransportController extends Controller
 
     public function show(int $id): JsonResponse
     {
-        $bus = Bus::with(['busRoutes' => fn($q) => $q->orderBy('stop_order'), 'studentTransports' => fn($q) => $q->with('student.user')])->withCount(['busRoutes', 'studentTransports'])->findOrFail($id);
+        $bus = Bus::with(['busRoutes' => fn ($q) => $q->orderBy('stop_order'), 'studentTransports' => fn ($q) => $q->with('student.user')])->withCount(['busRoutes', 'studentTransports'])->findOrFail($id);
 
         return response()->json($bus);
     }

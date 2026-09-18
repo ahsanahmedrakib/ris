@@ -17,10 +17,9 @@ class ClassController extends Controller
     {
         $classes = ClassRoom::with(['academicYear', 'classTeacher'])
             ->withCount('students')
-            ->orderBy('name')
             ->get();
 
-        $academicYears = AcademicYear::orderByDesc('is_current')->orderByDesc('name')->get();
+        $academicYears = AcademicYear::forSessionDropdown();
         $teachers = User::where('role', 'teacher')->where('is_active', true)->orderBy('name')->get();
 
         return view('admin.classes.index', compact('classes', 'academicYears', 'teachers'));
@@ -65,7 +64,7 @@ class ClassController extends Controller
             'name' => $class->name,
             'section' => $class->section,
             'academic_year_id' => $class->academic_year_id,
-            'academic_year' => $class->academicYear?->name,
+            'academic_year' => $class->academicYear?->yearLabel(),
             'class_teacher_id' => $class->class_teacher_id,
             'class_teacher' => $class->classTeacher?->name,
             'students_count' => $class->students_count,
@@ -119,9 +118,23 @@ class ClassController extends Controller
         try {
             $class = ClassRoom::findOrFail($id);
 
-            if ($class->students()->count() > 0) {
+            $dependencies = [
+                'শিক্ষার্থী' => $class->students()->count(),
+                'বিষয়' => $class->subjects()->count(),
+                'পরীক্ষা' => $class->exams()->count(),
+                'ফি কাঠামো' => $class->feeStructures()->count(),
+                'ক্লাস রুটিন' => $class->classRoutines()->count(),
+            ];
+
+            $existing = array_filter($dependencies, fn (int $count) => $count > 0);
+
+            if (count($existing) > 0) {
+                $details = collect($existing)
+                    ->map(fn (int $count, string $label) => $label.' '.$count.'টি')
+                    ->implode(', ');
+
                 return back()
-                    ->with('error', 'এই শ্রেণিতে ছাত্র/ছাত্রী আছে, তাই এটি মুছে ফেলা যাচ্ছে না।');
+                    ->with('error', 'এই শ্রেণি মুছে ফেলা যাচ্ছে না। নির্ভরশীল তথ্য রয়েছে: '.$details);
             }
 
             $class->delete();

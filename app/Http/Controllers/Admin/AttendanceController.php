@@ -28,7 +28,7 @@ class AttendanceController extends Controller
         }
 
         $attendances = $query->latest('date')->paginate(10)->withQueryString();
-        $classes = ClassRoom::orderBy('name')->get();
+        $classes = ClassRoom::get();
 
         $date = $request->get('date', today()->toDateString());
 

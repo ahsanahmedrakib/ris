@@ -47,7 +47,7 @@
                                 </td>
                                 <td class="px-4 py-3.5 text-gray-600 whitespace-nowrap">{{ $class->section ?? '-' }}</td>
                                 <td class="px-4 py-3.5 text-gray-600 whitespace-nowrap">
-                                    {{ $class->academicYear->name ?? '-' }}</td>
+                                    {{ $class->academicYear?->yearLabel() ?? '-' }}</td>
                                 <td class="px-4 py-3.5 text-gray-600 whitespace-nowrap">
                                     {{ $class->classTeacher->name ?? '-' }}</td>
                                 <td class="px-4 py-3.5 whitespace-nowrap">
@@ -189,7 +189,7 @@
                                 'border-red-400' : 'border-gray-200'">
                                 <option value="">-- নির্বাচন করুন --</option>
                                 @foreach ($academicYears as $year)
-                                    <option value="{{ $year->id }}">{{ $year->name }}</option>
+                                    <option value="{{ $year->id }}">{{ $year->yearLabel() }}</option>
                                 @endforeach
                             </select>
                             <template x-if="createErrors.academic_year_id || (createAttempted && !createForm.academic_year_id)">
@@ -328,7 +328,7 @@
                                         'border-red-400' : 'border-gray-200'">
                                         <option value="">-- নির্বাচন করুন --</option>
                                         @foreach ($academicYears as $year)
-                                            <option :value="'{{ $year->id }}'" x-text="'{{ $year->name }}'"
+                                            <option :value="'{{ $year->id }}'" x-text="'{{ $year->yearLabel() }}'"
                                                 :selected="editData.academic_year_id == '{{ $year->id }}'"></option>
                                         @endforeach
                                     </select>

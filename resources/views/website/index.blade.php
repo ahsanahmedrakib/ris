@@ -629,32 +629,47 @@
                 <div class="lg:col-span-8 min-w-0">
                     <div class="bg-gray-50 border border-gray-100 rounded-3xl p-6 sm:p-8 reveal-right shadow-sm"
                         x-data="{ active: 'all' }">
-                        {{-- Tabs --}}
-                        <div class="flex flex-wrap items-center gap-2 mb-6">
-                            @php
-                                $noticeTabs = [
-                                    ['key' => 'all', 'label' => 'সব নোটিশ'],
-                                    ['key' => 'admission', 'label' => 'ভর্তি'],
-                                    ['key' => 'exam', 'label' => 'পরীক্ষা'],
-                                    ['key' => 'holiday', 'label' => 'ছুটি'],
-                                    ['key' => 'general', 'label' => 'সাধারণ'],
-                                ];
-                            @endphp
-                            @foreach ($noticeTabs as $tab)
-                                <button type="button" @click="active = '{{ $tab['key'] }}'"
-                                    class="px-4 py-2 rounded-xl text-sm font-heading font-medium transition-all duration-200"
-                                    :class="active === '{{ $tab['key'] }}'
-                                        ?
-                                        'bg-ris-primary text-white shadow-lg shadow-ris-primary/25' :
-                                        'bg-white text-gray-600 hover:text-ris-primary border border-gray-200 hover:border-ris-primary/30'">
-                                    {{ $tab['label'] }}
-                                </button>
-                            @endforeach
-                        </div>
+                        @if (empty($notices))
+                            {{-- Empty state --}}
+                            <div class="text-center py-12">
+                                <div
+                                    class="w-20 h-20 mx-auto rounded-full bg-white flex items-center justify-center mb-6 shadow-inner">
+                                    <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                                    </svg>
+                                </div>
+                                <h4 class="font-heading font-bold text-xl text-ris-dark">কোনো নোটিশ যোগ করা হয়নি</h4>
+                                <p class="mt-2 text-gray-500">শীঘ্রই স্কুলের গুরুত্বপূর্ণ ঘোষণা এখানে প্রকাশ করা হবে।</p>
+                            </div>
+                        @else
+                            {{-- Tabs --}}
+                            <div class="flex flex-wrap items-center gap-2 mb-6">
+                                @php
+                                    $noticeTabs = [
+                                        ['key' => 'all', 'label' => 'সব নোটিশ'],
+                                        ['key' => 'admission', 'label' => 'ভর্তি'],
+                                        ['key' => 'exam', 'label' => 'পরীক্ষা'],
+                                        ['key' => 'holiday', 'label' => 'ছুটি'],
+                                        ['key' => 'general', 'label' => 'সাধারণ'],
+                                    ];
+                                @endphp
+                                @foreach ($noticeTabs as $tab)
+                                    <button type="button" @click="active = '{{ $tab['key'] }}'"
+                                        class="px-4 py-2 rounded-xl text-sm font-heading font-medium transition-all duration-200"
+                                        :class="active === '{{ $tab['key'] }}'
+                                            ?
+                                            'bg-ris-primary text-white shadow-lg shadow-ris-primary/25' :
+                                            'bg-white text-gray-600 hover:text-ris-primary border border-gray-200 hover:border-ris-primary/30'">
+                                        {{ $tab['label'] }}
+                                    </button>
+                                @endforeach
+                            </div>
 
-                        {{-- Notice items --}}
-                        <div class="space-y-3.5 reveal-stagger">
-                            @foreach ($notices as $notice)
+                            {{-- Notice items --}}
+                            <div class="space-y-3.5 reveal-stagger">
+                                @foreach ($notices as $notice)
                                 <div class="notice-item bg-white rounded-2xl p-4 sm:p-5 flex items-center gap-4 shadow-card hover:shadow-card-hover transition-all duration-300 border border-gray-100 hover:border-ris-primary/20 reveal"
                                     x-show="active === 'all' || active === '{{ $notice['category'] }}'"
                                     x-transition:enter="transition ease-out duration-300"
@@ -708,7 +723,8 @@
                                     </a>
                                 </div>
                             @endforeach
-                        </div>
+                            </div>
+                        @endif
 
                         {{-- Footer button --}}
                         <div class="mt-7 text-center">
@@ -806,9 +822,8 @@
     @endif
 
     {{-- ═══ Testimonials Section (swiper) ═══ --}}
-    @if ($testimonials->count())
-        <section
-            class="py-16 sm:py-20 testimonial-bg section-pattern-grid relative overflow-hidden">
+    <section
+        class="py-16 sm:py-20 testimonial-bg section-pattern-grid relative overflow-hidden">
             @include('website.partials.decorative-shapes')
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-12 reveal">
@@ -818,8 +833,9 @@
                     <p class="mt-3 text-gray-500">আমাদের অভিভাবক ও শিক্ষার্থীদের মূল্যবান অনুভূতি।</p>
                 </div>
 
-                {{-- Rating summary --}}
-                <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-10 reveal">
+                @if ($testimonials->count())
+                    {{-- Rating summary --}}
+                    <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-10 reveal">
                     <div
                         class="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-white border border-amber-100 shadow-card">
                         <div
@@ -862,24 +878,42 @@
                     </button>
                 </div>
 
+                @else
+                    {{-- Empty state --}}
+                    <div class="text-center py-16">
+                        <div
+                            class="w-20 h-20 mx-auto rounded-full bg-white flex items-center justify-center mb-6 shadow-inner">
+                            <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609L9.978 5.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H0z" />
+                            </svg>
+                        </div>
+                        <h3 class="font-heading font-bold text-xl text-ris-dark">এখনো কোনো মতামত নেই</h3>
+                        <p class="mt-2 text-gray-500">শীঘ্রই আমাদের অভিভাবকদের মতামত যোগ করা হবে। আপনি আপনার অভিজ্ঞতা
+                            শেয়ার করুন।</p>
+                    </div>
+                @endif
+
                 <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a href="{{ route('testimonials') }}"
-                        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-ris-primary text-ris-primary font-heading font-medium text-sm hover:bg-ris-primary hover:text-white transition-all duration-300">
-                        সব টেস্টিমোনিয়াল দেখুন
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                    </a>
+                    @if ($testimonials->count())
+                        <a href="{{ route('testimonials') }}"
+                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-ris-primary text-ris-primary font-heading font-medium text-sm hover:bg-ris-primary hover:text-white transition-all duration-300">
+                            সব টেস্টিমোনিয়াল দেখুন
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </a>
+                    @endif
                 </div>
                 @include('website.partials.testimonial-submit')
             </div>
         </section>
-    @endif
 
     {{-- ═══ FAQ Section (dynamic — admin managed) ═══ --}}
     @if ($faqs->count())
-        <section class="py-16 sm:py-20 bg-ris-gray-50 section-pattern-dots relative overflow-hidden">
+        <section class="py-16 sm:py-20 bg-ris-gray-50 section-pattern-grid relative overflow-hidden">
             <div class="absolute top-10 right-10 w-24 h-24 bg-ris-primary/5 rounded-full pointer-events-none"></div>
             <div
                 class="absolute bottom-10 left-10 w-32 h-32 border border-ris-primary/10 rounded-2xl rotate-12 pointer-events-none">

@@ -91,8 +91,8 @@
                     <p class="text-xs text-gray-500">সকল পেমেন্টের ইতিহাস দেখুন</p>
                 </div>
             </a>
-            <div
-                class="flex items-center gap-4 p-5 bg-white rounded-xl border border-gray-200 hover:border-ris-primary hover:shadow-md transition-all group cursor-pointer">
+            <a href="{{ route('admin.fees.structures') }}"
+                class="flex items-center gap-4 p-5 bg-white rounded-xl border border-gray-200 hover:border-ris-primary hover:shadow-md transition-all group">
                 <div
                     class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center group-hover:bg-ris-primary/10 transition-colors">
                     <svg class="w-6 h-6 text-amber-600 group-hover:text-ris-primary transition-colors" fill="none"
@@ -105,7 +105,7 @@
                     <h3 class="font-medium text-gray-900">ফি স্ট্রাকচার</h3>
                     <p class="text-xs text-gray-500">ফি স্ট্রাকচার পরিচালনা করুন</p>
                 </div>
-            </div>
+            </a>
         </div>
 
         {{-- Fee Structures --}}
@@ -133,7 +133,7 @@
                                 <td class="px-5 py-3.5 text-gray-600">{{ $structure->class->name ?? '-' }}</td>
                                 <td class="px-5 py-3.5 text-gray-900 font-medium">৳{{ number_format($structure->amount) }}
                                 </td>
-                                <td class="px-5 py-3.5 text-gray-600">{{ $structure->academicYear->name ?? '-' }}</td>
+                                <td class="px-5 py-3.5 text-gray-600">{{ $structure->academicYear?->yearLabel() ?? '-' }}</td>
                                 <td class="px-5 py-3.5">
                                     <div class="flex items-center justify-end gap-1">
                                         <a href="#"

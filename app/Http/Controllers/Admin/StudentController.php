@@ -45,7 +45,7 @@ class StudentController extends Controller
         }
 
         $students = $query->latest()->paginate(10)->withQueryString();
-        $classes = ClassRoom::orderBy('name')->get();
+        $classes = ClassRoom::get();
 
         return view('admin.students.index', compact('students', 'classes'));
     }
@@ -111,7 +111,7 @@ class StudentController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'ছাত্র/ছাত্রী যোগ করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -238,7 +238,7 @@ class StudentController extends Controller
             DB::rollBack();
 
             return back()->withInput()
-                ->with('error', 'ছাত্র/ছাত্রী আপডেট করতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -253,7 +253,7 @@ class StudentController extends Controller
                 ->with('success', 'ছাত্র/ছাত্রী সফলভাবে ট্র্যাশে পাঠানো হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'ছাত্র/ছাত্রী মুছে ফেলতে সমস্যা হয়েছে। ' . $e->getMessage());
+                ->with('error', 'ছাত্র/ছাত্রী মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -284,7 +284,7 @@ class StudentController extends Controller
 
         $students = $query->latest()->get();
 
-        $rows = $students->map(fn($student, $index) => [
+        $rows = $students->map(fn ($student, $index) => [
             $index + 1,
             $student->admission_no,
             $student->user?->name,
@@ -311,7 +311,7 @@ class StudentController extends Controller
         return XlsxExport::download(
             ['ক্রমিক', 'ভর্তি নং', 'নাম', 'শ্রেণি', 'রোল নং', 'সেকশন', 'লিঙ্গ', 'জন্ম তারিখ', 'রক্তের গ্রুপ', 'মোবাইল', 'ইমেইল', 'অভিভাবক', 'অভিভাবকের মোবাইল', 'ঠিকানা', 'স্ট্যাটাস', 'যোগদানের তারিখ'],
             $rows,
-            'students_' . now('Asia/Dhaka')->format('Y-m-d_H-i') . '.xlsx',
+            'students_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.xlsx',
         );
     }
 

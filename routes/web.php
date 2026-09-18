@@ -3,6 +3,7 @@
 use App\Features\Auth\Http\Controllers\AuthController;
 use App\Features\Auth\Http\Controllers\DashboardController;
 use App\Features\Website\Http\Controllers\WebsiteController;
+use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\AcademicCalendarController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AdmissionController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PayrollController;
 use App\Http\Controllers\Admin\QrCodeController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ResultController;
 use App\Http\Controllers\Admin\ScholarshipController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\StudentController;
@@ -82,6 +84,15 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('admin.activity-logs.index');
 
     // Website content
+    Route::get('/about', [AboutController::class, 'index'])->name('admin.about.index');
+    Route::post('/about/mission-vision', [AboutController::class, 'storeMissionVision'])->name('admin.about.mission-vision.store');
+    Route::put('/about/mission-vision/{aboutContent}', [AboutController::class, 'updateMissionVision'])->name('admin.about.mission-vision.update');
+    Route::delete('/about/mission-vision/{aboutContent}', [AboutController::class, 'destroyMissionVision'])->name('admin.about.mission-vision.destroy');
+    Route::post('/about/core-values', [AboutController::class, 'storeCoreValue'])->name('admin.about.core-values.store');
+    Route::get('/about/core-values/{coreValue}/edit', [AboutController::class, 'editCoreValue'])->name('admin.about.core-values.edit');
+    Route::put('/about/core-values/{coreValue}', [AboutController::class, 'updateCoreValue'])->name('admin.about.core-values.update');
+    Route::patch('/about/core-values/{coreValue}/toggle-active', [AboutController::class, 'toggleCoreValue'])->name('admin.about.core-values.toggle-active');
+    Route::delete('/about/core-values/{coreValue}', [AboutController::class, 'destroyCoreValue'])->name('admin.about.core-values.destroy');
     Route::resource('testimonials', TestimonialController::class)->names('admin.testimonials');
     Route::patch('testimonials/{testimonial}/toggle-active', [TestimonialController::class, 'toggleActive'])->name('admin.testimonials.toggle-active');
     Route::resource('gallery', GalleryController::class)->names('admin.gallery');
@@ -186,10 +197,16 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
     Route::post('/exams/{exam}/results', [ExamController::class, 'storeResults'])->name('admin.exams.results.store');
     Route::resource('exams', ExamController::class)->except(['create'])->names('admin.exams');
 
+    // Results (all students, with Excel export)
+    Route::get('/results', [ResultController::class, 'index'])->name('admin.results.index');
+    Route::get('/results/export', [ResultController::class, 'export'])->name('admin.results.export');
+
     // Fees (custom routes before resource)
     Route::get('/fees/structures', [FeeController::class, 'structures'])->name('admin.fees.structures');
-    Route::get('/fees/structures/create', [FeeController::class, 'createStructure'])->name('admin.fees.structures.create');
     Route::post('/fees/structures', [FeeController::class, 'storeStructure'])->name('admin.fees.structures.store');
+    Route::get('/fees/structures/{feeStructure}/edit', [FeeController::class, 'editStructure'])->name('admin.fees.structures.edit');
+    Route::put('/fees/structures/{feeStructure}', [FeeController::class, 'updateStructure'])->name('admin.fees.structures.update');
+    Route::delete('/fees/structures/{feeStructure}', [FeeController::class, 'destroyStructure'])->name('admin.fees.structures.destroy');
     Route::get('/fees/invoices', [FeeController::class, 'invoices'])->name('admin.fees.invoices');
     Route::post('/fees/invoices/generate', [FeeController::class, 'generateInvoices'])->name('admin.fees.invoices.generate');
     Route::get('/fees/payments', [FeeController::class, 'payments'])->name('admin.fees.payments');

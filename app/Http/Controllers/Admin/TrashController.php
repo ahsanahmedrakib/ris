@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\TeacherProfile;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -150,7 +151,12 @@ class TrashController extends Controller
             $record->teacherProfile()?->withTrashed()?->first()?->forceDelete();
         }
 
-        $record->forceDelete();
+        try {
+            $record->forceDelete();
+        } catch (QueryException) {
+            return back()
+                ->with('error', 'নির্ভরশীল তথ্যের কারণে স্থায়ীভাবে মুছে ফেলা যাচ্ছে না। আগে সম্পর্কিত ডেটা মুছে ফেলুন।');
+        }
 
         return back()->with('success', 'ডেটা স্থায়ীভাবে মুছে ফেলা হয়েছে।');
     }

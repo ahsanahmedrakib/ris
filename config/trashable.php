@@ -102,4 +102,8 @@ return [
         'model' => 'App\Models\Faq',
         'label' => 'প্রশ্নোত্তর',
     ],
+    'core_value' => [
+        'model' => 'App\Models\CoreValue',
+        'label' => 'মূল্যবোধ',
+    ],
 ];

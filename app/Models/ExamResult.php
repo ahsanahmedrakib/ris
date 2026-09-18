@@ -49,4 +49,22 @@ class ExamResult extends Model
     {
         return $this->belongsTo(User::class, 'entered_by');
     }
+
+    public static function calculateGrade(float|int $marks, float|int $total, float|int $passing): string
+    {
+        if ($marks < $passing) {
+            return 'F';
+        }
+
+        $percentage = ($marks / max($total, 1)) * 100;
+
+        return match (true) {
+            $percentage >= 80 => 'A+',
+            $percentage >= 70 => 'A',
+            $percentage >= 60 => 'A-',
+            $percentage >= 50 => 'B',
+            $percentage >= 40 => 'C',
+            default => 'D',
+        };
+    }
 }

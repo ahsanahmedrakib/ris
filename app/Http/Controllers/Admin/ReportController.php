@@ -34,7 +34,7 @@ class ReportController extends Controller
     public function studentReport(Request $request): View
     {
         $students = Student::with(['user', 'classRoom'])->where('is_active', true)->orderBy('roll_no')->paginate(10);
-        $classes = ClassRoom::orderBy('name')->get();
+        $classes = ClassRoom::get();
 
         $selectedStudent = null;
         if ($request->filled('student_id')) {
@@ -51,7 +51,7 @@ class ReportController extends Controller
 
     public function classReport(Request $request): View
     {
-        $classes = ClassRoom::withCount('students')->orderBy('name')->get();
+        $classes = ClassRoom::withCount('students')->get();
         $class = null;
         $examResults = collect();
 
@@ -91,7 +91,7 @@ class ReportController extends Controller
         }
 
         $attendances = $query->latest('date')->paginate(10)->withQueryString();
-        $classes = ClassRoom::orderBy('name')->get();
+        $classes = ClassRoom::get();
         $statuses = AttendanceStatus::cases();
 
         $summaryQuery = Attendance::query();
@@ -122,7 +122,7 @@ class ReportController extends Controller
     public function examReport(Request $request): View
     {
         $exams = Exam::with(['classRoom', 'academicYear'])->orderByDesc('created_at')->paginate(10);
-        $classes = ClassRoom::orderBy('name')->get();
+        $classes = ClassRoom::get();
 
         return view('admin.reports.exam', compact('exams', 'classes'));
     }

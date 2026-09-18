@@ -22,68 +22,66 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        বর্তমান শিক্ষাবর্ষ: {{ $academicYear->name }}
+                        বর্তমান শিক্ষাবর্ষ: {{ $academicYear->yearLabel() }}
                     </span>
                 </div>
             @endif
 
-            @php
-                $classesWithFees = $classes->filter(fn ($class) => $class->feeStructures->count());
-            @endphp
-
-            @if ($classesWithFees->count())
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 reveal-stagger">
-                    @foreach ($classesWithFees as $class)
-                        <div class="bg-white rounded-2xl border border-gray-100 shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden reveal">
-                            <div class="bg-ris-primary text-white px-6 py-4">
-                                <h3 class="font-heading font-bold text-lg">{{ $class->name }}</h3>
-                                @if ($class->section)
-                                    <p class="text-white/70 text-sm">সেকশন: {{ $class->section }}</p>
-                                @endif
-                            </div>
-                            <div class="p-5">
-                                <table class="w-full text-sm">
-                                    <thead>
-                                        <tr class="border-b border-gray-100">
-                                            <th class="text-left py-2 text-gray-500 font-medium">ফি ধরন</th>
-                                            <th class="text-right py-2 text-gray-500 font-medium">পরিমাণ</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php
-                                            $typeLabels = [
-                                                'tuition' => 'টিউশন ফি',
-                                                'transport' => 'পরিবহন',
-                                                'library' => 'লাইব্রেরি',
-                                                'exam' => 'পরীক্ষা',
-                                                'others' => 'অন্যান্য',
-                                            ];
-                                        @endphp
-                                        @foreach ($class->feeStructures as $structure)
-                                            <tr class="border-b border-gray-50">
-                                                <td class="py-2.5 text-gray-700">{{ $typeLabels[$structure->fee_type] ?? $structure->fee_type }}</td>
-                                                <td class="py-2.5 text-right font-semibold text-ris-dark">
-                                                    ৳{{ number_format($structure->amount) }}
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td class="pt-3 font-heading font-bold text-ris-dark">মোট</td>
-                                            <td class="pt-3 text-right font-heading font-bold text-ris-primary text-base">
-                                                ৳{{ number_format($class->feeStructures->sum('amount')) }}
+            @if ($classes->count() && $feeTypes->count())
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden reveal">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm min-w-[640px]">
+                            <thead>
+                                <tr class="bg-ris-dark text-white">
+                                    <th class="text-left px-5 py-4 font-heading font-semibold whitespace-nowrap">শ্রেণি</th>
+                                    @foreach ($feeTypes as $type)
+                                        <th class="text-right px-5 py-4 font-heading font-semibold whitespace-nowrap">
+                                            {{ $type->label() }}
+                                        </th>
+                                    @endforeach
+                                    <th class="text-right px-5 py-4 font-heading font-semibold whitespace-nowrap">মোট</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                @foreach ($classes as $class)
+                                    <tr class="hover:bg-ris-primary/5 transition-colors">
+                                        <td class="px-5 py-4 font-medium text-ris-dark whitespace-nowrap">
+                                            {{ $class->name }}
+                                            @if ($class->section)
+                                                <span class="text-gray-400 font-normal">({{ $class->section }})</span>
+                                            @endif
+                                        </td>
+                                        @foreach ($feeTypes as $type)
+                                            @php
+                                                $structure = $class->feeStructures->firstWhere('fee_type', $type->value);
+                                            @endphp
+                                            <td class="px-5 py-4 text-right {{ $structure ? 'text-gray-700' : 'text-gray-300' }}">
+                                                {{ $structure ? '৳'.number_format($structure->amount) : '—' }}
                                             </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                                @if ($class->feeStructures->first()->due_date)
-                                    <p class="mt-3 text-xs text-gray-400">পেমেন্টের শেষ তারিখ: {{ $class->feeStructures->first()->due_date->format('d/m/Y') }}</p>
-                                @endif
-                            </div>
-                        </div>
-                    @endforeach
+                                        @endforeach
+                                        <td class="px-5 py-4 text-right font-heading font-bold text-ris-primary">
+                                            ৳{{ number_format($class->feeStructures->sum('amount')) }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-gray-50 border-t border-gray-100">
+                                    <td class="px-5 py-4 font-heading font-bold text-ris-dark">সর্বমোট</td>
+                                    @foreach ($feeTypes as $type)
+                                        <td class="px-5 py-4 text-right font-semibold text-gray-700">
+                                            ৳{{ number_format($classes->sum(fn ($class) => $class->feeStructures->firstWhere('fee_type', $type->value)?->amount ?? 0)) }}
+                                        </td>
+                                    @endforeach
+                                    <td class="px-5 py-4 text-right font-heading font-bold text-ris-primary text-base">
+                                        ৳{{ number_format($classes->sum(fn ($class) => $class->feeStructures->sum('amount'))) }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
+                <p class="mt-4 text-xs text-gray-400 text-center">সকল পরিমাণ বাংলাদেশি টাকায় (৳)। ফি বছরভিত্তিক পরিবর্তন হতে পারে।</p>
             @else
                 <div class="text-center py-20">
                     <div class="w-20 h-20 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">

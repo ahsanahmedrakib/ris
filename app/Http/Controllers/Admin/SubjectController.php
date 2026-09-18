@@ -16,7 +16,7 @@ class SubjectController extends Controller
     public function index(): View
     {
         $subjects = Subject::with(['classRoom', 'teacher'])->latest()->get();
-        $classes = ClassRoom::orderBy('name')->get();
+        $classes = ClassRoom::get();
         $teachers = User::where('role', 'teacher')->where('is_active', true)->orderBy('name')->get();
 
         return view('admin.subjects.index', compact('subjects', 'classes', 'teachers'));
@@ -110,7 +110,25 @@ class SubjectController extends Controller
     public function destroy(int $id): RedirectResponse
     {
         try {
-            Subject::findOrFail($id)->delete();
+            $subject = Subject::findOrFail($id);
+
+            $dependencies = [
+                'পরীক্ষার ফলাফল' => $subject->examResults()->count(),
+                'ক্লাস রুটিন' => $subject->classRoutines()->count(),
+            ];
+
+            $existing = array_filter($dependencies, fn (int $count) => $count > 0);
+
+            if (count($existing) > 0) {
+                $details = collect($existing)
+                    ->map(fn (int $count, string $label) => $label.' '.$count.'টি')
+                    ->implode(', ');
+
+                return back()
+                    ->with('error', 'এই বিষয় মুছে ফেলা যাচ্ছে না। নির্ভরশীল তথ্য রয়েছে: '.$details);
+            }
+
+            $subject->delete();
 
             return redirect()->route('admin.subjects.index')
                 ->with('success', 'বিষয় সফলভাবে মুছে ফেলা হয়েছে।');

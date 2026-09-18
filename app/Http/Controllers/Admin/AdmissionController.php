@@ -148,7 +148,7 @@ class AdmissionController extends Controller
             'reference' => $admission->reference,
             'reference_phone' => $admission->reference_phone,
             'reference_sign' => $admission->reference_sign,
-            'student_photo' => $admission->student_photo ? asset('storage/' . ltrim($admission->student_photo, '/')) : null,
+            'student_photo' => $admission->student_photo ? asset('storage/'.ltrim($admission->student_photo, '/')) : null,
             'created_at' => $admission->created_at->format('d/m/Y h:i A'),
             'creator_name' => $admission->creator?->name ?? 'অনলাইন (শিক্ষার্থী)',
             'admitted' => Student::where('admission_no', $admission->admission_no)->exists(),
@@ -203,7 +203,7 @@ class AdmissionController extends Controller
             'reference' => $admission->reference,
             'reference_phone' => $admission->reference_phone,
             'reference_sign' => $admission->reference_sign,
-            'student_photo' => $admission->student_photo ? asset('storage/' . $admission->student_photo) : null,
+            'student_photo' => $admission->student_photo ? asset('storage/'.$admission->student_photo) : null,
         ]);
     }
 

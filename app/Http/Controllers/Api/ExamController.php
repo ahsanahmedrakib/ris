@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Exam;
+use App\Support\NumberConverter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -24,6 +25,11 @@ class ExamController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $request->merge([
+            'total_marks' => NumberConverter::toAscii($request->input('total_marks')),
+            'passing_marks' => NumberConverter::toAscii($request->input('passing_marks')),
+        ]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|in:quiz,midterm,final,assignment',
@@ -54,9 +60,14 @@ class ExamController extends Controller
         return response()->json($exam);
     }
 
-    public function update(Request $request, int  $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $exam = Exam::findOrFail($id);
+
+        $request->merge([
+            'total_marks' => NumberConverter::toAscii($request->input('total_marks')),
+            'passing_marks' => NumberConverter::toAscii($request->input('passing_marks')),
+        ]);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',

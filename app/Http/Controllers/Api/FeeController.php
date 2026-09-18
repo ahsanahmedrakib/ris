@@ -69,12 +69,12 @@ class FeeController extends Controller
 
     public function show(int $id): JsonResponse
     {
-        $invoice = FeeInvoice::with(['student.user', 'feeStructure', 'feePayments' => fn($q) => $q->with('payer')])->findOrFail($id);
+        $invoice = FeeInvoice::with(['student.user', 'feeStructure', 'feePayments' => fn ($q) => $q->with('payer')])->findOrFail($id);
 
         return response()->json($invoice);
     }
 
-    public function update(Request $request,    int $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $invoice = FeeInvoice::findOrFail($id);
 

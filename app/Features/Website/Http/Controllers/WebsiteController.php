@@ -2,13 +2,16 @@
 
 namespace App\Features\Website\Http\Controllers;
 
+use App\Enums\FeeType;
 use App\Http\Controllers\Controller;
+use App\Models\AboutContent;
 use App\Models\AcademicCalendar;
 use App\Models\AcademicYear;
 use App\Models\Admission;
 use App\Models\CampusNews;
 use App\Models\ClassRoom;
 use App\Models\ContactMessage;
+use App\Models\CoreValue;
 use App\Models\Exam;
 use App\Models\ExamResult;
 use App\Models\Faq;
@@ -18,6 +21,7 @@ use App\Models\Message;
 use App\Models\Notice;
 use App\Models\Staff;
 use App\Models\Student;
+use App\Models\Subject;
 use App\Models\Testimonial;
 use App\Models\User;
 use App\Notifications\NewSubmission;
@@ -311,29 +315,47 @@ class WebsiteController extends Controller
 
     public function academicFees(): View
     {
-        $classes = ClassRoom::with(['feeStructures' => fn ($q) => $q->orderBy('fee_type')])
-            ->orderBy('name')
-            ->get();
-
         $academicYear = AcademicYear::where('is_current', true)->first();
 
-        return view('website.academic.fees', compact('classes', 'academicYear'));
+        $classes = collect();
+
+        if ($academicYear) {
+            $classes = ClassRoom::with([
+                'feeStructures' => fn ($query) => $query
+                    ->where('academic_year_id', $academicYear->id)
+                    ->orderBy('fee_type'),
+            ])
+                ->orderBy('name')
+                ->get()
+                ->filter(fn (ClassRoom $class) => $class->feeStructures->isNotEmpty())
+                ->values();
+        }
+
+        $feeTypes = collect(FeeType::cases())
+            ->filter(fn (FeeType $type) => $classes->contains(
+                fn (ClassRoom $class) => $class->feeStructures->contains('fee_type', $type->value)
+            ))
+            ->values();
+
+        return view('website.academic.fees', compact('classes', 'feeTypes', 'academicYear'));
     }
 
     public function academicResults(Request $request): View
     {
-        $classes = ClassRoom::orderBy('name')->get();
+        $classes = ClassRoom::get();
         $exams = Exam::latest('start_date')->get();
 
         $selectedClass = $request->input('class_id');
         $search = trim((string) $request->input('search'));
         $examId = $request->input('exam_id');
 
-        $student = null;
-        $results = new Collection;
+        $students = new Collection;
+        $examGroups = collect();
 
-        if ($selectedClass && ($search !== '' || $request->filled('roll_no'))) {
-            $studentQuery = Student::with('user')->where('class_id', $selectedClass);
+        if ($selectedClass) {
+            $studentQuery = Student::with('user')
+                ->where('class_id', $selectedClass)
+                ->orderBy('roll_no');
 
             if ($request->filled('roll_no')) {
                 $studentQuery->where('roll_no', $request->input('roll_no'));
@@ -348,21 +370,45 @@ class WebsiteController extends Controller
                 });
             }
 
-            $student = $studentQuery->first();
+            $students = $studentQuery->get();
 
-            if ($student) {
+            if ($students->isNotEmpty()) {
                 $resultQuery = ExamResult::with(['subject', 'exam'])
-                    ->where('student_id', $student->id);
+                    ->whereIn('student_id', $students->pluck('id'));
 
                 if ($examId) {
                     $resultQuery->where('exam_id', $examId);
                 }
 
-                $results = $resultQuery->orderBy('exam_id')->orderBy('subject_id')->get();
+                $allResults = $resultQuery->orderBy('exam_id')->orderBy('subject_id')->get();
+
+                $examGroups = $allResults->groupBy('exam_id')->map(function ($rows) use ($students) {
+                    $exam = $rows->first()->exam;
+                    $subjectIds = $rows->pluck('subject_id')->unique();
+
+                    $rowsByStudent = $rows->groupBy('student_id')
+                        ->map(fn ($studentRows) => $studentRows->keyBy('subject_id'));
+
+                    $studentTotals = $students->mapWithKeys(function ($student) use ($rowsByStudent) {
+                        $studentRows = $rowsByStudent->get($student->id, collect());
+                        $total = $studentRows->sum('marks_obtained');
+
+                        return [$student->id => $total];
+                    });
+
+                    return compact('exam', 'subjectIds', 'rowsByStudent', 'studentTotals');
+                })->values();
             }
         }
 
-        return view('website.academic.results', compact('classes', 'exams', 'student', 'results', 'selectedClass', 'search', 'examId'));
+        $subjects = $selectedClass
+            ? Subject::where('class_id', $selectedClass)->orderBy('name')->get()
+            : collect();
+
+        return view('website.academic.results', compact(
+            'classes', 'exams', 'students', 'examGroups', 'subjects',
+            'selectedClass', 'search', 'examId'
+        ));
     }
 
     public function academicFacilities(): View
@@ -372,12 +418,34 @@ class WebsiteController extends Controller
 
     public function about(): View
     {
-        return view('website.about');
+        $defaults = AboutContent::defaults();
+
+        $mission = AboutContent::where('type', 'mission')->first()
+            ?? AboutContent::make(['type' => 'mission', ...$defaults['mission']]);
+
+        $vision = AboutContent::where('type', 'vision')->first()
+            ?? AboutContent::make(['type' => 'vision', ...$defaults['vision']]);
+
+        if (CoreValue::exists()) {
+            $coreValues = CoreValue::where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get();
+        } else {
+            $coreValues = collect(CoreValue::defaults())
+                ->map(fn (array $value, int $index): CoreValue => CoreValue::make([
+                    ...$value,
+                    'is_active' => true,
+                    'sort_order' => $index,
+                ]));
+        }
+
+        return view('website.about', compact('mission', 'vision', 'coreValues'));
     }
 
     public function admission(): View
     {
-        $classes = ClassRoom::orderBy('name')->get();
+        $classes = ClassRoom::get();
 
         $month = (int) now()->format('n');
         $year = $month >= 3 ? now()->addYear()->year : now()->year;
@@ -583,16 +651,16 @@ class WebsiteController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'required|string|max:20',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
         ], [
             'name.required' => 'নাম আবশ্যক।',
             'name.max' => 'নাম ২৫৫ অক্ষরের বেশি হতে পারবে না।',
-            'email.required' => 'ইমেইল আবশ্যক।',
             'email.email' => 'সঠিক ইমেইল দিন।',
             'email.max' => 'ইমেইল ২৫৫ অক্ষরের বেশি হতে পারবে না।',
+            'phone.required' => 'ফোন নম্বর আবশ্যক।',
             'phone.max' => 'ফোন নম্বর ২০ অক্ষরের বেশি হতে পারবে না।',
             'subject.required' => 'বিষয় আবশ্যক।',
             'subject.max' => 'বিষয় ২৫৫ অক্ষরের বেশি হতে পারবে না।',

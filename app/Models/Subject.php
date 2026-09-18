@@ -32,4 +32,9 @@ class Subject extends Model
     {
         return $this->hasMany(ExamResult::class);
     }
+
+    public function classRoutines()
+    {
+        return $this->hasMany(ClassRoutine::class, 'subject_id');
+    }
 }

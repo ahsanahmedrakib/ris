@@ -63,7 +63,7 @@
                     @include('website.partials.testimonial-submit')
                 </div>
             @else
-                <div class="text-center py-20">
+                <div class="text-center py-16">
                     <div class="w-20 h-20 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
                         <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -71,7 +71,10 @@
                         </svg>
                     </div>
                     <h3 class="font-heading font-bold text-xl text-ris-dark">এখনো কোনো মতামত নেই</h3>
-                    <p class="mt-2 text-gray-500">শীঘ্রই আমাদের অভিভাবকদের মতামত যোগ করা হবে।</p>
+                    <p class="mt-2 text-gray-500">শীঘ্রই আমাদের অভিভাবকদের মতামত যোগ করা হবে। আপনি আপনার অভিজ্ঞতা শেয়ার করুন।</p>
+                    <div class="mt-8 flex justify-center">
+                        @include('website.partials.testimonial-submit')
+                    </div>
                 </div>
             @endif
         </div>

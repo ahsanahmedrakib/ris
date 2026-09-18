@@ -11,6 +11,7 @@ use App\Models\FeeInvoice;
 use App\Models\FeePayment;
 use App\Models\FeeStructure;
 use App\Models\Student;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,40 +39,16 @@ class FeeController extends Controller
     public function structures(): View
     {
         $structures = FeeStructure::with(['classRoom', 'academicYear'])->latest()->get();
-
-        return view('admin.fees.structures', compact('structures'));
-    }
-
-    public function createStructure(): View
-    {
-        $classes = ClassRoom::orderBy('name')->get();
-        $academicYears = AcademicYear::orderByDesc('is_current')->orderByDesc('name')->get();
+        $classes = ClassRoom::get();
+        $academicYears = AcademicYear::forSessionDropdown();
         $feeTypes = FeeType::cases();
 
-        return view('admin.fees.create-structure', compact('classes', 'academicYears', 'feeTypes'));
+        return view('admin.fees.structures', compact('structures', 'classes', 'academicYears', 'feeTypes'));
     }
 
     public function storeStructure(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'class_id' => 'required|exists:classes,id',
-            'academic_year_id' => 'required|exists:academic_years,id',
-            'fee_type' => 'required|string|in:tuition,transport,library,exam,others',
-            'amount' => 'required|numeric|min:0',
-            'description' => 'nullable|string|max:500',
-            'due_date' => 'required|date',
-        ], [
-            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
-            'class_id.exists' => 'নির্বাচিত শ্রেণি বিদ্যমান নেই।',
-            'academic_year_id.required' => 'শিক্ষাবর্ষ নির্বাচন আবশ্যক।',
-            'academic_year_id.exists' => 'নির্বাচিত শিক্ষাবর্ষ বিদ্যমান নেই।',
-            'fee_type.required' => 'ফি-এর ধরন আবশ্যক।',
-            'fee_type.in' => 'সঠিক ফি-এর ধরন নির্বাচন করুন।',
-            'amount.required' => 'পরিমাণ আবশ্যক।',
-            'amount.numeric' => 'পরিমাণ অবশ্যই একটি সংখ্যা হতে হবে।',
-            'amount.min' => 'পরিমাণ ০ এর বেশি হতে হবে।',
-            'due_date.required' => 'শেষ তারিখ আবশ্যক।',
-        ]);
+        $validated = $request->validate($this->structureRules(), $this->structureMessages());
 
         try {
             FeeStructure::create($validated);
@@ -81,6 +58,47 @@ class FeeController extends Controller
         } catch (\Exception $e) {
             return back()->withInput()
                 ->with('error', 'ফি কাঠামো তৈরি করতে সমস্যা হয়েছে। '.$e->getMessage());
+        }
+    }
+
+    public function editStructure(FeeStructure $feeStructure): JsonResponse
+    {
+        return response()->json([
+            'id' => $feeStructure->id,
+            'class_id' => $feeStructure->class_id,
+            'academic_year_id' => $feeStructure->academic_year_id,
+            'fee_type' => $feeStructure->fee_type,
+            'amount' => $feeStructure->amount,
+            'description' => $feeStructure->description,
+            'due_date' => $feeStructure->due_date?->format('Y-m-d'),
+        ]);
+    }
+
+    public function updateStructure(Request $request, FeeStructure $feeStructure): RedirectResponse
+    {
+        $validated = $request->validate($this->structureRules(), $this->structureMessages());
+
+        try {
+            $feeStructure->update($validated);
+
+            return redirect()->route('admin.fees.structures')
+                ->with('success', 'ফি কাঠামো সফলভাবে হালনাগাদ হয়েছে।');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', 'ফি কাঠামো হালনাগাদ করতে সমস্যা হয়েছে। '.$e->getMessage());
+        }
+    }
+
+    public function destroyStructure(FeeStructure $feeStructure): RedirectResponse
+    {
+        try {
+            $feeStructure->delete();
+
+            return redirect()->route('admin.fees.structures')
+                ->with('success', 'ফি কাঠামো সফলভাবে মুছে ফেলা হয়েছে।');
+        } catch (\Exception $e) {
+            return back()
+                ->with('error', 'ফি কাঠামো মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -97,7 +115,7 @@ class FeeController extends Controller
         }
 
         $invoices = $query->latest()->paginate(10)->withQueryString();
-        $classes = ClassRoom::orderBy('name')->get();
+        $classes = ClassRoom::get();
         $statuses = FeeStatus::cases();
 
         return view('admin.fees.invoices', compact('invoices', 'classes', 'statuses'));
@@ -222,5 +240,39 @@ class FeeController extends Controller
             return back()
                 ->with('error', 'ফি চালান মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function structureRules(): array
+    {
+        return [
+            'class_id' => 'required|exists:classes,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'fee_type' => 'required|string|in:tuition,transport,library,exam,others',
+            'amount' => 'required|numeric|min:0',
+            'description' => 'nullable|string|max:500',
+            'due_date' => 'required|date',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function structureMessages(): array
+    {
+        return [
+            'class_id.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
+            'class_id.exists' => 'নির্বাচিত শ্রেণি বিদ্যমান নেই।',
+            'academic_year_id.required' => 'শিক্ষাবর্ষ নির্বাচন আবশ্যক।',
+            'academic_year_id.exists' => 'নির্বাচিত শিক্ষাবর্ষ বিদ্যমান নেই।',
+            'fee_type.required' => 'ফি-এর ধরন আবশ্যক।',
+            'fee_type.in' => 'সঠিক ফি-এর ধরন নির্বাচন করুন।',
+            'amount.required' => 'পরিমাণ আবশ্যক।',
+            'amount.numeric' => 'পরিমাণ অবশ্যই একটি সংখ্যা হতে হবে।',
+            'amount.min' => 'পরিমাণ ০ এর বেশি হতে হবে।',
+            'due_date.required' => 'শেষ তারিখ আবশ্যক।',
+        ];
     }
 }

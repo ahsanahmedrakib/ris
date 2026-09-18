@@ -16,10 +16,14 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        .ris-quill .ql-editor { min-height: 160px; }
+        .ris-quill .ql-editor {
+            min-height: 160px;
+        }
+
         .ris-quill .ql-toolbar.ql-snow {
             border-radius: 0.5rem 0.5rem 0 0;
         }
+
         .ris-quill .ql-container.ql-snow {
             border-radius: 0 0 0.5rem 0.5rem;
             font-size: 0.875rem;
@@ -83,6 +87,32 @@
                                 'route' => 'admin.trash.index',
                             ],
                         ],
+                        'একাডেমিক' => [
+                            [
+                                'icon' =>
+                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/>',
+                                'label' => 'শ্রেণি',
+                                'route' => 'admin.classes.index',
+                            ],
+                            [
+                                'icon' =>
+                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>',
+                                'label' => 'বিষয়',
+                                'route' => 'admin.subjects.index',
+                            ],
+                            [
+                                'icon' =>
+                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>',
+                                'label' => 'পরীক্ষা',
+                                'route' => 'admin.exams.index',
+                            ],
+                            [
+                                'icon' =>
+                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+                                'label' => 'ফলাফল',
+                                'route' => 'admin.results.index',
+                            ],
+                        ],
                         'হোমপেজ সেকশন' => [
                             [
                                 'icon' =>
@@ -95,6 +125,12 @@
                                     '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>',
                                 'label' => 'বার্তা',
                                 'route' => 'admin.messages.index',
+                            ],
+                            [
+                                'icon' =>
+                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>',
+                                'label' => 'শিক্ষক',
+                                'route' => 'admin.teachers.index',
                             ],
                             [
                                 'icon' =>
@@ -116,15 +152,21 @@
                             ],
                             [
                                 'icon' =>
+                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>',
+                                'label' => 'শুভকামনা ও মতামত',
+                                'route' => 'admin.testimonials.index',
+                            ],
+                            [
+                                'icon' =>
                                     '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
                                 'label' => 'প্রশ্নোত্তর',
                                 'route' => 'admin.faqs.index',
                             ],
                             [
                                 'icon' =>
-                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>',
-                                'label' => 'শুভকামনা ও মতামত',
-                                'route' => 'admin.testimonials.index',
+                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                                'label' => 'আমাদের সম্পর্কে',
+                                'route' => 'admin.about.index',
                             ],
                         ],
                         'ছাত্র ও ভর্তি' => [
@@ -148,15 +190,29 @@
                             ],
                             [
                                 'icon' =>
-                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>',
-                                'label' => 'শিক্ষক',
-                                'route' => 'admin.teachers.index',
-                            ],
-                            [
-                                'icon' =>
                                     '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
                                 'label' => 'একাডেমিক ক্যালেন্ডার',
                                 'route' => 'admin.academic-calendars.index',
+                            ],
+                        ],
+                        'হিসাব ও ফি' => [
+                            [
+                                'icon' =>
+                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-6m-3 3h.01M9 17h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                                'label' => 'ফি কাঠামো',
+                                'route' => 'admin.fees.structures',
+                            ],
+                            [
+                                'icon' =>
+                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                                'label' => 'ফি চালান',
+                                'route' => 'admin.fees.invoices',
+                            ],
+                            [
+                                'icon' =>
+                                    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>',
+                                'label' => 'পেমেন্ট ও আদায়',
+                                'route' => 'admin.fees.payments',
                             ],
                         ],
                         'যোগাযোগ ও অন্যান্য' => [
@@ -179,7 +235,8 @@
                 @foreach ($sidebarGroups as $groupTitle => $items)
                     <div class="pt-4 first:pt-0">
                         <p x-show="sidebarOpen" x-cloak
-                            class="px-3 mb-1 text-[11px] font-bold uppercase tracking-wider text-gray-500">{{ $groupTitle }}</p>
+                            class="px-3 mb-1 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                            {{ $groupTitle }}</p>
                         <div class="space-y-1">
                             @foreach ($items as $item)
                                 <a href="{{ route($item['route']) }}"
@@ -189,7 +246,8 @@
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         {!! $item['icon'] !!}
                                     </svg>
-                                    <span x-show="sidebarOpen" x-cloak class="whitespace-nowrap">{{ $item['label'] }}</span>
+                                    <span x-show="sidebarOpen" x-cloak
+                                        class="whitespace-nowrap">{{ $item['label'] }}</span>
                                 </a>
                             @endforeach
                         </div>
@@ -241,7 +299,8 @@
             <nav class="flex-1 sidebar-scroll overflow-y-auto py-4 px-3 space-y-1">
                 @foreach ($sidebarGroups as $groupTitle => $items)
                     <div class="pt-4 first:pt-0">
-                        <p class="px-3 mb-1 text-[11px] font-bold uppercase tracking-wider text-gray-500">{{ $groupTitle }}</p>
+                        <p class="px-3 mb-1 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                            {{ $groupTitle }}</p>
                         <div class="space-y-1">
                             @foreach ($items as $item)
                                 <a href="{{ route($item['route']) }}"
@@ -295,8 +354,7 @@
                     @endphp
 
                     {{-- Notifications --}}
-                    <div x-data="{ notifOpen: false, unread: {{ $unreadCount }} }" @click.outside="notifOpen = false"
-                        class="relative">
+                    <div x-data="{ notifOpen: false, unread: {{ $unreadCount }} }" @click.outside="notifOpen = false" class="relative">
                         <button @click="notifOpen = !notifOpen"
                             class="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -311,9 +369,11 @@
                         </button>
 
                         <div x-show="notifOpen" x-cloak x-transition:enter="transition ease-out duration-150"
-                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
                             x-transition:leave="transition ease-in duration-100"
-                            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
                             class="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-lg border border-gray-100 z-50">
                             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                                 <div class="text-sm font-semibold text-ris-dark">বিজ্ঞপ্তি</div>
