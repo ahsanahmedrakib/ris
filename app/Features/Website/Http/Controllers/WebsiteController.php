@@ -303,14 +303,13 @@ class WebsiteController extends Controller
     {
         abort_unless($academicCalendar->is_active, 404);
 
-        $path = Storage::disk('public')->path($academicCalendar->file_path);
+        abort_unless(Storage::disk('public')->exists($academicCalendar->file_path), 404);
 
-        abort_unless(file_exists($path), 404);
-
-        return response()->file($path, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="'.$academicCalendar->file_name.'"',
-        ]);
+        return Storage::disk('public')->response(
+            $academicCalendar->file_path,
+            $academicCalendar->file_name,
+            ['Content-Type' => 'application/pdf'],
+        );
     }
 
     public function academicFees(): View
