@@ -329,8 +329,33 @@
         transform: translateY(-1px);
         border: 1px solid transparent;
     }
+    
+    .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1.5rem;
+        font-family: var(--font-heading);
+        font-weight: 500;
+        font-size: 0.9375rem;
+        line-height: 1.4;
+        color: var(--color-ris-primary);
+        background-color: transparent;
+        border: 1px solid var(--color-ris-primary);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
 
-    .btn-secondary:active {
+    .btn-outline:hover {
+        background-color: var(--color-ris-primary);
+        color: #ffffff;
+        transform: translateY(-1px);
+        border: 1px solid var(--color-ris-primary);
+    }
+
+    .btn-outline:active {
         transform: translateY(0);
     }
 

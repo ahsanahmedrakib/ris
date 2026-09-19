@@ -23,7 +23,7 @@
                 রেজিস্ট্রেশন নম্বরটি কপি করে সংরক্ষণ করুন। প্রবেশপত্র তৈরির সময় এটি প্রয়োজন হবে।
             </div>
             <div class="mt-6">
-                <button type="button" wire:click="resetForm" class="btn-secondary text-sm px-6 py-2.5">নতুন
+                <button type="button" wire:click="resetForm" class="btn-outline text-sm px-6 py-2.5">নতুন
                     রেজিস্ট্রেশন</button>
             </div>
         </div>
@@ -159,7 +159,8 @@
                 <div class="border border-ris-primary/20 bg-ris-primary/5 rounded-xl p-5 sm:p-6">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="text-lg">💳</span>
-                        <h3 class="font-heading font-semibold text-ris-dark">রেজিস্ট্রেশন ফি পরিশোধ। রেজিস্ট্রেশন ফি ২০০ টাকা।</h3>
+                        <h3 class="font-heading font-semibold text-ris-dark">রেজিস্ট্রেশন ফি পরিশোধ। রেজিস্ট্রেশন ফি
+                            ২০০ টাকা।</h3>
                     </div>
 
                     @if ($adminMode)
@@ -312,19 +313,28 @@
 
                         <div class="mt-6 flex flex-col sm:flex-row gap-3">
                             <button type="button" wire:click="cancelConfirmation"
-                                class="btn-secondary w-full sm:w-1/2">ফিরে যান</button>
+                                class="btn-outline w-full sm:w-1/2">
+                                ফিরে যান
+                            </button>
+
                             <button type="button" wire:click="confirm" wire:loading.attr="disabled"
-                                wire:loading.class="opacity-60" class="btn-primary w-full sm:w-1/2">
-                                <span wire:loading wire:target="confirm" class="inline-flex items-center gap-2">
-                                    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10"
-                                            stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                    জমা হচ্ছে...
-                                </span>
+                                wire:loading.class="opacity-60"
+                                class="btn-primary w-full sm:w-1/2 inline-flex items-center justify-center gap-2">
+
+                                <!-- Spinner -->
+                                <svg wire:loading wire:target="confirm" class="w-4 h-4 animate-spin shrink-0"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                        stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+
+                                <!-- Loading text -->
+                                <span wire:loading wire:target="confirm">জমা হচ্ছে...</span>
+
+                                <!-- Normal text -->
                                 <span wire:loading.remove wire:target="confirm">নিশ্চিত করে জমা দিন</span>
                             </button>
                         </div>
