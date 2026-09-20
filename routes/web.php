@@ -43,6 +43,7 @@ Route::middleware('track.visitor')->group(function () {
     Route::get('/admission', [WebsiteController::class, 'admission'])->name('admission');
     Route::post('/admission', [WebsiteController::class, 'storeAdmission'])->name('admission.store');
     Route::get('/scholarship', [WebsiteController::class, 'scholarship'])->name('scholarship');
+    Route::get('/scholarship/pdf/{registration_no}', [WebsiteController::class, 'scholarshipPdf'])->name('scholarship.pdf'); // admit download by user
     Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
     Route::post('/contact', [WebsiteController::class, 'sendContact'])->name('contact.send');
     Route::get('/notices', [WebsiteController::class, 'notices'])->name('notices');

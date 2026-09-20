@@ -62,7 +62,7 @@
     <div class="no-print mb-6">
         <button onclick="window.print()"
             class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition">
-            Print / Save PDF
+            Print
         </button>
     </div>
 

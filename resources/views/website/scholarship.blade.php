@@ -31,7 +31,7 @@
             </div>
 
             <div class="mt-8 bg-white rounded-xl border border-gay-200 p-5 text-center reveal">
-                <p class="text-sm text-gray-500">
+                <p class="text-xl text-gray-500">
                     কোনো সমস্যা হলে যোগাযোগ করুন
                     <a href="tel:+8801619007006" class="text-ris-primary font-medium hover:underline">+৮৮০-১৬১৯ ০০৭ ০০৬</a>
                 </p>

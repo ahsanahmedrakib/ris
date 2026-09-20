@@ -32,6 +32,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use App\Models\ScholarshipRegistration;
 
 class WebsiteController extends Controller
 {
@@ -640,6 +641,18 @@ class WebsiteController extends Controller
     public function scholarship(): View
     {
         return view('website.scholarship');
+    }
+
+    // admit download
+    public function scholarshipPdf(string $registration_no): View
+    {
+        $registration = ScholarshipRegistration::where('registration_no', $registration_no)
+            ->firstOrFail();
+
+        return view('admin.scholarship.pdf', [
+            'registration' => $registration,
+            'classes'      => ScholarshipRegistration::CLASSES,
+        ]);
     }
 
     public function contact(): View
