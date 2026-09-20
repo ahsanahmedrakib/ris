@@ -46,7 +46,9 @@ class ScholarshipRegistration extends Model
 
     public static function nextRegistrationNo(int $classNo): string
     {
-        $lastSerial = static::whereYear('created_at', now()->year)
+        // Include soft-deleted so we never reuse a registration_no
+        $lastSerial = static::withTrashed()
+            ->whereYear('created_at', now()->year)
             ->where('class_no', $classNo)
             ->orderByDesc('serial_no')
             ->value('serial_no');
