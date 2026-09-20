@@ -17,20 +17,20 @@
             margin: 0;
         }
 
+        .print-page {
+            width: 210mm !important;
+            max-width: 210mm !important;
+            box-sizing: border-box;
+            background: white;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
         @media screen {
             .print-page {
-                width: 210mm;
                 min-height: 297mm;
-                background: white;
                 border: 1px solid #ccc;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            }
-
-            body {
-                padding: 40px 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
             }
         }
 
@@ -39,34 +39,48 @@
                 display: none !important;
             }
 
+            html,
             body {
-                background: white !important;
-                padding: 0 !important;
+                width: 210mm;
                 margin: 0 !important;
-                display: block !important;
+                padding: 0 !important;
+                background: white !important;
             }
 
             .print-page {
-                width: 210mm;
-                zoom: 0.99;
+                width: 210mm !important;
+                min-height: auto;
                 box-shadow: none !important;
                 border: none !important;
-                margin: 0 !important;
             }
+        }
+
+        .print-page {
+            width: 210mm;
+            min-height: auto;
+            box-shadow: none !important;
+            border: none !important;
+            margin: 0 !important;
+        }
         }
     </style>
 </head>
 
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen py-10">
 
-    <div class="no-print mb-6">
-        <button onclick="window.print()"
+    <div class="no-print mb-6 flex flex-wrap items-center justify-center gap-3">
+        <button type="button" onclick="window.print()"
             class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition">
-            Print
+            Print - প্রিন্ট করুন
+        </button>
+
+        <button type="button" id="downloadPdfBtn" onclick="downloadAdmitPdf()"
+            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded shadow transition">
+            Download PDF - পিডিএফ ডাউনলোড করুন
         </button>
     </div>
 
-    <div class="print-page text-black text-sm relative p-10">
+    <div id="admit-card" class="print-page text-black text-sm relative px-6 py-3">
 
         <!-- ================= REGISTRATION FORM ================= -->
         <div class="relative pb-8 border-b-2 border-dashed border-gray-500">
@@ -199,6 +213,90 @@
         </div>
 
     </div>
+
+    {{-- Download PDF Script --}}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function downloadAdmitPdf() {
+            const element = document.getElementById('admit-card');
+            const btn = document.getElementById('downloadPdfBtn');
+            const fileName = 'admit-{{ $registration->registration_no }}.pdf';
+
+            if (!element) {
+                alert('Admit card element পাওয়া যায়নি।');
+                return;
+            }
+            if (typeof html2pdf === 'undefined') {
+                alert('html2pdf লোড হয়নি। পেজ রিফ্রেশ করে আবার চেষ্টা করুন।');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'ডাউনলোড হচ্ছে...';
+
+            // Hide external images temporarily if they cause CORS errors
+            const images = element.querySelectorAll('img');
+            const prevSrc = [];
+            images.forEach(function(img, i) {
+                prevSrc[i] = img.src;
+                // Optional: comment next line if logo must appear in PDF
+                // img.style.visibility = 'hidden';
+                img.crossOrigin = 'anonymous';
+            });
+
+            const opt = {
+                filename: fileName,
+                image: {
+                    type: 'jpeg',
+                    quality: 0.98
+                },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: true, // see errors in F12 Console
+                    scrollX: 0,
+                    scrollY: 0,
+                    backgroundColor: '#ffffff',
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'portrait',
+                },
+                pagebreak: {
+                    mode: ['avoid-all']
+                },
+                enableLinks: false,
+            };
+
+            html2pdf()
+                .set(opt)
+                .from(element)
+                .toPdf()
+                .get('pdf')
+                .then(function(pdf) {
+                    // Keep only first page (removes empty page 2)
+                    const total = pdf.internal.getNumberOfPages();
+                    for (let i = total; i > 1; i--) {
+                        pdf.deletePage(i);
+                    }
+                    pdf.save(fileName);
+                })
+                .then(function() {
+                    btn.disabled = false;
+                    btn.textContent = 'Download PDF';
+                })
+                .catch(function(err) {
+                    console.error('PDF error:', err);
+                    btn.disabled = false;
+                    btn.textContent = 'Download PDF';
+                    alert('PDF ডাউনলোড ব্যর্থ: ' + (err && err.message ? err.message : String(err)));
+                });
+        }
+    </script>
+
 
 </body>
 

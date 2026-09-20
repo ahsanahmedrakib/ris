@@ -39,7 +39,7 @@
                     প্রবেশপত্র ডাউনলোড করুন
                 </a>
 
-                <button type="button" wire:click="resetForm" class="btn-secondary text-sm px-6 py-2.5">
+                <button type="button" wire:click="resetForm" class="btn-outline text-sm px-6 py-2.5">
                     নতুন রেজিস্ট্রেশন
                 </button>
             </div>
