@@ -32,10 +32,10 @@ class RegistrationForm extends Component
     #[Validate('required|string|max:20')]
     public ?string $rollNo = null;
 
-    #[Validate('required|regex:/^01[0-9]{9}$/')]
+    #[Validate(['required', 'regex:/^(01[0-9]{9}|০১[০১২৩৪৫৬৭৮৯]{9})$/u'])]
     public string $mobileNo = '';
 
-    #[Validate('required_if:paymentMethod,bkash|regex:/^01[0-9]{9}$/')]
+    #[Validate(['required_if:paymentMethod,bkash', 'nullable', 'regex:/^(01[0-9]{9}|০১[০১২৩৪৫৬৭৮৯]{9})$/u'])]
     public ?string $bkashNo = null;
 
     #[Validate('required|in:bkash,cash')]
@@ -84,6 +84,71 @@ class RegistrationForm extends Component
         $this->confirming = false;
     }
 
+    // public function confirm(): ?RedirectResponse
+    // {
+    //     $this->validate();
+
+    //     $attempts = 0;
+
+    //     do {
+    //         try {
+    //             DB::beginTransaction();
+
+    //             $number = ScholarshipRegistration::nextRegistrationNo((int) $this->classNo);
+
+    //             $registration = ScholarshipRegistration::create([
+    //                 'registration_no' => $number,
+    //                 'serial_no' => (int) substr($number, -3),
+    //                 'student_name' => $this->studentName,
+    //                 'father_name' => $this->fatherName,
+    //                 'mother_name' => $this->motherName,
+    //                 'school_name' => $this->schoolName,
+    //                 'class_no' => (int) $this->classNo,
+    //                 'roll_no' => $this->rollNo,
+    //                 'mobile_no' => $this->mobileNo,
+    //                 'bkash_no' => $this->paymentMethod === 'cash' ? null : $this->bkashNo,
+    //                 'payment_method' => $this->paymentMethod,
+    //                 'status' => 'pending',
+    //                 'created_by' => Auth::id(),
+    //             ]);
+
+    //             DB::commit();
+
+    //             if (! $this->adminMode) {
+    //                 NewSubmission::sendToAdmins(
+    //                     'scholarship',
+    //                     'নতুন মেধাবৃত্তি রেজিস্ট্রেশন',
+    //                     $registration->student_name.' ('.$registration->mobile_no.') মেধাবৃত্তির জন্য রেজিস্ট্রেশন করেছেন।',
+    //                     route('admin.scholarship.show', $registration),
+    //                 );
+    //             }
+
+    //             $this->registrationNo = $registration->registration_no;
+    //             $this->confirming = false;
+    //             $this->saved = true;
+
+    //             if ($this->adminMode) {
+    //                 return redirect()->route('admin.scholarship.index')
+    //                     ->with('success', 'মেধাবৃত্তি রেজিস্ট্রেশন ('.$registration->registration_no.') সফলভাবে তৈরি হয়েছে।');
+    //             }
+
+    //             return null;
+    //         } catch (QueryException $e) {
+    //             DB::rollBack();
+
+    //             $attempts++;
+
+    //             if (! str_contains(strtolower($e->getMessage()), 'unique')) {
+    //                 throw $e;
+    //             }
+    //         }
+    //     } while ($attempts < 3);
+
+    //     $this->addError('class_no', 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+
+    //     return null;
+    // }
+
     public function confirm(): ?RedirectResponse
     {
         $this->validate();
@@ -98,18 +163,18 @@ class RegistrationForm extends Component
 
                 $registration = ScholarshipRegistration::create([
                     'registration_no' => $number,
-                    'serial_no' => (int) substr($number, -3),
-                    'student_name' => $this->studentName,
-                    'father_name' => $this->fatherName,
-                    'mother_name' => $this->motherName,
-                    'school_name' => $this->schoolName,
-                    'class_no' => (int) $this->classNo,
-                    'roll_no' => $this->rollNo,
-                    'mobile_no' => $this->mobileNo,
-                    'bkash_no' => $this->paymentMethod === 'cash' ? null : $this->bkashNo,
-                    'payment_method' => $this->paymentMethod,
-                    'status' => 'pending',
-                    'created_by' => Auth::id(),
+                    'serial_no'       => (int) substr($number, -3),
+                    'student_name'    => $this->studentName,
+                    'father_name'     => $this->fatherName,
+                    'mother_name'     => $this->motherName,
+                    'school_name'     => $this->schoolName,
+                    'class_no'        => (int) $this->classNo,
+                    'roll_no'         => $this->rollNo,
+                    'mobile_no'       => $this->mobileNo,
+                    'bkash_no'        => $this->paymentMethod === 'cash' ? null : $this->bkashNo,
+                    'payment_method'  => $this->paymentMethod,
+                    'status'          => 'pending',
+                    'created_by'      => Auth::id(),
                 ]);
 
                 DB::commit();
@@ -118,7 +183,7 @@ class RegistrationForm extends Component
                     NewSubmission::sendToAdmins(
                         'scholarship',
                         'নতুন মেধাবৃত্তি রেজিস্ট্রেশন',
-                        $registration->student_name.' ('.$registration->mobile_no.') মেধাবৃত্তির জন্য রেজিস্ট্রেশন করেছেন।',
+                        $registration->student_name . ' (' . $registration->mobile_no . ') মেধাবৃত্তির জন্য রেজিস্ট্রেশন করেছেন।',
                         route('admin.scholarship.show', $registration),
                     );
                 }
@@ -129,22 +194,40 @@ class RegistrationForm extends Component
 
                 if ($this->adminMode) {
                     return redirect()->route('admin.scholarship.index')
-                        ->with('success', 'মেধাবৃত্তি রেজিস্ট্রেশন ('.$registration->registration_no.') সফলভাবে তৈরি হয়েছে।');
+                        ->with('success', 'মেধাবৃত্তি রেজিস্ট্রেশন (' . $registration->registration_no . ') সফলভাবে তৈরি হয়েছে।');
                 }
+
+                $this->dispatch('toast', type: 'success', message: 'রেজিস্ট্রেশন সফল হয়েছে!');
 
                 return null;
             } catch (QueryException $e) {
                 DB::rollBack();
-
                 $attempts++;
 
+                // Only retry on unique constraint violations
                 if (! str_contains(strtolower($e->getMessage()), 'unique')) {
-                    throw $e;
+                    report($e);
+                    $this->confirming = false;
+                    $this->dispatch('toast', type: 'error', message: 'রেজিস্ট্রেশন সংরক্ষণ করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                    $this->addError('classNo', 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+
+                    return null;
                 }
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                report($e);
+                $this->confirming = false;
+                $this->dispatch('toast', type: 'error', message: 'একটি অপ্রত্যাশিত সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                $this->addError('classNo', 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+
+                return null;
             }
         } while ($attempts < 3);
 
-        $this->addError('class_no', 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+        // Exhausted retries (unique collisions)
+        $this->confirming = false;
+        $this->dispatch('toast', type: 'error', message: 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+        $this->addError('classNo', 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
 
         return null;
     }

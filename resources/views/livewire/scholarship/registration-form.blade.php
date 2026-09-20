@@ -1,49 +1,49 @@
 <div>
     {{-- ═══ Success (public) ═══ --}}
     @if ($saved && !$adminMode)
-       <div class="bg-white rounded-2xl border border-ris-primary shadow-card p-8 text-center">
-        <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 flex items-center justify-center mb-5">
-            <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-        </div>
-
-        <h3 class="font-heading font-bold text-2xl text-gray-900">রেজিস্ট্রেশন সফল হয়েছে!</h3>
-        <p class="mt-2 text-sm text-gray-500">
-            আপনার মেধাবৃত্তি রেজিস্ট্রেশন সম্পন্ন হয়েছে। আপনার রেজিস্ট্রেশন নম্বর:
-        </p>
-
-        <div class="mt-5 inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-ris-primary/10 border border-ris-primary/20">
-            <svg class="w-5 h-5 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span class="font-heading font-bold text-xl text-ris-primary tracking-wider">
-                {{ $registrationNo }}
-            </span>
-        </div>
-
-        <div class="mt-5 text-sm text-gray-500 leading-relaxed">
-            রেজিস্ট্রেশন নম্বরটি সংরক্ষণ করুন এবং প্রবেশপত্র ডাউনলোড করে নিন।
-        </div>
-
-        {{-- Download / Print PDF button --}}
-        <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="{{ route('scholarship.pdf', $registrationNo) }}"
-               target="_blank"
-               class="btn-primary inline-flex items-center justify-center gap-2 text-sm px-6 py-2.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        <div class="bg-white rounded-2xl border border-ris-primary shadow-card p-8 text-center">
+            <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 flex items-center justify-center mb-5">
+                <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                প্রবেশপত্র ডাউনলোড করুন
-            </a>
+            </div>
 
-            <button type="button" wire:click="resetForm" class="btn-secondary text-sm px-6 py-2.5">
-                নতুন রেজিস্ট্রেশন
-            </button>
+            <h3 class="font-heading font-bold text-2xl text-gray-900">রেজিস্ট্রেশন সফল হয়েছে!</h3>
+            <p class="mt-2 text-sm text-gray-500">
+                আপনার মেধাবৃত্তি রেজিস্ট্রেশন সম্পন্ন হয়েছে। আপনার রেজিস্ট্রেশন নম্বর:
+            </p>
+
+            <div
+                class="mt-5 inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-ris-primary/10 border border-ris-primary/20">
+                <svg class="w-5 h-5 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-heading font-bold text-xl text-ris-primary tracking-wider">
+                    {{ $registrationNo }}
+                </span>
+            </div>
+
+            <div class="mt-5 text-sm text-gray-500 leading-relaxed">
+                রেজিস্ট্রেশন নম্বরটি সংরক্ষণ করুন এবং প্রবেশপত্র ডাউনলোড করে নিন।
+            </div>
+
+            {{-- Download / Print PDF button --}}
+            <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <a href="{{ route('scholarship.pdf', $registrationNo) }}" target="_blank"
+                    class="btn-primary inline-flex items-center justify-center gap-2 text-sm px-6 py-2.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    প্রবেশপত্র ডাউনলোড করুন
+                </a>
+
+                <button type="button" wire:click="resetForm" class="btn-secondary text-sm px-6 py-2.5">
+                    নতুন রেজিস্ট্রেশন
+                </button>
+            </div>
         </div>
-    </div>
     @else
         <div class="bg-white rounded-2xl border shadow-card overflow-hidden">
 
@@ -249,6 +249,13 @@
                 </div>
             </form>
         </div>
+
+
+        @error('classNo')
+            <div class="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
+                {{ $message }}
+            </div>
+        @enderror
 
         {{-- ═══ Confirmation Modal ═══ --}}
         @if ($confirming)
