@@ -63,7 +63,7 @@ class NoticeAdminTest extends TestCase
     public function admin_can_fetch_notice_json_for_view_modal(): void
     {
         $notice = Notice::create([
-            'title' => 'ভর্তি বিজ্ঞপ্তি',
+            'title' => 'ভর্তি নোটিফিকেশন',
             'content' => 'নতুন শিক্ষাবর্ষের ভর্তি চলছে।',
             'type' => 'notice',
             'category' => 'admission',
@@ -75,7 +75,7 @@ class NoticeAdminTest extends TestCase
         $this->actingAs($this->admin())
             ->getJson("/admin/notices/{$notice->id}")
             ->assertOk()
-            ->assertJsonPath('title', 'ভর্তি বিজ্ঞপ্তি')
+            ->assertJsonPath('title', 'ভর্তি নোটিফিকেশন')
             ->assertJsonPath('category', 'admission')
             ->assertJsonPath('category_label', 'ভর্তি')
             ->assertJsonPath('type_label', 'নোটিশ')

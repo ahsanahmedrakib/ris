@@ -85,7 +85,7 @@
                         <input type="number" name="stop_order" value="{{ old('stop_order', $routes->count() + 1) }}" required min="1"
                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                     </div>
-                    <button type="submit" class="w-full px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm">
+                    <button type="submit" class="w-full px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm cursor-pointer">
                         স্টপ যোগ করুন
                     </button>
                 </form>

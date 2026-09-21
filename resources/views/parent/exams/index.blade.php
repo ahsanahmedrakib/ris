@@ -14,7 +14,7 @@
             <p class="text-sm text-ris-gray mt-1">সন্তানের পরীক্ষার ফলাফল দেখুন</p>
         </div>
         @if(isset($results) && count($results) > 0)
-            <button onclick="window.print()" class="btn-secondary text-sm py-2 px-4">
+            <button onclick="window.print()" class="btn-secondary text-sm py-2 px-4 cursor-pointer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                 </svg>
@@ -55,7 +55,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn-primary py-2.5 px-5 text-sm">
+            <button type="submit" class="btn-primary py-2.5 px-5 text-sm cursor-pointer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>

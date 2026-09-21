@@ -48,7 +48,7 @@
                 </div>
                 <div class="flex gap-3">
                     <button type="submit"
-                        class="flex-1 px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors">ফিল্টার
+                        class="flex-1 px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors cursor-pointer">ফিল্টার
                         করুন</button>
                     <a href="{{ route('admin.results.index') }}"
                         class="px-4 py-2.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">রিসেট</a>

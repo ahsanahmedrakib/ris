@@ -657,7 +657,7 @@
                                 @endphp
                                 @foreach ($noticeTabs as $tab)
                                     <button type="button" @click="active = '{{ $tab['key'] }}'"
-                                        class="px-4 py-2 rounded-xl text-sm font-heading font-medium transition-all duration-200"
+                                        class="px-4 py-2 rounded-xl text-sm font-heading font-medium transition-all duration-200 cursor-pointer"
                                         :class="active === '{{ $tab['key'] }}'
                                             ?
                                             'bg-ris-primary text-white shadow-lg shadow-ris-primary/25' :
@@ -792,14 +792,14 @@
                 </div>
 
                 <div class="mt-8 flex items-center justify-center gap-4 ris-swiper-nav">
-                    <button type="button" class="gallery-btn-prev ris-swiper-btn" aria-label="পূর্ববর্তী">
+                    <button type="button" class="gallery-btn-prev ris-swiper-btn cursor-pointer" aria-label="পূর্ববর্তী">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="rotate-180">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
                     </button>
                     <div class="swiper-pagination"></div>
-                    <button type="button" class="gallery-btn-next ris-swiper-btn" aria-label="পরবর্তী">
+                    <button type="button" class="gallery-btn-next ris-swiper-btn cursor-pointer" aria-label="পরবর্তী">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -863,14 +863,14 @@
                 </div>
 
                 <div class="mt-8 flex items-center justify-center gap-4 ris-swiper-nav">
-                    <button type="button" class="testimonial-btn-prev ris-swiper-btn" aria-label="পূর্ববর্তী">
+                    <button type="button" class="testimonial-btn-prev ris-swiper-btn cursor-pointer" aria-label="পূর্ববর্তী">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="rotate-180">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
                     </button>
                     <div class="swiper-pagination"></div>
-                    <button type="button" class="testimonial-btn-next ris-swiper-btn" aria-label="পরবর্তী">
+                    <button type="button" class="testimonial-btn-next ris-swiper-btn cursor-pointer" aria-label="পরবর্তী">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 8l4 4m0 0l-4 4m4-4H3" />

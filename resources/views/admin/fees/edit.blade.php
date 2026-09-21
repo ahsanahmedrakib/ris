@@ -27,7 +27,7 @@
             <form method="POST" action="{{ route('admin.fees.destroy', $invoice) }}" onsubmit="return confirm('আপনি কি নিশ্চিত এই চালানটি মুছে ফেলতে চান?');">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+                <button type="submit" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     মুছুন
                 </button>
@@ -93,7 +93,7 @@
                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                     </div>
                     <div class="flex items-end">
-                        <button type="submit" class="w-full px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm">
+                        <button type="submit" class="w-full px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm cursor-pointer">
                             পেমেন্ট রেকর্ড করুন
                         </button>
                     </div>

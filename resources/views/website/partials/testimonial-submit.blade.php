@@ -103,7 +103,7 @@
                         দিন</button>
                 </div>
 
-                <p class="text-xs text-gray-400 text-center pt-1">জমা দেওয়া মতামত প্রশাসকের অনুমোদনের পর ওয়েবসাইটে
+                <p class="text-xs text-gray-400 text-center pt-1">জমা দেওয়া মতামত অ্যাডমিনের অনুমোদনের পর ওয়েবসাইটে
                     প্রকাশিত হবে।</p>
             </form>
         </div>
@@ -279,8 +279,8 @@
 
                     if (response.ok) {
                         pushToast('success', data.message ||
-                            'আপনার মতামত জমা হয়েছে। প্রশাসকের অনুমোদনের পরে প্রকাশিত হবে।'
-                            );
+                            'আপনার মতামত জমা হয়েছে। অ্যাডমিনের অনুমোদনের পরে প্রকাশিত হবে।'
+                        );
                         form.reset();
                         window.dispatchEvent(new CustomEvent('testimonial-rating-reset'));
                         window.dispatchEvent(new CustomEvent('testimonial-submit-success'));

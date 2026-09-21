@@ -53,12 +53,12 @@ class NoticeController extends Controller
             'expires_at' => 'nullable|date|after_or_equal:published_at',
             'is_active' => 'boolean',
         ], [
-            'title.required' => 'বিজ্ঞপ্তির শিরোনাম আবশ্যক।',
+            'title.required' => 'নোটিফিকেশনের শিরোনাম আবশ্যক।',
             'title.string' => 'শিরোনাম অবশ্যই একটি স্ট্রিং হতে হবে।',
-            'content.required' => 'বিজ্ঞপ্তির বিষয়বস্তু আবশ্যক।',
-            'type.required' => 'বিজ্ঞপ্তির ধরন আবশ্যক।',
-            'type.in' => 'সঠিক বিজ্ঞপ্তির ধরন নির্বাচন করুন।',
-            'category.in' => 'সঠিক বিজ্ঞপ্তির ক্যাটাগরি নির্বাচন করুন।',
+            'content.required' => 'নোটিফিকেশনের বিষয়বস্তু আবশ্যক।',
+            'type.required' => 'নোটিফিকেশনের ধরন আবশ্যক।',
+            'type.in' => 'সঠিক নোটিফিকেশনের ধরন নির্বাচন করুন।',
+            'category.in' => 'সঠিক নোটিফিকেশনের ক্যাটাগরি নির্বাচন করুন।',
             'expires_at.after_or_equal' => 'মেয়াদ শেষের তারিখ প্রকাশের তারিখের পরে হতে হবে।',
         ]);
 
@@ -71,10 +71,10 @@ class NoticeController extends Controller
             Notice::create($validated);
 
             return redirect()->route('admin.notices.index')
-                ->with('success', 'বিজ্ঞপ্তি সফলভাবে প্রকাশিত হয়েছে।');
+                ->with('success', 'নোটিফিকেশন সফলভাবে প্রকাশিত হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বিজ্ঞপ্তি প্রকাশ করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'নোটিফিকেশন প্রকাশ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -132,11 +132,11 @@ class NoticeController extends Controller
             'expires_at' => 'nullable|date|after_or_equal:published_at',
             'is_active' => 'boolean',
         ], [
-            'title.required' => 'বিজ্ঞপ্তির শিরোনাম আবশ্যক।',
-            'content.required' => 'বিজ্ঞপ্তির বিষয়বস্তু আবশ্যক।',
-            'type.required' => 'বিজ্ঞপ্তির ধরন আবশ্যক।',
-            'type.in' => 'সঠিক বিজ্ঞপ্তির ধরন নির্বাচন করুন।',
-            'category.in' => 'সঠিক বিজ্ঞপ্তির ক্যাটাগরি নির্বাচন করুন।',
+            'title.required' => 'নোটিফিকেশনের শিরোনাম আবশ্যক।',
+            'content.required' => 'নোটিফিকেশনের বিষয়বস্তু আবশ্যক।',
+            'type.required' => 'নোটিফিকেশনের ধরন আবশ্যক।',
+            'type.in' => 'সঠিক নোটিফিকেশনের ধরন নির্বাচন করুন।',
+            'category.in' => 'সঠিক নোটিফিকেশনের ক্যাটাগরি নির্বাচন করুন।',
         ]);
 
         try {
@@ -144,10 +144,10 @@ class NoticeController extends Controller
             $notice->update($validated);
 
             return redirect()->route('admin.notices.index')
-                ->with('success', 'বিজ্ঞপ্তি সফলভাবে আপডেট হয়েছে।');
+                ->with('success', 'নোটিফিকেশন সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'বিজ্ঞপ্তি আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'নোটিফিকেশন আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -157,10 +157,10 @@ class NoticeController extends Controller
             Notice::findOrFail($id)->delete();
 
             return redirect()->route('admin.notices.index')
-                ->with('success', 'বিজ্ঞপ্তি সফলভাবে মুছে ফেলা হয়েছে।');
+                ->with('success', 'নোটিফিকেশন সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'বিজ্ঞপ্তি মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'নোটিফিকেশন মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 

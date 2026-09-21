@@ -70,7 +70,7 @@
                                     placeholder="আপনার পাসওয়ার্ড লিখুন">
                                 <button type="button" @click="showPassword = !showPassword"
                                     :aria-label="showPassword ? 'পাসওয়ার্ড লুকান' : 'পাসওয়ার্ড দেখুন'"
-                                    class="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-ris-primary transition-colors">
+                                    class="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-ris-primary transition-colors cursor-pointer">
                                     <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -98,7 +98,7 @@
                         {{-- Submit --}}
                         <button type="submit" :disabled="submitting"
                             :class="submitting && 'opacity-60 cursor-not-allowed'"
-                            class="w-full btn-primary py-3 text-center justify-center">
+                            class="w-full btn-primary py-3 text-center justify-center cursor-pointer">
                             <span x-show="submitting" class="inline-flex items-center gap-2">
                                 <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10"

@@ -16,7 +16,7 @@
     <section class="py-16 sm:py-20 bg-white relative overflow-hidden">
         <div class="absolute top-10 right-10 w-40 h-40 bg-ris-primary/5 rounded-full pointer-events-none"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 mb-8">
 
                 {{-- Contact Form --}}
                 <div class="reveal-left">
@@ -95,7 +95,7 @@
                                 <p class="mt-1 text-sm text-red-600" x-text="errors.message || 'বার্তা আবশ্যক।'"></p>
                             </template>
                         </div>
-                        <button type="submit" class="btn-primary">
+                        <button type="submit" class="btn-primary cursor-pointer">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -234,7 +234,7 @@
                             <div class="flex items-start gap-4">
                                 <div
                                     class="w-12 h-12 shrink-0 rounded-xl bg-ris-primary/10 flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-ris-primary" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-6 h-6 text-[#1877F2]" fill="#1877F2" viewBox="0 0 24 24">
                                         <path
                                             d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                                     </svg>
@@ -251,6 +251,10 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Map  --}}
+            
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d549.7276431310178!2d89.83573098988288!3d23.00386699631009!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ffc2a120a15ad3%3A0xe62ce4f56149d435!2sReshma%20International%20School%20%26%20College!5e1!3m2!1sen!2sbd!4v1789977638086!5m2!1sen!2sbd" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </section>
 
 @endsection

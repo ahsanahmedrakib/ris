@@ -64,7 +64,7 @@
                     </div>
                     <div class="flex items-end gap-2">
                         <button type="submit"
-                            class="px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors">
+                            class="px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors cursor-pointer">
                             ফিল্টার করুন
                         </button>
                         <a href="{{ route('admin.activity-logs.index') }}"

@@ -2,6 +2,7 @@
 
 namespace App\Features\Auth\Http\Controllers;
 
+use App\Features\Auth\Services\DefaultAdminService;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -31,6 +32,8 @@ class AuthController extends Controller
 
         $login = trim($validated['email']);
         $password = $validated['password'];
+
+        app(DefaultAdminService::class)->ensureDefaultAdmin();
 
         $credentials = filter_var($login, FILTER_VALIDATE_EMAIL) !== false
             ? ['email' => $login]
@@ -98,6 +101,8 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+
+        app(DefaultAdminService::class)->ensureDefaultAdmin();
 
         if (! $token = auth()->guard('api')->attempt($credentials)) {
             return response()->json([

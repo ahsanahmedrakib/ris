@@ -70,12 +70,12 @@
 
     <div class="no-print mb-6 flex flex-wrap items-center justify-center gap-3">
         <button type="button" onclick="window.print()"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition">
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition cursor-pointer">
             Print - প্রিন্ট করুন
         </button>
 
         <button type="button" id="downloadPdfBtn" onclick="downloadAdmitPdf()"
-            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded shadow transition">
+            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded shadow transition cursor-pointer">
             Download PDF - পিডিএফ ডাউনলোড করুন
         </button>
     </div>

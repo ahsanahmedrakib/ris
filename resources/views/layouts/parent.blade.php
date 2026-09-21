@@ -123,7 +123,7 @@
                     <div class="font-heading font-bold text-sm">RIS</div>
                 </div>
                 <button @click="mobileSidebar = false"
-                    class="p-1.5 rounded-lg text-gray-400 hover:bg-white/10 hover:text-white">
+                    class="p-1.5 rounded-lg text-gray-400 hover:bg-white/10 hover:text-white cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
@@ -153,7 +153,7 @@
                 class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 shrink-0">
                 <div class="flex items-center gap-3">
                     <button @click="mobileSidebar = !mobileSidebar"
-                        class="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100">
+                        class="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h16" />
@@ -164,7 +164,7 @@
 
                 <div class="flex items-center gap-3">
                     {{-- Notifications --}}
-                    <button class="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
+                    <button class="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -175,7 +175,7 @@
                     {{-- User --}}
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open"
-                            class="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                            class="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
                             <div
                                 class="w-8 h-8 rounded-full gradient-logo flex items-center justify-center text-white text-sm font-heading font-semibold">
                                 {{ substr(Auth::user()->name ?? 'P', 0, 1) }}
@@ -194,7 +194,7 @@
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit"
-                                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">লগ
+                                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer">লগ
                                     আউট</button>
                             </form>
                         </div>

@@ -122,9 +122,9 @@ import 'swiper/css/bundle';
         const header = document.createElement('div');
         header.className = 'ris-cal-header';
         header.innerHTML = `
-            <button type="button" class="ris-cal-nav" data-nav="-1" aria-label="পূর্বের মাস">‹</button>
+            <button type="button" class="ris-cal-nav cursor-pointer" data-nav="-1" aria-label="পূর্বের মাস">‹</button>
             <div class="ris-cal-title"></div>
-            <button type="button" class="ris-cal-nav" data-nav="1" aria-label="পরবর্তী মাস">›</button>
+            <button type="button" class="ris-cal-nav cursor-pointer" data-nav="1" aria-label="পরবর্তী মাস">›</button>
         `;
 
         const week = document.createElement('div');

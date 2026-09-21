@@ -219,6 +219,186 @@
             </a>
         </div>
 
+        {{-- ভর্তি ও মেধাবৃত্তি সারসংক্ষেপ --}}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+
+            {{-- ভর্তি সারসংক্ষেপ --}}
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                    <h2 class="font-heading font-semibold text-gray-900">ভর্তি সারসংক্ষেপ</h2>
+                    <a href="{{ route('admin.admission.index') }}"
+                        class="text-sm text-ris-primary hover:text-ris-dark font-medium transition-colors">সব দেখুন</a>
+                </div>
+                <div class="p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-600">মোট আবেদন</span>
+                        <span class="font-heading font-bold text-gray-900">{{ number_format($stats['admission_total'] ?? 0) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span
+                            class="inline-flex items-center gap-1.5 text-sm text-amber-600">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>পেন্ডিং
+                        </span>
+                        <span class="font-medium text-amber-600">{{ number_format($stats['admission_pending'] ?? 0) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 text-sm text-emerald-600">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>অনুমোদিত
+                        </span>
+                        <span class="font-medium text-emerald-600">{{ number_format($stats['admission_approved'] ?? 0) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 text-sm text-red-600">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span>প্রত্যাখ্যাত
+                        </span>
+                        <span class="font-medium text-red-600">{{ number_format($stats['admission_rejected'] ?? 0) }}</span>
+                    </div>
+                    <hr class="border-gray-100">
+                    <a href="{{ route('admin.admission.index') }}"
+                        class="block text-center text-sm font-medium text-ris-primary hover:text-ris-dark transition-colors">ভর্তি
+                        ব্যবস্থাপনায় যান →</a>
+                </div>
+            </div>
+
+            {{-- মেধাবৃত্তি সারসংক্ষেপ --}}
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                    <h2 class="font-heading font-semibold text-gray-900">মেধাবৃত্তি সারসংক্ষেপ</h2>
+                    <a href="{{ route('admin.scholarship.index') }}"
+                        class="text-sm text-ris-primary hover:text-ris-dark font-medium transition-colors">সব দেখুন</a>
+                </div>
+                <div class="p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-600">মোট আবেদন</span>
+                        <span class="font-heading font-bold text-gray-900">{{ number_format($stats['scholarship_total'] ?? 0) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 text-sm text-amber-600">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>পেন্ডিং
+                        </span>
+                        <span class="font-medium text-amber-600">{{ number_format($stats['scholarship_pending'] ?? 0) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 text-sm text-emerald-600">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>অ্যাকসেপ্টেড
+                        </span>
+                        <span class="font-medium text-emerald-600">{{ number_format($stats['scholarship_approved'] ?? 0) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 text-sm text-red-600">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span>রিজেক্টেড
+                        </span>
+                        <span class="font-medium text-red-600">{{ number_format($stats['scholarship_rejected'] ?? 0) }}</span>
+                    </div>
+                    <hr class="border-gray-100">
+                    <a href="{{ route('admin.scholarship.index') }}"
+                        class="block text-center text-sm font-medium text-ris-primary hover:text-ris-dark transition-colors">মেধাবৃত্তি
+                        ব্যবস্থাপনায় যান →</a>
+                </div>
+            </div>
+
+            {{-- কুইক অ্যাডমিন লিংক --}}
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div class="px-5 py-4 border-b border-gray-100">
+                    <h2 class="font-heading font-semibold text-gray-900">দ্রুত অ্যাডমিন লিংক</h2>
+                </div>
+                <div class="p-5 space-y-2">
+                    <a href="{{ route('admin.students.index') }}"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors group">
+                        <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                            <svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-medium text-gray-900">ছাত্র ব্যবস্থাপনা</p>
+                            <p class="text-xs text-gray-400">সব ছাত্র-ছাত্রী দেখুন</p>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-ris-primary" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    <a href="{{ route('admin.teachers.index') }}"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors group">
+                        <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+                            <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 8a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-medium text-gray-900">শিক্ষক ব্যবস্থাপনা</p>
+                            <p class="text-xs text-gray-400">শিক্ষকদের তথ্য দেখুন</p>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-ris-primary" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    @if (auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.users.index') }}"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors group">
+                            <div class="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
+                                <svg class="w-4.5 h-4.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-medium text-gray-900">ব্যবহারকারী</p>
+                                <p class="text-xs text-gray-400">অ্যাডমিন ও ব্যবহারকারী দেখুন</p>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-300 group-hover:text-ris-primary" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    @endif
+                    <a href="{{ route('admin.contact-messages.index') }}"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors group">
+                        <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+                            <svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-medium text-gray-900">কনটাক্ট মেসেজ</p>
+                            <p class="text-xs text-gray-400">অভিভাবকদের মেসেজ দেখুন</p>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-ris-primary" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                    <a href="{{ route('admin.qrcode') }}"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors group">
+                        <div class="w-9 h-9 rounded-lg bg-ris-primary/10 flex items-center justify-center shrink-0">
+                            <svg class="w-4.5 h-4.5 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h3v3h-3v-3zM17 14h3v3h-3v-3zM14 17h3v3h-3v-3zM20 14h1v3h-3v-1h2v-2zM17 20h1v1h-1v-1z" />
+                            </svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-medium text-gray-900">QR কোড জেনারেটর</p>
+                            <p class="text-xs text-gray-400">স্টুডেন্ট QR কোড তৈরি করুন</p>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-ris-primary" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             {{-- Recent Notices --}}

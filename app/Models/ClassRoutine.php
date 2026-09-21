@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Core\Traits\LogsActivity;
+use App\Enums\DayOfWeek;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -44,5 +45,23 @@ class ClassRoutine extends Model
     public function teacher()
     {
         return $this->belongsTo(User::class, 'teacher_id');
+    }
+
+    /**
+     * Bangla label for the stored integer `day_of_week`, or the enum value
+     * when a legacy string was persisted.
+     */
+    public function dayLabel(): ?string
+    {
+        return $this->dayEnum()?->label();
+    }
+
+    public function dayEnum(): ?DayOfWeek
+    {
+        if (is_numeric($this->day_of_week)) {
+            return DayOfWeek::tryFromOrder((int) $this->day_of_week);
+        }
+
+        return DayOfWeek::tryFrom((string) $this->day_of_week);
     }
 }

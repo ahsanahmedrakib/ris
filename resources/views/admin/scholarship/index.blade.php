@@ -21,7 +21,7 @@
                     Excel ডাউনলোড
                 </a>
                 <button @click="openCreateModal()"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm">
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm cursor-pointer">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
@@ -71,7 +71,7 @@
                     </div>
                     <div class="flex items-end gap-2">
                         <button type="submit"
-                            class="px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors">
+                            class="px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors cursor-pointer">
                             ফিল্টার করুন
                         </button>
                         <a href="{{ route('admin.scholarship.index') }}"
@@ -157,7 +157,7 @@
                                 <td class="px-4 py-3 sticky right-0 bg-white z-10">
                                     <div class="flex items-center justify-center gap-1">
                                         <button @click="openViewModal({{ $registration->id }})"
-                                            class="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors"
+                                            class="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors cursor-pointer"
                                             title="দেখুন">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
@@ -168,7 +168,7 @@
                                             </svg>
                                         </button>
                                         <button @click="openEditModal({{ $registration->id }})"
-                                            class="p-1.5 rounded-lg text-amber-600 bg-amber-50 hover:bg-amber-100 transition-colors"
+                                            class="p-1.5 rounded-lg text-amber-600 bg-amber-50 hover:bg-amber-100 transition-colors cursor-pointer"
                                             title="সম্পাদনা">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
@@ -191,7 +191,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="p-1.5 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+                                                class="p-1.5 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors cursor-pointer"
                                                 title="মুছুন">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
@@ -231,7 +231,7 @@
                 class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">নতুন রেজিস্ট্রেশন</h3>
-                    <button @click="showCreateModal = false" class="text-white/80 hover:text-white transition-colors">
+                    <button @click="showCreateModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -400,7 +400,7 @@
                 class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">রেজিস্ট্রেশন তথ্য</h3>
-                    <button @click="showViewModal = false" class="text-white/80 hover:text-white transition-colors">
+                    <button @click="showViewModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -479,10 +479,10 @@
                             </dl>
                             <div class="mt-6 pt-5 border-t border-gray-100 flex justify-end gap-3">
                                 <button @click="showViewModal = false"
-                                    class="px-5 py-2.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">বন্ধ
+                                    class="px-5 py-2.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors cursor-pointer">বন্ধ
                                     করুন</button>
                                 <button @click="showViewModal = false; openEditModal(viewData.id)"
-                                    class="px-5 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors">সম্পাদনা</button>
+                                    class="px-5 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors cursor-pointer">সম্পাদনা</button>
                             </div>
                         </div>
                     </template>
@@ -509,7 +509,7 @@
                 class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">রেজিস্ট্রেশন সম্পাদনা</h3>
-                    <button @click="showEditModal = false" class="text-white/80 hover:text-white transition-colors">
+                    <button @click="showEditModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />

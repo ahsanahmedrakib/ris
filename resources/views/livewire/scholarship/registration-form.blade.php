@@ -39,7 +39,7 @@
                     প্রবেশপত্র ডাউনলোড করুন
                 </a>
 
-                <button type="button" wire:click="resetForm" class="btn-outline text-sm px-6 py-2.5">
+                <button type="button" wire:click="resetForm" class="btn-outline text-sm px-6 py-2.5 cursor-pointer">
                     নতুন রেজিস্ট্রেশন
                 </button>
             </div>
@@ -207,14 +207,14 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <p class="text-sm text-gray-600 mb-1.5">বিকাশ (পার্সোনাল) নম্বরে টাকা পাঠান:</p>
-                                <div x-data="{ copied: false }" class="flex items-center gap-3">
+                                <div x-data="{ copied: false }" class="flex items-center flex-col sm:flex-row gap-3">
                                     <div
                                         class="flex-1 bg-white border border-dashed border-ris-primary/40 rounded-lg px-4 py-3 font-heading font-bold text-ris-primary text-lg tracking-wider text-center select-all">
                                         01618197972
                                     </div>
                                     <button type="button"
                                         @click="navigator.clipboard.writeText('01618197972').then(() => { copied = true; setTimeout(() => copied = false, 2000) })"
-                                        class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg bg-ris-primary text-white text-xs font-medium hover:bg-ris-dark transition-colors"
+                                        class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg bg-ris-primary text-white text-xs font-medium hover:bg-ris-dark transition-colors cursor-pointer"
                                         x-text="copied ? 'কপি হয়েছে' : 'কপি করুন'"></button>
                                 </div>
                             </div>
@@ -242,7 +242,7 @@
 
                 {{-- Submit --}}
                 <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
-                    <button type="submit" class="btn-primary w-full sm:w-auto text-sm px-8 py-3">
+                    <button type="submit" class="btn-primary w-full sm:w-auto text-sm px-8 py-3 cursor-pointer">
                         যাচাই করে জমা দিন
                     </button>
                     <p class="text-xs text-gray-400">জমা দেওয়ার আগে তথ্য যাচাইয়ের জন্য একটি পপ-আপ দেখানো হবে।</p>
@@ -266,7 +266,7 @@
                     <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                         <h3 class="font-heading font-bold text-white text-lg">তথ্য যাচাই করুন</h3>
                         <button type="button" wire:click="cancelConfirmation"
-                            class="text-white/80 hover:text-white transition-colors">
+                            class="text-white/80 hover:text-white transition-colors cursor-pointer">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12" />
@@ -337,13 +337,13 @@
 
                         <div class="mt-6 flex flex-col sm:flex-row gap-3">
                             <button type="button" wire:click="cancelConfirmation"
-                                class="btn-outline w-full sm:w-1/2">
+                                class="btn-outline w-full sm:w-1/2 cursor-pointer">
                                 ফিরে যান
                             </button>
 
                             <button type="button" wire:click="confirm" wire:loading.attr="disabled"
                                 wire:loading.class="opacity-60"
-                                class="btn-primary w-full sm:w-1/2 inline-flex items-center justify-center gap-2">
+                                class="btn-primary w-full sm:w-1/2 inline-flex items-center justify-center gap-2 cursor-pointer">
 
                                 <!-- Spinner -->
                                 <svg wire:loading wire:target="confirm" class="w-4 h-4 animate-spin shrink-0"

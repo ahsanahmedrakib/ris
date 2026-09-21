@@ -21,12 +21,12 @@
                 <div class="mb-8 text-center reveal">
                     <div class="inline-flex flex-wrap items-center gap-2 justify-center">
                         <button onclick="document.querySelectorAll('.gallery-item').forEach(el => el.style.display='')"
-                            class="px-4 py-2 rounded-full text-sm font-medium bg-ris-primary text-white hover:bg-ris-dark transition-colors">
+                            class="px-4 py-2 rounded-full text-sm font-medium bg-ris-primary text-white hover:bg-ris-dark transition-colors cursor-pointer">
                             সব
                         </button>
                         @foreach ($categories as $category)
                             <button onclick="document.querySelectorAll('.gallery-item').forEach(el => el.style.display = el.dataset.category === '{{ $category }}' ? '' : 'none')"
-                                class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-ris-primary/10 hover:text-ris-primary transition-colors">
+                                class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-ris-primary/10 hover:text-ris-primary transition-colors cursor-pointer">
                                 {{ $category }}
                             </button>
                         @endforeach

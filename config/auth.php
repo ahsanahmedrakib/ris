@@ -119,4 +119,21 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Default Administrator
+    |--------------------------------------------------------------------------
+    |
+    | When the users table is empty, these credentials are used to bootstrap a
+    | super administrator account automatically the first time someone logs in.
+    |
+    */
+
+    'default_admin' => [
+        'name' => env('DEFAULT_ADMIN_NAME', 'Super Admin'),
+        'username' => env('DEFAULT_ADMIN_USERNAME', 'admin'),
+        'email' => env('DEFAULT_ADMIN_EMAIL', 'admin@ris.local'),
+        'password' => env('DEFAULT_ADMIN_PASSWORD', 'password'),
+    ],
+
 ];

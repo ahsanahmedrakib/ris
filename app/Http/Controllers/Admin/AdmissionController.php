@@ -8,6 +8,7 @@ use App\Models\Admission;
 use App\Models\ClassRoom;
 use App\Models\Student;
 use App\Models\User;
+use App\Support\NumberConverter;
 use App\Support\XlsxExport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class AdmissionController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Admission::with('creator');
+        $query = Admission::with('creator')->with('student');
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -305,9 +306,15 @@ class AdmissionController extends Controller
                 'is_active' => true,
             ]);
 
+            $academicYear = NumberConverter::toAscii((string) ($admission->academic_year ?? '26'));
+            $classNum = $this->getClassNumber($classLevel);
+            $rollNum = str_pad((string) ($admission->roll_no ?: 1), 3, '0', STR_PAD_LEFT);
+            $studentId = 'STU-'.$academicYear.'-'.$classNum.$rollNum;
+
             Student::create([
                 'user_id' => $user->id,
                 'admission_no' => $admission->admission_no,
+                'student_id' => $studentId,
                 'class_id' => $class->id,
                 'section' => $admission->section ?: '-',
                 'roll_no' => (int) ($admission->roll_no ?: 0),
@@ -316,7 +323,7 @@ class AdmissionController extends Controller
                 'blood_group' => $admission->blood_group,
                 'address' => $admission->present_address ?: ($admission->permanent_address ?: ''),
                 'guardian_name' => $admission->father_name_bn ?: ($admission->legal_guardian_name ?: ''),
-                'guardian_phone' => $admission->phone ?: ($admission->legal_guardian_phone ?: ''),
+                'guardian_phone' => $admission->phone ?: ($admission->local_guardian_phone ?: ''),
                 'guardian_email' => $admission->email,
                 'is_active' => true,
             ]);
@@ -324,13 +331,41 @@ class AdmissionController extends Controller
             DB::commit();
 
             return redirect()->route('admin.admission.index')
-                ->with('success', 'শিক্ষার্থী "'.$admission->student_name_bn.'" সফলভাবে ভর্তি করা হয়েছে।');
+                ->with('success', 'শিক্ষার্থী "'.$admission->student_name_bn.'" সফলভাবে ভর্তি করা হয়েছে। ID: '.$studentId);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return back()
                 ->with('error', 'শিক্ষার্থী ভর্তি করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
+    }
+
+    private function getClassNumber(?string $classLabel): string
+    {
+        if (! $classLabel) {
+            return '0';
+        }
+
+        $playLabels = ['প্লে', 'play', 'preschool', 'pre-primary', 'pp', 'p'];
+        if (in_array(trim($classLabel), $playLabels, true)) {
+            return 'P';
+        }
+
+        $banglaMap = [
+            '০' => '0', '১' => '1', '২' => '2', '৩' => '3', '৪' => '4',
+            '৫' => '5', '৬' => '6', '৭' => '7', '৮' => '8', '৯' => '9',
+        ];
+
+        $firstChar = mb_substr($classLabel, 0, 1);
+        if (isset($banglaMap[$firstChar])) {
+            return $banglaMap[$firstChar];
+        }
+
+        if (is_numeric($firstChar)) {
+            return (string) $firstChar;
+        }
+
+        return '0';
     }
 
     private function uniqueStudentEmail(Admission $admission): string

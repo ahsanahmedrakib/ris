@@ -19,6 +19,7 @@ use App\Models\GalleryItem;
 use App\Models\HeroSlide;
 use App\Models\Message;
 use App\Models\Notice;
+use App\Models\ScholarshipRegistration;
 use App\Models\Staff;
 use App\Models\Student;
 use App\Models\Subject;
@@ -32,7 +33,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use App\Models\ScholarshipRegistration;
 
 class WebsiteController extends Controller
 {
@@ -255,7 +255,7 @@ class WebsiteController extends Controller
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'আপনার মতামত জমা হয়েছে। প্রশাসকের অনুমোদনের পরে ওয়েবসাইটে প্রকাশিত হবে।',
+                    'message' => 'আপনার মতামত জমা হয়েছে। অ্যাডমিনের অনুমোদনের পরে ওয়েবসাইটে প্রকাশিত হবে।',
                 ]);
             }
 
@@ -407,8 +407,14 @@ class WebsiteController extends Controller
             : collect();
 
         return view('website.academic.results', compact(
-            'classes', 'exams', 'students', 'examGroups', 'subjects',
-            'selectedClass', 'search', 'examId'
+            'classes',
+            'exams',
+            'students',
+            'examGroups',
+            'subjects',
+            'selectedClass',
+            'search',
+            'examId'
         ));
     }
 
@@ -651,7 +657,7 @@ class WebsiteController extends Controller
 
         return view('admin.scholarship.pdf', [
             'registration' => $registration,
-            'classes'      => ScholarshipRegistration::CLASSES,
+            'classes' => ScholarshipRegistration::CLASSES,
         ]);
     }
 

@@ -78,7 +78,7 @@
                         </select>
                     </div>
                     <div class="flex items-end">
-                        <button type="submit" onclick="return confirm('আপনি কি এই মাসের বেতন প্রক্রিয়াকরণ করতে চান?')" class="px-6 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm w-full sm:w-auto">
+                        <button type="submit" onclick="return confirm('আপনি কি এই মাসের বেতন প্রক্রিয়াকরণ করতে চান?')" class="px-6 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm w-full sm:w-auto cursor-pointer">
                             বেতন প্রক্রিয়াকরণ করুন
                         </button>
                     </div>
@@ -130,14 +130,14 @@
                                             :class="active ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
                                             x-text="active ? 'পরিশোধিত' : 'বকেয়'">{{ ($pay->status ?? '') === 'paid' ? 'পরিশোধিত' : 'বকেয়' }}</span>
                                         <button x-show="!active" @click="toggle()" title="পরিশোধিত হিসেবে চিহ্নিত করুন"
-                                            class="p-1.5 rounded-lg text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                                            class="p-1.5 rounded-lg text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors cursor-pointer"
                                             :disabled="busy">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </button>
                                         <button x-show="active" @click="toggle()" title="বকেয় হিসেবে চিহ্নিত করুন"
-                                            class="p-1.5 rounded-lg text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors"
+                                            class="p-1.5 rounded-lg text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
                                             :disabled="busy">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />

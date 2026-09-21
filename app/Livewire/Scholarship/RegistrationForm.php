@@ -163,18 +163,18 @@ class RegistrationForm extends Component
 
                 $registration = ScholarshipRegistration::create([
                     'registration_no' => $number,
-                    'serial_no'       => (int) substr($number, -3),
-                    'student_name'    => $this->studentName,
-                    'father_name'     => $this->fatherName,
-                    'mother_name'     => $this->motherName,
-                    'school_name'     => $this->schoolName,
-                    'class_no'        => (int) $this->classNo,
-                    'roll_no'         => $this->rollNo,
-                    'mobile_no'       => $this->mobileNo,
-                    'bkash_no'        => $this->paymentMethod === 'cash' ? null : $this->bkashNo,
-                    'payment_method'  => $this->paymentMethod,
-                    'status'          => 'pending',
-                    'created_by'      => Auth::id(),
+                    'serial_no' => (int) substr($number, -3),
+                    'student_name' => $this->studentName,
+                    'father_name' => $this->fatherName,
+                    'mother_name' => $this->motherName,
+                    'school_name' => $this->schoolName,
+                    'class_no' => (int) $this->classNo,
+                    'roll_no' => $this->rollNo,
+                    'mobile_no' => $this->mobileNo,
+                    'bkash_no' => $this->paymentMethod === 'cash' ? null : $this->bkashNo,
+                    'payment_method' => $this->paymentMethod,
+                    'status' => 'pending',
+                    'created_by' => Auth::id(),
                 ]);
 
                 DB::commit();
@@ -183,7 +183,7 @@ class RegistrationForm extends Component
                     NewSubmission::sendToAdmins(
                         'scholarship',
                         'নতুন মেধাবৃত্তি রেজিস্ট্রেশন',
-                        $registration->student_name . ' (' . $registration->mobile_no . ') মেধাবৃত্তির জন্য রেজিস্ট্রেশন করেছেন।',
+                        $registration->student_name.' ('.$registration->mobile_no.') মেধাবৃত্তির জন্য রেজিস্ট্রেশন করেছেন।',
                         route('admin.scholarship.show', $registration),
                     );
                 }
@@ -194,7 +194,7 @@ class RegistrationForm extends Component
 
                 if ($this->adminMode) {
                     return redirect()->route('admin.scholarship.index')
-                        ->with('success', 'মেধাবৃত্তি রেজিস্ট্রেশন (' . $registration->registration_no . ') সফলভাবে তৈরি হয়েছে।');
+                        ->with('success', 'মেধাবৃত্তি রেজিস্ট্রেশন ('.$registration->registration_no.') সফলভাবে তৈরি হয়েছে।');
                 }
 
                 $this->dispatch('toast', type: 'success', message: 'রেজিস্ট্রেশন সফল হয়েছে!');

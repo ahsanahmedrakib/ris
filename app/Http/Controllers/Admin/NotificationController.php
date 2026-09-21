@@ -11,8 +11,9 @@ class NotificationController extends Controller
 {
     public function index(): View
     {
-        $notifications = Auth::user()
-            ->notifications()
+        $notifications = DatabaseNotification::query()
+            ->where('notifiable_type', get_class(Auth::user()))
+            ->where('notifiable_id', Auth::id())
             ->orderByDesc('created_at')
             ->paginate(20);
 
@@ -37,6 +38,6 @@ class NotificationController extends Controller
         Auth::user()->unreadNotifications->markAsRead();
 
         return back()
-            ->with('success', 'সব বিজ্ঞপ্তি পড়া হয়েছে।');
+            ->with('success', 'সব নোটিফিকেশন পড়া হয়েছে।');
     }
 }

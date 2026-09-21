@@ -4,10 +4,12 @@ namespace App\Features\Auth\Http\Controllers;
 
 use App\Enums\FeeStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Admission;
 use App\Models\ClassRoom;
 use App\Models\FeeInvoice;
 use App\Models\FeePayment;
 use App\Models\Notice;
+use App\Models\ScholarshipRegistration;
 use App\Models\Staff;
 use App\Models\Student;
 use App\Models\User;
@@ -33,6 +35,14 @@ class DashboardController extends Controller
             'pending_admissions' => Student::where('is_active', false)->count(),
             'recent_notices' => Notice::orderByDesc('published_at')->take(5)->get(),
             'recent_admissions' => Student::with('classRoom')->latest()->take(5)->get(),
+            'admission_total' => Admission::count(),
+            'admission_pending' => Admission::where('status', 'pending')->count(),
+            'admission_approved' => Admission::where('status', 'approved')->count(),
+            'admission_rejected' => Admission::where('status', 'rejected')->count(),
+            'scholarship_total' => ScholarshipRegistration::count(),
+            'scholarship_pending' => ScholarshipRegistration::where('status', 'pending')->count(),
+            'scholarship_approved' => ScholarshipRegistration::where('status', 'approved')->count(),
+            'scholarship_rejected' => ScholarshipRegistration::where('status', 'rejected')->count(),
         ];
 
         return view('admin.dashboard', compact('stats'));

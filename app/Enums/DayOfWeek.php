@@ -25,6 +25,54 @@ enum DayOfWeek: string
         };
     }
 
+    /**
+     * Numeric order matching the integer `day_of_week` column.
+     * Friday is excluded from the routine schedule.
+     */
+    public function order(): int
+    {
+        return match ($this) {
+            self::Saturday => 1,
+            self::Sunday => 2,
+            self::Monday => 3,
+            self::Tuesday => 4,
+            self::Wednesday => 5,
+            self::Thursday => 6,
+            self::Friday => 7,
+        };
+    }
+
+    public static function tryFromOrder(int $order): ?self
+    {
+        return match ($order) {
+            1 => self::Saturday,
+            2 => self::Sunday,
+            3 => self::Monday,
+            4 => self::Tuesday,
+            5 => self::Wednesday,
+            6 => self::Thursday,
+            7 => self::Friday,
+            default => null,
+        };
+    }
+
+    /**
+     * Routine days (excluding Friday), ordered by the working week.
+     *
+     * @return array<int, self>
+     */
+    public static function weekdays(): array
+    {
+        return [
+            self::Saturday,
+            self::Sunday,
+            self::Monday,
+            self::Tuesday,
+            self::Wednesday,
+            self::Thursday,
+        ];
+    }
+
     public function color(): string
     {
         return match ($this) {

@@ -41,11 +41,11 @@ class NoticeController extends Controller
             $notice = Notice::create($validated);
 
             return response()->json([
-                'message' => 'বিজ্ঞপ্তি সফলভাবে প্রকাশিত হয়েছে।',
+                'message' => 'নোটিফিকেশন সফলভাবে প্রকাশিত হয়েছে।',
                 'notice' => $notice->load('publisher'),
             ], 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'বিজ্ঞপ্তি প্রকাশ করতে সমস্যা হয়েছে।'], 500);
+            return response()->json(['message' => 'নোটিফিকেশন প্রকাশ করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
@@ -70,11 +70,11 @@ class NoticeController extends Controller
             $notice->update($validated);
 
             return response()->json([
-                'message' => 'বিজ্ঞপ্তি সফলভাবে আপডেট হয়েছে।',
+                'message' => 'নোটিফিকেশন সফলভাবে আপডেট হয়েছে।',
                 'notice' => $notice->fresh()->load('publisher'),
             ]);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'বিজ্ঞপ্তি আপডেট করতে সমস্যা হয়েছে।'], 500);
+            return response()->json(['message' => 'নোটিফিকেশন আপডেট করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
@@ -83,9 +83,9 @@ class NoticeController extends Controller
         try {
             Notice::findOrFail($id)->delete();
 
-            return response()->json(['message' => 'বিজ্ঞপ্তি সফলভাবে মুছে ফেলা হয়েছে।']);
+            return response()->json(['message' => 'নোটিফিকেশন সফলভাবে মুছে ফেলা হয়েছে।']);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'বিজ্ঞপ্তি মুছে ফেলতে সমস্যা হয়েছে।'], 500);
+            return response()->json(['message' => 'নোটিফিকেশন মুছে ফেলতে সমস্যা হয়েছে।'], 500);
         }
     }
 }
