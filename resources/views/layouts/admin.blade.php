@@ -77,6 +77,22 @@
                     'route' => 'admin.dashboard',
                 ];
 
+                $admissionItem = [
+                    'icon' =>
+                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                    'label' => 'ভর্তি আবেদন',
+                    'route' => 'admin.admission.index',
+                ];
+
+                $scholarshipItem = [
+                    'icon' =>
+                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>',
+                    'label' => 'মেধাবৃত্তি',
+                    'route' => 'admin.scholarship.index',
+                ];
+
+                $topLevelItems = [$dashboardItem, $admissionItem, $scholarshipItem];
+
                 $sidebarGroups = [
                     'ব্যবস্থাপনা' => [
                         [
@@ -137,7 +153,7 @@
                             'route' => 'admin.class-routines.index',
                         ],
                     ],
-                    'হোমপেজ সেকশন' => [
+                    'কন্টেন্ট ম্যানেজমেন্ট' => [
                         [
                             'icon' =>
                                 '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>',
@@ -198,6 +214,18 @@
                             'label' => 'আমাদের সম্পর্কে',
                             'route' => 'admin.about.index',
                         ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
+                            'label' => 'একাডেমিক ক্যালেন্ডার',
+                            'route' => 'admin.academic-calendars.index',
+                        ],
+                        [
+                            'icon' =>
+                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                            'label' => 'টিউশন ফি',
+                            'route' => 'admin.fees.structures',
+                        ],
                     ],
                     'ছাত্র ও ভর্তি' => [
                         [
@@ -205,44 +233,6 @@
                                 '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>',
                             'label' => 'ছাত্র/ছাত্রী',
                             'route' => 'admin.students.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
-                            'label' => 'ভর্তি আবেদন',
-                            'route' => 'admin.admission.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>',
-                            'label' => 'মেধাবৃত্তি',
-                            'route' => 'admin.scholarship.index',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
-                            'label' => 'একাডেমিক ক্যালেন্ডার',
-                            'route' => 'admin.academic-calendars.index',
-                        ],
-                    ],
-                    'হিসাব ও ফি' => [
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-6m-3 3h.01M9 17h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
-                            'label' => 'ফি কাঠামো',
-                            'route' => 'admin.fees.structures',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
-                            'label' => 'ফি চালান',
-                            'route' => 'admin.fees.invoices',
-                        ],
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>',
-                            'label' => 'পেমেন্ট ও আদায়',
-                            'route' => 'admin.fees.payments',
                         ],
                     ],
                     'যোগাযোগ ও অন্যান্য' => [
@@ -261,7 +251,16 @@
                     ],
                 ];
                 $activeGroup = '';
-                if (!$isNavActive($dashboardItem['route'])) {
+                $isTopLevelActive = false;
+
+                foreach ($topLevelItems as $topLevelItem) {
+                    if ($isNavActive($topLevelItem['route'])) {
+                        $isTopLevelActive = true;
+                        break;
+                    }
+                }
+
+                if (!$isTopLevelActive) {
                     foreach ($sidebarGroups as $group => $groupItems) {
                         foreach ($groupItems as $groupItem) {
                             if (!empty($groupItem['adminOnly']) && auth()->user()->role !== 'admin') {
@@ -277,17 +276,19 @@
             @endphp
 
             <nav class="flex-1 sidebar-scroll overflow-y-auto py-4 px-3 space-y-1" x-data="navGroups({{ json_encode($activeGroup) }})">
-                <a href="{{ route($dashboardItem['route']) }}"
-                    @mouseenter="sidebarOpen || showTooltip($el, '{{ $dashboardItem['label'] }}')"
-                    @mouseleave="hideTooltip()"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group mb-2
-                           {{ $isNavActive($dashboardItem['route']) ? 'bg-ris-primary text-white shadow-md' : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 shrink-0 {{ $isNavActive($dashboardItem['route']) ? 'text-white' : 'text-gray-400 group-hover:text-white' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {!! $dashboardItem['icon'] !!}
-                    </svg>
-                    <span x-show="sidebarOpen" x-cloak class="whitespace-nowrap">{{ $dashboardItem['label'] }}</span>
-                </a>
+                @foreach ($topLevelItems as $menuItem)
+                    <a href="{{ route($menuItem['route']) }}"
+                        @mouseenter="sidebarOpen || showTooltip($el, '{{ $menuItem['label'] }}')"
+                        @mouseleave="hideTooltip()"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group mb-2
+                               {{ $isNavActive($menuItem['route']) ? 'bg-ris-primary text-white shadow-md' : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="w-5 h-5 shrink-0 {{ $isNavActive($menuItem['route']) ? 'text-white' : 'text-gray-400 group-hover:text-white' }}"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {!! $menuItem['icon'] !!}
+                        </svg>
+                        <span x-show="sidebarOpen" x-cloak class="whitespace-nowrap">{{ $menuItem['label'] }}</span>
+                    </a>
+                @endforeach
                 @foreach ($sidebarGroups as $groupTitle => $items)
                     <div class="pt-4 first:pt-0">
                         <button @click="toggleGroup({{ json_encode($groupTitle) }})"
@@ -357,29 +358,24 @@
             x-transition:leave="transition-transform ease-in-out duration-300"
             x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
             class="fixed inset-y-0 left-0 w-64 bg-ris-dark-900 text-white z-50 lg:hidden flex flex-col">
-            <div class="flex items-center justify-between px-4 h-16 border-b border-white/10 shrink-0">
-                <div class="flex items-center gap-3">
-                    <img src="{{ asset('logo.png') }}" alt="RIS" class="h-10 w-auto object-contain">
-                    <div class="font-heading font-bold text-sm text-white">RIS অ্যাডমিন</div>
+            <a href={{ route('home') }} target="_blank">
+                <div class="flex items-center justify-center gap-3 px-4 h-16 border-b border-white/10 shrink-0">
+                    <img :src="sidebarOpen ? '{{ asset('logo-white.png') }}' : '{{ asset('logo-small.png') }}'"
+                        alt="RIS" class="h-15 w-auto object-contain shrink-0">
                 </div>
-                <button @click="mobileSidebar = false"
-                    class="p-1.5 rounded-lg text-gray-400 hover:bg-white/10 hover:text-white cursor-pointer">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+            </a>
             <nav class="flex-1 sidebar-scroll overflow-y-auto py-4 px-3 space-y-1" x-data="navGroups({{ json_encode($activeGroup) }})">
-                <a href="{{ route($dashboardItem['route']) }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-2
-                       {{ $isNavActive($dashboardItem['route']) ? 'bg-ris-primary text-white' : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
-                    <svg class="w-5 h-5 shrink-0 {{ $isNavActive($dashboardItem['route']) ? 'text-white' : 'text-gray-400' }}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {!! $dashboardItem['icon'] !!}
-                    </svg>
-                    <span class="whitespace-nowrap">{{ $dashboardItem['label'] }}</span>
-                </a>
+                @foreach ($topLevelItems as $menuItem)
+                    <a href="{{ route($menuItem['route']) }}"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-2
+                           {{ $isNavActive($menuItem['route']) ? 'bg-ris-primary text-white' : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="w-5 h-5 shrink-0 {{ $isNavActive($menuItem['route']) ? 'text-white' : 'text-gray-400' }}"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {!! $menuItem['icon'] !!}
+                        </svg>
+                        <span class="whitespace-nowrap">{{ $menuItem['label'] }}</span>
+                    </a>
+                @endforeach
                 @foreach ($sidebarGroups as $groupTitle => $items)
                     <div class="pt-4 first:pt-0">
                         <button @click="toggleGroup({{ json_encode($groupTitle) }})"

@@ -3,10 +3,17 @@
 namespace App\Core\Traits;
 
 use App\Models\ActivityLog;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @method static void created(callable $callback)
+ * @method static void updated(callable $callback)
+ * @method static void deleted(callable $callback)
+ * @method static void restored(callable $callback)
+ */
 trait LogsActivity
 {
     private const ACTION_LABELS = [
@@ -41,7 +48,7 @@ trait LogsActivity
             }
         });
         static::deleted(function (Model $model): void {
-            self::recordActivity($model, $model->isForceDeleting() ? 'force_delete' : 'delete');
+            self::recordActivity($model, self::deleteAction($model));
         });
         if (in_array(SoftDeletes::class, class_uses_recursive(static::class), true)) {
             static::restored(fn (Model $model) => self::recordActivity($model, 'restore'));
@@ -50,11 +57,11 @@ trait LogsActivity
 
     protected static function recordActivity(Model $model, string $action): void
     {
-        if (Auth::hasUser() === false) {
+        $user = Auth::user();
+
+        if (! $user instanceof User) {
             return;
         }
-
-        $user = Auth::user();
 
         ActivityLog::create([
             'user_id' => $user->id,
@@ -66,6 +73,18 @@ trait LogsActivity
             'properties' => $action === 'update' ? $model->getChanges() : null,
             'ip_address' => request()->ip(),
         ]);
+    }
+
+    private static function deleteAction(Model $model): string
+    {
+        if (! in_array(SoftDeletes::class, class_uses_recursive(get_class($model)), true)) {
+            return 'delete';
+        }
+
+        /** @var Model&SoftDeletes $deletable */
+        $deletable = $model;
+
+        return $deletable->isForceDeleting() ? 'force_delete' : 'delete';
     }
 
     protected static function activityDescription(Model $model, string $action): string

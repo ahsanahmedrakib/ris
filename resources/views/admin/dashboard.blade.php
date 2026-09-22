@@ -226,8 +226,6 @@
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                     <h2 class="font-heading font-semibold text-gray-900">ভর্তি সারসংক্ষেপ</h2>
-                    <a href="{{ route('admin.admission.index') }}"
-                        class="text-sm text-ris-primary hover:text-ris-dark font-medium transition-colors">সব দেখুন</a>
                 </div>
                 <div class="p-5 space-y-3">
                     <div class="flex items-center justify-between">
@@ -267,8 +265,6 @@
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                     <h2 class="font-heading font-semibold text-gray-900">মেধাবৃত্তি সারসংক্ষেপ</h2>
-                    <a href="{{ route('admin.scholarship.index') }}"
-                        class="text-sm text-ris-primary hover:text-ris-dark font-medium transition-colors">সব দেখুন</a>
                 </div>
                 <div class="p-5 space-y-3">
                     <div class="flex items-center justify-between">
