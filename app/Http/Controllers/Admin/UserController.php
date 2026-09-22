@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -40,6 +41,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:20',
             'password' => 'required|string|min:8|confirmed',
+            'avatar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
         ], [
             'name.required' => 'নাম আবশ্যক।',
             'name.string' => 'নাম অবশ্যই একটি স্ট্রিং হতে হবে।',
@@ -50,7 +52,16 @@ class UserController extends Controller
             'password.required' => 'পাসওয়ার্ড আবশ্যক।',
             'password.min' => 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।',
             'password.confirmed' => 'পাসওয়ার্ড দুটি মিলে যায়নি।',
+            'avatar.image' => 'সঠিক ছবি আপলোড করুন।',
+            'avatar.mimes' => 'ছবির ফরম্যাট jpeg, jpg, png বা webp হতে হবে।',
+            'avatar.max' => 'ছবির আকার ২ এমবির বেশি হতে পারবে না।',
         ]);
+
+        $avatarPath = null;
+
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        }
 
         User::create([
             'name' => $validated['name'],
@@ -60,6 +71,7 @@ class UserController extends Controller
             'password' => $validated['password'],
             'role' => UserRole::Admin->value,
             'is_active' => true,
+            'avatar' => $avatarPath,
         ]);
 
         return redirect()->route('admin.users.index')
@@ -76,6 +88,7 @@ class UserController extends Controller
             'username' => $user->username ?? '',
             'email' => $user->email,
             'phone' => $user->phone ?? '',
+            'avatar' => $user->avatarUrl,
             'is_active' => (bool) $user->is_active,
             'created_at' => $user->created_at->format('d/m/Y h:i A'),
         ]);
@@ -91,6 +104,7 @@ class UserController extends Controller
             'username' => $user->username ?? '',
             'email' => $user->email,
             'phone' => $user->phone ?? '',
+            'avatar' => $user->avatarUrl,
             'is_active' => (bool) $user->is_active,
         ]);
     }
@@ -105,6 +119,7 @@ class UserController extends Controller
             'email' => "required|email|unique:users,email,{$user->id}",
             'phone' => 'nullable|string|max:20',
             'password' => 'nullable|string|min:8|confirmed',
+            'avatar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
         ], [
             'name.required' => 'নাম আবশ্যক।',
             'email.required' => 'ইমেইল আবশ্যক।',
@@ -113,6 +128,9 @@ class UserController extends Controller
             'username.unique' => 'এই ইউজারনেম ইতিমধ্যে ব্যবহৃত হয়েছে।',
             'password.min' => 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।',
             'password.confirmed' => 'পাসওয়ার্ড দুটি মিলে যায়নি।',
+            'avatar.image' => 'সঠিক ছবি আপলোড করুন।',
+            'avatar.mimes' => 'ছবির ফরম্যাট jpeg, jpg, png বা webp হতে হবে।',
+            'avatar.max' => 'ছবির আকার ২ এমবির বেশি হতে পারবে না।',
         ]);
 
         $data = [
@@ -121,6 +139,20 @@ class UserController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
         ];
+
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        }
+
+        if ($request->boolean('remove_avatar')) {
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            $data['avatar'] = null;
+        }
 
         if (! empty($validated['password'])) {
             $data['password'] = $validated['password'];

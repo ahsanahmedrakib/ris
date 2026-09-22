@@ -1,7 +1,7 @@
 @extends('layouts.parent')
 
-@section('title', ($child->name ?? 'সন্তান') . ' — অভিভাবক পোর্টাল')
-@section('page-title', $child->name ?? 'সন্তানের বিস্তারিত')
+@section('title', ($student->user?->name ?? 'সন্তান') . ' — অভিভাবক পোর্টাল')
+@section('page-title', $student->user?->name ?? 'সন্তানের বিস্তারিত')
 
 @section('content')
 
@@ -25,20 +25,20 @@
                 <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5">
                     <div
                         class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/20 border-3 border-white/30 flex items-center justify-center text-white font-heading font-bold text-3xl sm:text-4xl shrink-0">
-                        @if (isset($child->photo))
-                            <img src="{{ asset('storage/' . $child->photo) }}" alt="{{ $child->name }}"
+                        @if ($student->user?->avatar)
+                            <img src="{{ Storage::url($student->user->avatar) }}" alt="{{ $student->user->name }}"
                                 class="w-full h-full rounded-full object-cover">
                         @else
-                            {{ substr($child->name ?? 'ছ', 0, 1) }}
+                            {{ mb_substr($student->user?->name ?? 'ছ', 0, 1) }}
                         @endif
                     </div>
                     <div class="text-center sm:text-left">
-                        <h2 class="font-heading font-bold text-2xl sm:text-3xl text-white">{{ $child->name }}</h2>
-                        <p class="text-white/70 mt-1">{{ $child->class->name ?? '' }} · {{ $child->section->name ?? '' }} ·
-                            রোল: {{ $child->roll_no ?? '—' }}</p>
+                        <h2 class="font-heading font-bold text-2xl sm:text-3xl text-white">{{ $student->user?->name }}</h2>
+                        <p class="text-white/70 mt-1">{{ $student->class->name ?? '' }} · {{ $student->section->name ?? '' }} ·
+                            রোল: {{ $student->roll_no ?? '—' }}</p>
                         <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-3">
                             <span class="bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full">ভর্তি নং:
-                                {{ $child->admission_no ?? '—' }}</span>
+                                {{ $student->admission_no ?? '—' }}</span>
                         </div>
                     </div>
                 </div>
@@ -62,24 +62,24 @@
                 <div class="space-y-3 text-sm">
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">পূর্ণ নাম</span>
-                        <span class="font-medium text-gray-800">{{ $child->name ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->user?->name ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">জন্ম তারিখ</span>
                         <span
-                            class="font-medium text-gray-800">{{ isset($child->date_of_birth) ? \Carbon\Carbon::parse($child->date_of_birth)->format('d M, Y') : '—' }}</span>
+                            class="font-medium text-gray-800">{{ isset($student->date_of_birth) ? \Carbon\Carbon::parse($student->date_of_birth)->format('d M, Y') : '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">রক্তের গ্রুপ</span>
-                        <span class="font-medium text-gray-800">{{ $child->blood_group ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->blood_group ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">লিঙ্গ</span>
-                        <span class="font-medium text-gray-800">{{ $child->gender ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->gender ?? '—' }}</span>
                     </div>
                     <div class="py-2">
                         <span class="text-ris-gray block mb-1">ঠিকানা</span>
-                        <span class="font-medium text-gray-800">{{ $child->address ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->address ?? '—' }}</span>
                     </div>
                 </div>
             </div>
@@ -98,23 +98,23 @@
                 <div class="space-y-3 text-sm">
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">শ্রেণি</span>
-                        <span class="font-medium text-gray-800">{{ $child->class->name ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->class->name ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">শাখা</span>
-                        <span class="font-medium text-gray-800">{{ $child->section->name ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->section->name ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">রোল নং</span>
-                        <span class="font-medium text-gray-800">{{ $child->roll_no ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->roll_no ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">ভর্তি নং</span>
-                        <span class="font-medium text-gray-800">{{ $child->admission_no ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->admission_no ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2">
                         <span class="text-ris-gray">সেশন</span>
-                        <span class="font-medium text-gray-800">{{ $child->session ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->session ?? '—' }}</span>
                     </div>
                 </div>
             </div>
@@ -133,19 +133,19 @@
                 <div class="space-y-3 text-sm">
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">পিতার নাম</span>
-                        <span class="font-medium text-gray-800">{{ $child->father_name ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->father_name ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">মাতার নাম</span>
-                        <span class="font-medium text-gray-800">{{ $child->mother_name ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->mother_name ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b border-gray-50">
                         <span class="text-ris-gray">অভিভাবক ফোন</span>
-                        <span class="font-medium text-gray-800">{{ $child->guardian_phone ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->guardian_phone ?? '—' }}</span>
                     </div>
                     <div class="flex justify-between py-2">
                         <span class="text-ris-gray">জরুরি যোগাযোগ</span>
-                        <span class="font-medium text-gray-800">{{ $child->emergency_phone ?? '—' }}</span>
+                        <span class="font-medium text-gray-800">{{ $student->emergency_phone ?? '—' }}</span>
                     </div>
                 </div>
             </div>
@@ -190,7 +190,7 @@
             </div>
 
             <div class="flex justify-end">
-                <a href="{{ route('parent.attendance', ['child_id' => $child->id]) }}"
+                <a href="{{ route('parent.attendance', ['child_id' => $student->id]) }}"
                     class="text-sm font-medium text-ris-primary hover:text-ris-dark transition-colors">বিস্তারিত দেখুন
                     →</a>
             </div>
@@ -208,7 +208,7 @@
                     </div>
                     <h3 class="font-heading font-bold text-ris-dark">সর্বশেষ পরীক্ষার ফলাফল</h3>
                 </div>
-                <a href="{{ route('parent.exams', ['child_id' => $child->id]) }}"
+                <a href="{{ route('parent.exams', ['child_id' => $student->id]) }}"
                     class="text-sm font-medium text-ris-primary hover:text-ris-dark transition-colors">সব দেখুন →</a>
             </div>
 
@@ -269,7 +269,7 @@
                     </div>
                     <h3 class="font-heading font-bold text-ris-dark">ফি অবস্থা</h3>
                 </div>
-                <a href="{{ route('parent.fees', ['child_id' => $child->id]) }}"
+                <a href="{{ route('parent.fees', ['child_id' => $student->id]) }}"
                     class="text-sm font-medium text-ris-primary hover:text-ris-dark transition-colors">বিস্তারিত দেখুন
                     →</a>
             </div>

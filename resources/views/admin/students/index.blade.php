@@ -112,8 +112,14 @@
                                 <td class="px-5 py-3.5 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
                                         <div
-                                            class="w-8 h-8 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-xs font-semibold shrink-0">
-                                            {{ mb_substr($student->user?->name ?? 'ছ', 0, 1) }}
+                                            class="relative w-8 h-8 rounded-full overflow-hidden shrink-0 {{ $student->user?->avatar ? '' : 'bg-ris-primary/10' }} flex items-center justify-center">
+                                            @if ($student->user?->avatar)
+                                                <img src="{{ Storage::url($student->user->avatar) }}"
+                                                    alt="{{ $student->user->name }}" class="w-full h-full object-cover">
+                                            @else
+                                                <span
+                                                    class="text-ris-primary text-xs font-semibold">{{ mb_substr($student->user?->name ?? 'ছ', 0, 1) }}</span>
+                                            @endif
                                         </div>
                                         <button @click="openViewModal({{ $student->id }})"
                                             class="font-heading font-semibold text-ris-primary hover:underline cursor-pointer">{{ $student->user?->name }}</button>

@@ -36,7 +36,7 @@
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                             <input type="text" name="search" value="{{ request('search') }}"
-                                placeholder="ব্যবহারকারী বা বিবরণ দিয়ে খুঁজুন..."
+                                placeholder="ইউজার বা বিবরণ দিয়ে খুঁজুন..."
                                 class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                     <thead>
                         <tr class="gradient-logo">
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">ক্রমিক</th>
-                            <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">ব্যবহারকারী</th>
+                            <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">ইউজার</th>
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">অ্যাকশন</th>
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">বিবরণ</th>
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">আইপি ঠিকানা</th>

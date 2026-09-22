@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PayrollController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\QrCodeController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ResultController;
@@ -80,6 +81,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 
 Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->prefix('admin')->group(function () {
     Route::get('/', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
+
+    Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile.index');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('admin.profile.password');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
     Route::get('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('admin.notifications.read');

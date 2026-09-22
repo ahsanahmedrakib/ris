@@ -28,16 +28,16 @@
                             <div class="relative z-10 flex items-center gap-4">
                                 {{-- Photo Placeholder --}}
                                 <div
-                                    class="w-16 h-16 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-white font-heading font-bold text-2xl shrink-0">
-                                    @if (isset($child->photo))
-                                        <img src="{{ asset('storage/' . $child->photo) }}" alt="{{ $child->name }}"
+                                    class="w-16 h-16 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-white font-heading font-bold text-2xl shrink-0 overflow-hidden">
+                                    @if ($child->user?->avatar)
+                                        <img src="{{ Storage::url($child->user->avatar) }}" alt="{{ $child->user->name }}"
                                             class="w-full h-full rounded-full object-cover">
                                     @else
-                                        {{ substr($child->name ?? 'ছ', 0, 1) }}
+                                        {{ mb_substr($child->user?->name ?? 'ছ', 0, 1) }}
                                     @endif
                                 </div>
                                 <div class="min-w-0">
-                                    <h3 class="font-heading font-bold text-white text-lg leading-tight">{{ $child->name }}
+                                    <h3 class="font-heading font-bold text-white text-lg leading-tight">{{ $child->user?->name }}
                                     </h3>
                                     <p class="text-white/70 text-sm mt-0.5">{{ $child->class->name ?? '' }} ·
                                         {{ $child->section->name ?? '' }}</p>

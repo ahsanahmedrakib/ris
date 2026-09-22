@@ -35,8 +35,19 @@
     @livewireStyles
 </head>
 
-<body class="h-full font-body antialiased bg-gray-50 text-gray-800" x-data="{ sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false', mobileSidebar: false }"
-    x-effect="localStorage.setItem('sidebarOpen', sidebarOpen)">
+<body class="h-full font-body antialiased bg-gray-50 text-gray-800"
+    x-data="{
+        sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false',
+        mobileSidebar: false,
+        tooltip: { show: false, text: '', x: 0, y: 0 },
+        showTooltip(el, text) {
+            const rect = el.getBoundingClientRect();
+            this.tooltip = { show: true, text, x: rect.right + 10, y: rect.top + rect.height / 2 };
+        },
+        hideTooltip() {
+            this.tooltip.show = false;
+        }
+    }" x-effect="localStorage.setItem('sidebarOpen', sidebarOpen)">
 
     <div class="flex h-full">
 
@@ -48,7 +59,7 @@
             {{-- Logo --}}
             <a href={{ route('home') }} target="_blank">
                 <div class="flex items-center justify-center gap-3 px-4 h-16 border-b border-white/10 shrink-0">
-                    <img :src="sidebarOpen ? '{{ asset('logo.png') }}' : '{{ asset('logo-small.png') }}'" alt="RIS"
+                    <img :src="sidebarOpen ? '{{ asset('logo-white.png') }}' : '{{ asset('logo-small.png') }}'" alt="RIS"
                         class="h-15 w-auto object-contain shrink-0">
                 </div>
             </a>
@@ -59,14 +70,15 @@
                     return request()->routeIs($route) || request()->routeIs($route . '.*');
                 };
 
+                $dashboardItem = [
+                    'icon' =>
+                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>',
+                    'label' => 'ড্যাশবোর্ড',
+                    'route' => 'admin.dashboard',
+                ];
+
                 $sidebarGroups = [
                     'ব্যবস্থাপনা' => [
-                        [
-                            'icon' =>
-                                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>',
-                            'label' => 'ড্যাশবোর্ড',
-                            'route' => 'admin.dashboard',
-                        ],
                         [
                             'icon' =>
                                 '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>',
@@ -88,7 +100,7 @@
                         [
                             'icon' =>
                                 '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>',
-                            'label' => 'ব্যবহারকারী',
+                            'label' => 'ইউজার',
                             'route' => 'admin.users.index',
                             'adminOnly' => true,
                         ],
@@ -243,39 +255,58 @@
                     ],
                 ];
                 $activeGroup = '';
-                foreach ($sidebarGroups as $group => $groupItems) {
-                    foreach ($groupItems as $groupItem) {
-                        if (!empty($groupItem['adminOnly']) && auth()->user()->role !== 'admin') {
-                            continue;
-                        }
-                        if ($isNavActive($groupItem['route'])) {
-                            $activeGroup = $group;
-                            break 2;
+                if (!$isNavActive($dashboardItem['route'])) {
+                    foreach ($sidebarGroups as $group => $groupItems) {
+                        foreach ($groupItems as $groupItem) {
+                            if (!empty($groupItem['adminOnly']) && auth()->user()->role !== 'admin') {
+                                continue;
+                            }
+                            if ($isNavActive($groupItem['route'])) {
+                                $activeGroup = $group;
+                                break 2;
+                            }
                         }
                     }
                 }
             @endphp
 
             <nav class="flex-1 sidebar-scroll overflow-y-auto py-4 px-3 space-y-1" x-data="navGroups({{ json_encode($activeGroup) }})">
+                <a href="{{ route($dashboardItem['route']) }}"
+                    @mouseenter="sidebarOpen || showTooltip($el, '{{ $dashboardItem['label'] }}')" @mouseleave="hideTooltip()"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group mb-2
+                           {{ $isNavActive($dashboardItem['route']) ? 'bg-ris-primary text-white shadow-md' : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
+                    <svg class="w-5 h-5 shrink-0 {{ $isNavActive($dashboardItem['route']) ? 'text-white' : 'text-gray-400 group-hover:text-white' }}"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {!! $dashboardItem['icon'] !!}
+                    </svg>
+                    <span x-show="sidebarOpen" x-cloak class="whitespace-nowrap">{{ $dashboardItem['label'] }}</span>
+                </a>
                 @foreach ($sidebarGroups as $groupTitle => $items)
                     <div class="pt-4 first:pt-0">
-                        <button @click="toggleGroup({{ json_encode($groupTitle) }})" x-show="sidebarOpen" x-cloak
-                            class="w-full flex items-center justify-between px-3 py-2 mb-1 rounded-lg text-lg font-bold uppercase tracking-wider text-gray-500 hover:text-white hover:bg-white/10 transition-colors cursor-pointer">
-                            <span>{{ $groupTitle }}</span>
-                            <svg class="w-4 h-4 transition-transform duration-200 shrink-0"
+                        <button @click="toggleGroup({{ json_encode($groupTitle) }})"
+                            @mouseenter="sidebarOpen || showTooltip($el, '{{ $groupTitle }}')" @mouseleave="hideTooltip()"
+                            :class="sidebarOpen ? 'justify-start' : 'justify-center'"
+                            class="w-full flex items-center gap-3 px-3 py-2 mb-1 rounded-lg text-lg font-bold uppercase tracking-wider text-gray-500 hover:text-white hover:bg-white/10 transition-colors cursor-pointer">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                            </svg>
+                            <span x-show="sidebarOpen" x-cloak class="truncate flex-1">{{ $groupTitle }}</span>
+                            <svg x-show="sidebarOpen" x-cloak class="w-4 h-4 transition-transform duration-200 shrink-0"
                                 :class="isGroupOpen({{ json_encode($groupTitle) }}) ? 'rotate-180' : ''" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
-                        <div x-show="sidebarOpen ? isGroupOpen({{ json_encode($groupTitle) }}) : true" x-cloak
-                            class="space-y-1">
+                        <div x-show="isGroupOpen({{ json_encode($groupTitle) }})" x-cloak class="space-y-1">
                             @foreach ($items as $item)
                                 @if (!empty($item['adminOnly']) && auth()->user()->role !== 'admin')
                                     @continue
                                 @endif
                                 <a href="{{ route($item['route']) }}"
+                                    @mouseenter="sidebarOpen || showTooltip($el, '{{ $item['label'] }}')"
+                                    @mouseleave="hideTooltip()"
                                     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group
                                            {{ $isNavActive($item['route']) ? 'bg-ris-primary text-white shadow-md' : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
                                     <svg class="w-5 h-5 shrink-0 {{ $isNavActive($item['route']) ? 'text-white' : 'text-gray-400 group-hover:text-white' }}"
@@ -333,11 +364,24 @@
                 </button>
             </div>
             <nav class="flex-1 sidebar-scroll overflow-y-auto py-4 px-3 space-y-1" x-data="navGroups({{ json_encode($activeGroup) }})">
+                <a href="{{ route($dashboardItem['route']) }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-2
+                       {{ $isNavActive($dashboardItem['route']) ? 'bg-ris-primary text-white' : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
+                    <svg class="w-5 h-5 shrink-0 {{ $isNavActive($dashboardItem['route']) ? 'text-white' : 'text-gray-400' }}"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {!! $dashboardItem['icon'] !!}
+                    </svg>
+                    <span class="whitespace-nowrap">{{ $dashboardItem['label'] }}</span>
+                </a>
                 @foreach ($sidebarGroups as $groupTitle => $items)
                     <div class="pt-4 first:pt-0">
                         <button @click="toggleGroup({{ json_encode($groupTitle) }})"
-                            class="w-full flex items-center justify-between px-3 py-2 mb-1 rounded-lg text-[11px] font-bold uppercase tracking-wider text-gray-500 hover:text-white hover:bg-white/10 transition-colors cursor-pointer">
-                            <span>{{ $groupTitle }}</span>
+                            class="w-full flex items-center gap-3 px-3 py-2 mb-1 rounded-lg text-[11px] font-bold uppercase tracking-wider text-gray-500 hover:text-white hover:bg-white/10 transition-colors cursor-pointer">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                            </svg>
+                            <span class="truncate flex-1">{{ $groupTitle }}</span>
                             <svg class="w-4 h-4 transition-transform duration-200 shrink-0"
                                 :class="isGroupOpen({{ json_encode($groupTitle) }}) ? 'rotate-180' : ''"
                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -463,8 +507,13 @@
                         <button @click="open = !open"
                             class="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
                             <div
-                                class="w-8 h-8 rounded-full gradient-logo flex items-center justify-center text-white text-sm font-heading font-semibold">
-                                {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
+                                class="w-8 h-8 rounded-full gradient-logo flex items-center justify-center text-white text-sm font-heading font-semibold overflow-hidden shrink-0">
+                                @if (Auth::user()->avatar)
+                                    <img src="{{ Storage::url(Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}"
+                                        class="w-full h-full object-cover">
+                                @else
+                                    {{ mb_substr(Auth::user()->name ?? 'A', 0, 1) }}
+                                @endif
                             </div>
                             <span
                                 class="hidden sm:block text-sm font-medium text-gray-700">{{ Auth::user()->name ?? 'অ্যাডমিন' }}</span>
@@ -479,9 +528,9 @@
                             x-transition:enter-start="opacity-0 scale-95"
                             x-transition:enter-end="opacity-100 scale-100"
                             class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
-                            <a href="#"
+                            <a href="{{ route('admin.profile.index') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">প্রোফাইল</a>
-                            <a href="#"
+                            <a href="{{ route('admin.profile.index') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">সেটিংস</a>
                             <hr class="my-1 border-gray-100">
                             <form method="POST" action="{{ route('logout') }}">
@@ -524,6 +573,12 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    {{-- Sidebar Tooltip --}}
+    <div x-show="tooltip.show" x-cloak :style="'top:' + tooltip.y + 'px; left:' + tooltip.x + 'px'"
+        class="fixed z-9999 -translate-y-1/2 px-2.5 py-1.5 rounded-md bg-gray-900 text-white text-xs font-medium whitespace-nowrap shadow-lg pointer-events-none"
+        x-text="tooltip.text">
     </div>
 
     @livewireScripts

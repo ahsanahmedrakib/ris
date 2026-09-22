@@ -177,8 +177,13 @@
                         <button @click="open = !open"
                             class="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
                             <div
-                                class="w-8 h-8 rounded-full gradient-logo flex items-center justify-center text-white text-sm font-heading font-semibold">
-                                {{ substr(Auth::user()->name ?? 'P', 0, 1) }}
+                                class="w-8 h-8 rounded-full gradient-logo flex items-center justify-center text-white text-sm font-heading font-semibold overflow-hidden shrink-0">
+                                @if (Auth::user()->avatar)
+                                    <img src="{{ Storage::url(Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}"
+                                        class="w-full h-full object-cover">
+                                @else
+                                    {{ mb_substr(Auth::user()->name ?? 'P', 0, 1) }}
+                                @endif
                             </div>
                             <span
                                 class="hidden sm:block text-sm font-medium text-gray-700">{{ Auth::user()->name ?? 'অভিভাবক' }}</span>

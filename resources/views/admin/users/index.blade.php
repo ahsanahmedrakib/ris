@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'ব্যবহারকারী ব্যবস্থাপনা')
+@section('title', 'ইউজার ব্যবস্থাপনা')
 
 @section('content')
     <div class="space-y-6" x-data="userApp()">
@@ -8,7 +8,7 @@
         {{-- Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-heading font-bold text-gray-900">অ্যাডমিন ব্যবহারকারী</h1>
+                <h1 class="text-2xl font-heading font-bold text-gray-900">অ্যাডমিন ইউজার</h1>
                 <p class="text-sm text-gray-500 mt-1">অ্যাডমিন অ্যাকাউন্ট তৈরি, আপডেট ও ডিলিট করুন</p>
             </div>
             <div class="flex items-center gap-2">
@@ -72,18 +72,24 @@
                     </thead>
                     <tbody class="divide-y divide-gray-50">
                         @forelse($users as $index => $user)
-                            <tr class="hover:bg-gray-50 transition-colors"
-                                x-data="activeRow('{{ url('admin/users') }}', {{ $user->id }}, {{ $user->is_active ? 'true' : 'false' }})">
+                            <tr class="hover:bg-gray-50 transition-colors" x-data="activeRow('{{ url('admin/users') }}', {{ $user->id }}, {{ $user->is_active ? 'true' : 'false' }})">
                                 <td class="px-4 py-3 text-gray-500 whitespace-nowrap">
                                     {{ ($users->currentPage() - 1) * $users->perPage() + $index + 1 }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     <div class="flex items-center gap-2">
                                         <div
-                                            class="w-8 h-8 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-xs font-semibold shrink-0">
-                                            {{ mb_substr($user->name, 0, 1) }}</div>
+                                            class="relative w-8 h-8 rounded-full overflow-hidden shrink-0 {{ $user->avatar ? '' : 'bg-ris-primary/10' }} flex items-center justify-center">
+                                            @if ($user->avatar)
+                                                <img src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}"
+                                                    class="w-full h-full object-cover">
+                                            @else
+                                                <span
+                                                    class="text-ris-primary text-xs font-semibold">{{ mb_substr($user->name, 0, 1) }}</span>
+                                            @endif
+                                        </div>
                                         <button @click="openViewModal({{ $user->id }})"
                                             class="font-heading font-semibold text-ris-primary hover:underline cursor-pointer">{{ $user->name }}</button>
-                                        @if($user->id === auth()->id())
+                                        @if ($user->id === auth()->id())
                                             <span
                                                 class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-500">আপনি</span>
                                         @endif
@@ -96,8 +102,7 @@
                                 <td class="px-4 py-3 text-gray-600 whitespace-nowrap">
                                     {{ $user->phone ?? '-' }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                                         :class="active ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'"
                                         x-text="active ? 'সক্রিয়' : 'নিষ্ক্রিয়'">{{ $user->is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়' }}</span>
                                 </td>
@@ -116,25 +121,28 @@
                                         <button @click="openEditModal({{ $user->id }})"
                                             class="p-1.5 rounded-lg text-amber-600 bg-amber-50 hover:bg-amber-100 transition-colors cursor-pointer"
                                             title="সম্পাদনা">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
-                                        @if($user->id !== auth()->id())
+                                        @if ($user->id !== auth()->id())
                                             <button x-show="!active" @click="toggle()" title="সক্রিয় করুন"
                                                 class="p-1.5 rounded-lg text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors cursor-pointer"
                                                 :disabled="busy">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
                                             </button>
                                             <button x-show="active" @click="toggle()" title="নিষ্ক্রিয় করুন"
                                                 class="p-1.5 rounded-lg text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
                                                 :disabled="busy">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
                                                 </svg>
                                             </button>
                                             <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
@@ -146,7 +154,8 @@
                                                     title="ডিলিট করুন">
                                                     <svg class="w-6 h-6" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
                                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                     </svg>
                                                 </button>
@@ -195,7 +204,8 @@
                             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span class="text-sm font-medium" x-text="toast.message"></span>
-                    <button @click="toasts.splice(index, 1)" class="ml-auto shrink-0 opacity-60 hover:opacity-100 cursor-pointer">
+                    <button @click="toasts.splice(index, 1)"
+                        class="ml-auto shrink-0 opacity-60 hover:opacity-100 cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -212,16 +222,34 @@
                 class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">নতুন অ্যাডমিন যোগ</h3>
-                    <button @click="showCreateModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
+                    <button @click="showCreateModal = false"
+                        class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
-                <form action="{{ route('admin.users.store') }}" method="POST"
-                    class="p-6 space-y-5" @submit.prevent="validateCreateForm($el)">
+<form action="{{ route('admin.users.store') }}" method="POST"
+                    class="p-6 space-y-5" enctype="multipart/form-data" @submit.prevent="validateCreateForm($el)">
                     @csrf
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">প্রোফাইল ছবি <span
+                                class="text-gray-400 font-normal">(ঐচ্ছিক)</span></label>
+                        <div class="flex items-center gap-4">
+                            <div class="shrink-0">
+                                <img x-show="createPhotoPreview" :src="createPhotoPreview"
+                                    class="w-20 h-20 rounded-full object-cover ring-2 ring-ris-primary/20">
+                                <div x-show="!createPhotoPreview"
+                                    class="w-20 h-20 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-xl font-semibold">
+                                    প্রথম অক্ষর
+                                </div>
+                            </div>
+                            <input type="file" name="avatar" accept="image/*"
+                                @change="createPhotoPreview = URL.createObjectURL($event.target.files[0])"
+                                class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
+                        </div>
+                    </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">পূর্ণ নাম <span
@@ -276,10 +304,12 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">পাসওয়ার্ড নিশ্চিত করুন <span
                                     class="text-red-500">*</span></label>
-                            <input type="password" name="password_confirmation" x-model="createForm.password_confirmation"
+                            <input type="password" name="password_confirmation"
+                                x-model="createForm.password_confirmation"
                                 @blur="validateCreateField('password_confirmation')"
                                 class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
-                                :class="(createErrors.password_confirmation || (createAttempted && createForm.password && createForm.password !== createForm.password_confirmation)) ?
+                                :class="(createErrors.password_confirmation || (createAttempted && createForm.password &&
+                                    createForm.password !== createForm.password_confirmation)) ?
                                 'border-red-400' : 'border-gray-200'">
                             <template
                                 x-if="createErrors.password_confirmation || (createAttempted && createForm.password && createForm.password !== createForm.password_confirmation)">
@@ -306,7 +336,8 @@
                 class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">অ্যাডমিন তথ্য</h3>
-                    <button @click="showViewModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
+                    <button @click="showViewModal = false"
+                        class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -317,8 +348,15 @@
                     <template x-if="viewData">
                         <div>
                             <div class="flex items-center gap-4 mb-5">
-                                <div class="w-20 h-20 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-2xl font-semibold"
-                                    x-text="viewData.name?.charAt(0)"></div>
+                                <template x-if="viewData.avatar">
+                                    <img :src="viewData.avatar" alt="প্রোফাইল ছবি"
+                                        class="w-20 h-20 rounded-full object-cover ring-2 ring-ris-primary/20 shrink-0">
+                                </template>
+                                <template x-if="!viewData.avatar">
+                                    <div
+                                        class="w-20 h-20 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-2xl font-semibold shrink-0"
+                                        x-text="viewData.name?.charAt(0)"></div>
+                                </template>
                                 <div>
                                     <h4 class="font-heading font-bold text-lg text-gray-900" x-text="viewData.name"></h4>
                                     <p class="text-sm text-gray-500" x-text="'অ্যাডমিন'"></p>
@@ -382,7 +420,8 @@
                 class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">অ্যাডমিন সম্পাদনা</h3>
-                    <button @click="showEditModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
+                    <button @click="showEditModal = false"
+                        class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -391,10 +430,41 @@
                 </div>
                 <div class="p-6">
                     <template x-if="editData">
-                        <form :action="'{{ url('admin/users') }}/' + editData.id" method="POST"
-                            class="space-y-5" @submit.prevent="validateEditForm($el)">
+<form :action="'{{ url('admin/users') }}/' + editData.id" method="POST"
+                            class="space-y-5" enctype="multipart/form-data" @submit.prevent="validateEditForm($el)">
                             @csrf
                             @method('PUT')
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">প্রোফাইল ছবি <span
+                                        class="text-gray-400 font-normal">(ঐচ্ছিক)</span></label>
+                                <div class="flex items-center gap-4">
+                                    <div class="shrink-0">
+                                        <img x-show="editPhotoPreview" :src="editPhotoPreview"
+                                            class="w-20 h-20 rounded-full object-cover ring-2 ring-ris-primary/20">
+                                        <img x-show="!editPhotoPreview && !editPhotoRemoved && editData.avatar"
+                                            :src="editData.avatar"
+                                            class="w-20 h-20 rounded-full object-cover ring-2 ring-ris-primary/20">
+                                        <div x-show="editPhotoRemoved || (!editPhotoPreview && !editData.avatar)"
+                                            class="w-20 h-20 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-xl font-semibold">
+                                            প্রথম অক্ষর
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 space-y-2">
+                                        <input type="file" name="avatar" accept="image/*"
+                                            @change="editPhotoPreview = URL.createObjectURL($event.target.files[0])"
+                                            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
+                                        <label class="inline-flex items-center gap-2 text-xs text-gray-500">
+                                            <input type="checkbox" name="remove_avatar" value="1"
+                                                class="rounded border-gray-300 text-ris-primary focus:ring-ris-primary cursor-pointer"
+                                                @change="onToggleRemovePhoto($event)">
+                                            ছবি সরিয়ে ফেলুন
+                                        </label>
+                                        <p x-show="editData.avatar && !editPhotoPreview && !editPhotoRemoved"
+                                            class="text-xs text-gray-400">নতুন ছবি নির্বাচন না করলে বর্তমান ছবি
+                                            থাকবে।</p>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">পূর্ণ নাম <span
@@ -422,8 +492,8 @@
                                         :class="(editErrors.email || (editAttempted && !editData.email)) ? 'border-red-400' :
                                         'border-gray-200'">
                                     <template x-if="editErrors.email || (editAttempted && !editData.email)">
-                                        <p class="mt-1 text-xs text-red-600"
-                                            x-text="editErrors.email || 'ইমেইল আবশ্যক'"></p>
+                                        <p class="mt-1 text-xs text-red-600" x-text="editErrors.email || 'ইমেইল আবশ্যক'">
+                                        </p>
                                     </template>
                                 </div>
                                 <div>
@@ -436,7 +506,8 @@
                                     <input type="password" name="password" x-model="editData.password"
                                         @blur="validateEditField('password')"
                                         class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
-                                        :class="(editErrors.password || (editAttempted && editData.password && editData.password.length < 8)) ?
+                                        :class="(editErrors.password || (editAttempted && editData.password && editData.password
+                                            .length < 8)) ?
                                         'border-red-400' : 'border-gray-200'"
                                         placeholder="খালি রাখলে পরিবর্তন হবে না">
                                     <template
@@ -448,10 +519,12 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">নতুন পাসওয়ার্ড
                                         নিশ্চিত করুন</label>
-                                    <input type="password" name="password_confirmation" x-model="editData.password_confirmation"
+                                    <input type="password" name="password_confirmation"
+                                        x-model="editData.password_confirmation"
                                         @blur="validateEditField('password_confirmation')"
                                         class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
-                                        :class="(editErrors.password_confirmation || (editAttempted && editData.password && editData.password !== editData.password_confirmation)) ?
+                                        :class="(editErrors.password_confirmation || (editAttempted && editData.password &&
+                                            editData.password !== editData.password_confirmation)) ?
                                         'border-red-400' : 'border-gray-200'">
                                     <template
                                         x-if="editErrors.password_confirmation || (editAttempted && editData.password && editData.password !== editData.password_confirmation)">
@@ -541,9 +614,12 @@
                     },
                     createErrors: {},
                     createAttempted: false,
+                    createPhotoPreview: null,
 
                     editErrors: {},
                     editAttempted: false,
+                    editPhotoPreview: null,
+                    editPhotoRemoved: false,
 
                     showToast(type, message) {
                         this.toasts.push({
@@ -559,6 +635,10 @@
                         if (confirm(message)) form.submit();
                     },
 
+                    onToggleRemovePhoto(event) {
+                        this.editPhotoRemoved = event.target.checked;
+                    },
+
                     openCreateModal() {
                         this.createForm = {
                             name: '',
@@ -570,6 +650,7 @@
                         };
                         this.createErrors = {};
                         this.createAttempted = false;
+                        this.createPhotoPreview = null;
                         this.showCreateModal = true;
                     },
 
@@ -595,6 +676,8 @@
                         this.editLoading = true;
                         this.editErrors = {};
                         this.editAttempted = false;
+                        this.editPhotoPreview = null;
+                        this.editPhotoRemoved = false;
                         try {
                             const res = await fetch(`{{ url('admin/users') }}/${id}/edit`);
                             if (!res.ok) throw new Error();
@@ -626,7 +709,8 @@
                             return false;
                         }
 
-                        if ((field === 'password' || field === 'password_confirmation' || field === 'create_password') && data.password) {
+                        if ((field === 'password' || field === 'password_confirmation' || field === 'create_password') && data
+                            .password) {
                             if (data.password.length < 8) {
                                 errors[field] = 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।';
                                 return false;
