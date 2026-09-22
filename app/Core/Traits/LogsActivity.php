@@ -4,6 +4,7 @@ namespace App\Core\Traits;
 
 use App\Models\ActivityLog;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
 trait LogsActivity
@@ -42,7 +43,9 @@ trait LogsActivity
         static::deleted(function (Model $model): void {
             self::recordActivity($model, $model->isForceDeleting() ? 'force_delete' : 'delete');
         });
-        static::restored(fn (Model $model) => self::recordActivity($model, 'restore'));
+        if (in_array(SoftDeletes::class, class_uses_recursive(static::class), true)) {
+            static::restored(fn (Model $model) => self::recordActivity($model, 'restore'));
+        }
     }
 
     protected static function recordActivity(Model $model, string $action): void

@@ -20,11 +20,10 @@ use App\Models\HeroSlide;
 use App\Models\Message;
 use App\Models\Notice;
 use App\Models\ScholarshipRegistration;
-use App\Models\Staff;
+use App\Models\SchoolStatistic;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Testimonial;
-use App\Models\User;
 use App\Notifications\NewSubmission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -38,12 +37,18 @@ class WebsiteController extends Controller
 {
     public function index(): View
     {
-        $stats = [
-            'total_students' => Student::where('is_active', true)->count(),
-            'total_teachers' => User::where('role', 'teacher')->where('is_active', true)->count(),
-            'total_classes' => ClassRoom::count(),
-            'total_staff' => Staff::count(),
-        ];
+        $statistic = SchoolStatistic::first();
+
+        $stats = $statistic
+            ? [
+                'total_students' => $statistic->total_students,
+                'total_teachers' => $statistic->total_teachers,
+                'total_classes' => $statistic->total_classes,
+                'total_staff' => $statistic->total_staff,
+                'founding_year' => $statistic->founding_year,
+                'experience_years' => $statistic->experienceYears(),
+            ]
+            : SchoolStatistic::defaults() + ['experience_years' => max((int) date('Y') - SchoolStatistic::defaults()['founding_year'], 1)];
 
         $heroSlides = $this->heroSlides();
 

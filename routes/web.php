@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\QrCodeController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ResultController;
 use App\Http\Controllers\Admin\ScholarshipController;
+use App\Http\Controllers\Admin\SchoolStatisticController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\SubjectController;
@@ -117,6 +118,9 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
     Route::patch('gallery/{galleryItem}/toggle-active', [GalleryController::class, 'toggleActive'])->name('admin.gallery.toggle-active');
     Route::resource('hero-slides', HeroSlideController::class)->names('admin.hero-slides');
     Route::patch('hero-slides/{heroSlide}/toggle-active', [HeroSlideController::class, 'toggleActive'])->name('admin.hero-slides.toggle-active');
+    Route::get('/school-statistics', [SchoolStatisticController::class, 'index'])->middleware('role:admin')->name('admin.school-statistics.index');
+    Route::post('/school-statistics', [SchoolStatisticController::class, 'store'])->middleware('role:admin')->name('admin.school-statistics.store');
+    Route::put('/school-statistics/{id}', [SchoolStatisticController::class, 'update'])->middleware('role:admin')->name('admin.school-statistics.update');
     Route::resource('academic-calendars', AcademicCalendarController::class)->names('admin.academic-calendars');
     Route::patch('academic-calendars/{academicCalendar}/toggle-active', [AcademicCalendarController::class, 'toggleActive'])->name('admin.academic-calendars.toggle-active');
     Route::resource('messages', MessageController::class)->names('admin.messages');
