@@ -64,11 +64,14 @@ class ContactMessageController extends Controller
         ]);
     }
 
-    public function markRead(ContactMessage $contactMessage): RedirectResponse
+    public function markRead(ContactMessage $contactMessage): JsonResponse
     {
         $contactMessage->update(['is_read' => ! $contactMessage->is_read]);
 
-        return back()->with('success', $contactMessage->is_read ? 'পঠিত হিসাবে চিহ্নিত হয়েছে।' : 'অপঠিত হিসাবে চিহ্নিত হয়েছে।');
+        return response()->json([
+            'is_read' => $contactMessage->is_read,
+            'unread_count' => ContactMessage::where('is_read', false)->count(),
+        ]);
     }
 
     public function destroy(ContactMessage $contactMessage): RedirectResponse

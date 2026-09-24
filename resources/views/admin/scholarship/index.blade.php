@@ -103,7 +103,7 @@
                                 অ্যাকশন</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-50" data-table-body>
                         @forelse($registrations as $index => $registration)
                             <tr class="hover:bg-gray-50 transition-colors">
                                 <td class="px-4 py-3 text-gray-500 whitespace-nowrap">
@@ -241,6 +241,25 @@
                 <form action="{{ route('admin.scholarship.store') }}" method="POST" class="p-6 space-y-5"
                     @submit.prevent="validateCreateForm($el)">
                     @csrf
+                    <div
+                        class="bg-gray-50 border border-dashed border-ris-primary/30 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                        <div class="flex items-center gap-2 text-ris-primary shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                            </svg>
+                            <span class="text-sm font-semibold">রেজিস্ট্রেশন নং</span>
+                        </div>
+                        <div class="flex-1 min-w-0 text-center sm:text-left">
+                            <span x-show="createRegNoLoading"
+                                class="inline-block h-5 w-44 sm:w-52 rounded-md bg-ris-primary/15 animate-pulse"></span>
+                            <span x-show="!createRegNoLoading && createRegNo"
+                                class="font-heading font-bold text-ris-primary tracking-wider text-sm sm:text-base"
+                                x-text="createRegNo"></span>
+                            <span x-show="!createRegNoLoading && !createRegNo" class="text-sm text-gray-500">শ্রেণি
+                                নির্বাচন করলে স্বয়ংক্রিয়ভাবে তৈরি হবে</span>
+                        </div>
+                    </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">শিক্ষার্থীর নাম <span
@@ -298,7 +317,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">শ্রেণি <span
                                     class="text-red-500">*</span></label>
                             <select name="class_no" x-model="createForm.class_no"
-                                @change="validateCreateField('class_no')"
+                                @change="previewRegistrationNo(); validateCreateField('class_no')"
                                 class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white"
                                 :class="(createErrors.class_no || (createAttempted && !createForm.class_no)) ?
                                 'border-red-400' : 'border-gray-200'">
@@ -718,9 +737,13 @@
                     },
                     createErrors: {},
                     createAttempted: false,
+                    createRegNo: '',
+                    createRegNoLoading: false,
 
                     editErrors: {},
                     editAttempted: false,
+
+                    formSubmitting: false,
 
                     openCreateModal() {
                         this.createForm = {
@@ -737,7 +760,33 @@
                         };
                         this.createErrors = {};
                         this.createAttempted = false;
+                        this.createRegNo = '';
+                        this.createRegNoLoading = false;
                         this.showCreateModal = true;
+                    },
+
+                    async previewRegistrationNo() {
+                        if (!this.createForm.class_no) {
+                            this.createRegNo = '';
+                            this.createRegNoLoading = false;
+                            return;
+                        }
+                        this.createRegNoLoading = true;
+                        try {
+                            const res = await fetch(`{{ url('admin/scholarship') }}/next-number?class_no=${this.createForm.class_no}`, {
+                                headers: { 'Accept': 'application/json' },
+                            });
+                            if (!res.ok) {
+                                this.createRegNo = '';
+                                return;
+                            }
+                            const data = await res.json();
+                            this.createRegNo = data.registration_no || '';
+                        } catch (e) {
+                            this.createRegNo = '';
+                        } finally {
+                            this.createRegNoLoading = false;
+                        }
                     },
 
                     async openViewModal(id) {
@@ -832,7 +881,7 @@
                         ].forEach(f => {
                             if (!this.validateCreateField(f)) valid = false;
                         });
-                        if (valid) el.submit();
+                        if (valid) this.submitForm(el, 'create');
                     },
 
                     validateEditForm(el) {
@@ -844,7 +893,32 @@
                         ].forEach(f => {
                             if (!this.validateEditField(f)) valid = false;
                         });
-                        if (valid) el.submit();
+                        if (valid) this.submitForm(el, 'edit');
+                    },
+
+                    async submitForm(el, mode) {
+                        if (this.formSubmitting) return;
+                        this.formSubmitting = true;
+                        try {
+                            const { ok, status, data } = await RisAdmin.submitForm(el);
+                            if (status === 422 && data.errors) {
+                                if (mode === 'edit') this.editErrors = { ...this.editErrors, ...data.errors };
+                                else this.createErrors = { ...this.createErrors, ...data.errors };
+                                return;
+                            }
+                            if (!ok) {
+                                RisAdmin.toast('error', data.message || 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                                return;
+                            }
+                            if (mode === 'edit') this.showEditModal = false;
+                            else this.showCreateModal = false;
+                            RisAdmin.toast('success', data.message || 'সফলভাবে সংরক্ষণ হয়েছে।');
+                            RisAdmin.refreshTable();
+                        } catch (e) {
+                            RisAdmin.toast('error', 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                        } finally {
+                            this.formSubmitting = false;
+                        }
                     }
                 }
             }

@@ -12,6 +12,38 @@ class ContactFormTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
+    public function ajax_submission_returns_json_message_without_redirect(): void
+    {
+        $response = $this->postJson(route('contact.send'), [
+            'name' => 'রাকিব',
+            'phone' => '01712345678',
+            'subject' => 'ভর্তি সম্পর্কে জানতে চাই',
+            'message' => 'ভর্তি প্রক্রিয়া সম্পর্কে জানতে চাই।',
+        ]);
+
+        $response->assertOk()
+            ->assertExactJson(['message' => 'আপনার বার্তা সফলভাবে পাঠানো হয়েছে। আমরা শীঘ্রই যোগাযোগ করব।']);
+
+        $this->assertDatabaseHas('contact_messages', [
+            'name' => 'রাকিব',
+            'phone' => '01712345678',
+        ]);
+    }
+
+    #[Test]
+    public function ajax_submission_returns_json_validation_errors(): void
+    {
+        $this->postJson(route('contact.send'), [
+            'name' => 'রাকিব',
+            'subject' => 'ভর্তি সম্পর্কে জানতে চাই',
+            'message' => 'ভর্তি প্রক্রিয়া সম্পর্কে জানতে চাই।',
+        ])->assertUnprocessable()
+            ->assertJsonValidationErrors('phone');
+
+        $this->assertSame(0, ContactMessage::count());
+    }
+
+    #[Test]
     public function contact_page_renders(): void
     {
         $this->get('/contact')

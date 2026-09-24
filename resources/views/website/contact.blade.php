@@ -19,7 +19,7 @@
             <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 mb-8">
 
                 {{-- Contact Form --}}
-                <div class="reveal-left">
+                <div class="reveal-left" x-data="contactForm()">
                     <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">বার্তা
                         পাঠান</span>
                     <h2 class="mt-3 font-heading font-bold text-2xl text-ris-dark">আমাদের লিখুন</h2>
@@ -31,7 +31,7 @@
                     @endphp
 
                     <form method="POST" action="{{ route('contact.send') }}" class="mt-6 space-y-5"
-                        x-data="contactForm()" @submit.prevent="validateForm($el)" novalidate>
+                        @submit.prevent="validateForm($el)" novalidate>
                         @csrf
                         <div class="grid sm:grid-cols-2 gap-5">
                             <div>
@@ -95,12 +95,23 @@
                                 <p class="mt-1 text-sm text-red-600" x-text="errors.message || 'বার্তা আবশ্যক।'"></p>
                             </template>
                         </div>
-                        <button type="submit" class="btn-primary cursor-pointer">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <template x-if="formError">
+                            <p class="text-sm text-red-600" x-text="formError"></p>
+                        </template>
+
+                        <button type="submit" :disabled="sending"
+                            class="btn-primary cursor-pointer disabled:opacity-60">
+                            <svg x-show="sending" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            <svg x-show="!sending" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                             </svg>
-                            পাঠান
+                            <span x-text="sending ? 'পাঠানো হচ্ছে...' : 'পাঠান'"></span>
                         </button>
                     </form>
 
@@ -116,6 +127,9 @@
                                 },
                                 errors: @js((object) $serverErrors),
                                 attempted: @js($errors->any()),
+                                sending: false,
+                                formError: '',
+                                csrf: document.querySelector('meta[name="csrf-token"]')?.content || '',
 
                                 validateField(field) {
                                     delete this.errors[field];
@@ -145,6 +159,7 @@
                                 validateForm(el) {
                                     this.attempted = true;
                                     this.errors = {};
+                                    this.formError = '';
 
                                     let valid = true;
                                     ['name', 'email', 'phone', 'subject', 'message'].forEach((field) => {
@@ -156,7 +171,61 @@
                                         return;
                                     }
 
-                                    el.submit();
+                                    this.submitForm(el);
+                                },
+
+                                async submitForm(el) {
+                                    this.sending = true;
+
+                                    try {
+                                        const res = await fetch(el.action, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Accept': 'application/json',
+                                                'X-Requested-With': 'XMLHttpRequest',
+                                                'X-CSRF-TOKEN': this.csrf,
+                                            },
+                                            body: new FormData(el),
+                                        });
+
+                                        const data = await res.json().catch(() => ({}));
+
+                                        if (res.status === 422) {
+                                            this.errors = data.errors || {};
+                                            this.attempted = true;
+                                            this.scrollToFirstError(el);
+                                            return;
+                                        }
+
+                                        if (!res.ok) {
+                                            this.formError = data.message ||
+                                                'বার্তা পাঠানো যায়নি। আবার চেষ্টা করুন।';
+                                            return;
+                                        }
+
+                                        this.formError = '';
+                                        this.errors = {};
+                                        this.attempted = false;
+                                        this.form = {
+                                            name: '',
+                                            email: '',
+                                            phone: '',
+                                            subject: '',
+                                            message: '',
+                                        };
+                                        this.pushToast('success', data.message ||
+                                            'আপনার বার্তা সফলভাবে পাঠানো হয়েছে। আমরা শীঘ্রই যোগাযোগ করব।');
+                                    } catch (e) {
+                                        this.formError = 'বার্তা পাঠানো যায়নি। আবার চেষ্টা করুন।';
+                                    } finally {
+                                        this.sending = false;
+                                    }
+                                },
+
+                                pushToast(type, message) {
+                                    window.dispatchEvent(new CustomEvent('toast', {
+                                        detail: { type, message },
+                                    }));
                                 },
 
                                 scrollToFirstError(el) {

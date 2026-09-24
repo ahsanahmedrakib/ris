@@ -117,10 +117,18 @@ class TeacherController extends Controller
 
             DB::commit();
 
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'শিক্ষক সফলভাবে যোগ করা হয়েছে।']);
+            }
+
             return redirect()->route('admin.teachers.index')
                 ->with('success', 'শিক্ষক সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'শিক্ষক যোগ করতে সমস্যা হয়েছে।'], 422);
+            }
 
             return back()->withInput()
                 ->with('error', 'শিক্ষক যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
@@ -175,7 +183,7 @@ class TeacherController extends Controller
         ]);
     }
 
-    public function update(Request $request, User $teacher): RedirectResponse
+    public function update(Request $request, User $teacher): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -247,17 +255,25 @@ class TeacherController extends Controller
 
             DB::commit();
 
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'শিক্ষকের তথ্য সফলভাবে আপডেট হয়েছে।']);
+            }
+
             return redirect()->route('admin.teachers.index')
                 ->with('success', 'শিক্ষকের তথ্য সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'শিক্ষক আপডেট করতে সমস্যা হয়েছে।'], 422);
+            }
 
             return back()->withInput()
                 ->with('error', 'শিক্ষক আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
-    public function destroy(User $teacher): RedirectResponse
+    public function destroy(Request $request, User $teacher): RedirectResponse|JsonResponse
     {
         DB::beginTransaction();
 
@@ -267,10 +283,18 @@ class TeacherController extends Controller
 
             DB::commit();
 
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'শিক্ষক সফলভাবে ট্র্যাশে পাঠানো হয়েছে।']);
+            }
+
             return redirect()->route('admin.teachers.index')
                 ->with('success', 'শিক্ষক সফলভাবে ট্র্যাশে পাঠানো হয়েছে।');
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'শিক্ষক মুছে ফেলতে সমস্যা হয়েছে।'], 422);
+            }
 
             return back()
                 ->with('error', 'শিক্ষক মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());

@@ -72,7 +72,7 @@
                                 অ্যাকশন</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-50" data-table-body>
                         @forelse($staff as $index => $member)
                             <tr class="hover:bg-gray-50 transition-colors"
                                 x-data="activeRow('{{ url('admin/staff') }}', {{ $member->id }}, {{ ($member->user?->is_active ?? false) ? 'true' : 'false' }})">
@@ -634,6 +634,8 @@
                     editErrors: {},
                     editAttempted: false,
 
+                    formSubmitting: false,
+
                     showToast(type, message) {
                         this.toasts.push({
                             type,
@@ -746,7 +748,7 @@
                         ['employee_id', 'name', 'email', 'designation', 'joining_date', 'salary'].forEach(f => {
                             if (!this.validateCreateField(f)) valid = false;
                         });
-                        if (valid) el.submit();
+                        if (valid) this.submitForm(el, 'create');
                     },
 
                     validateEditForm(el) {
@@ -756,7 +758,32 @@
                         ['employee_id', 'name', 'email', 'designation', 'joining_date', 'salary'].forEach(f => {
                             if (!this.validateEditField(f)) valid = false;
                         });
-                        if (valid) el.submit();
+                        if (valid) this.submitForm(el, 'edit');
+                    },
+
+                    async submitForm(el, mode) {
+                        if (this.formSubmitting) return;
+                        this.formSubmitting = true;
+                        try {
+                            const { ok, status, data } = await RisAdmin.submitForm(el);
+                            if (status === 422 && data.errors) {
+                                if (mode === 'edit') this.editErrors = { ...this.editErrors, ...data.errors };
+                                else this.createErrors = { ...this.createErrors, ...data.errors };
+                                return;
+                            }
+                            if (!ok) {
+                                this.showToast('error', data.message || 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                                return;
+                            }
+                            if (mode === 'edit') this.showEditModal = false;
+                            else this.showCreateModal = false;
+                            this.showToast('success', data.message || 'সফলভাবে সংরক্ষণ হয়েছে।');
+                            RisAdmin.refreshTable();
+                        } catch (e) {
+                            this.showToast('error', 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                        } finally {
+                            this.formSubmitting = false;
+                        }
                     }
                 }
             }

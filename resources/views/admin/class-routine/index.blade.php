@@ -56,7 +56,7 @@
                                 অ্যাকশন</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-50" data-table-body>
                         @forelse($routines as $routine)
                             <tr class="hover:bg-gray-50 transition-colors">
                                 <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
@@ -544,6 +544,8 @@
                     editErrors: {},
                     editAttempted: false,
 
+                    formSubmitting: false,
+
                     openCreateModal() {
                         this.createForm = {
                             class_id: '',
@@ -628,7 +630,7 @@
                         ['class_id', 'subject_id', 'teacher_id', 'day_of_week', 'start_time', 'end_time'].forEach(f => {
                             if (!this.validateCreateField(f)) valid = false;
                         });
-                        if (valid) el.submit();
+                        if (valid) this.submitForm(el, 'create');
                     },
 
                     validateEditForm(el) {
@@ -638,7 +640,32 @@
                         ['class_id', 'subject_id', 'teacher_id', 'day_of_week', 'start_time', 'end_time'].forEach(f => {
                             if (!this.validateEditField(f)) valid = false;
                         });
-                        if (valid) el.submit();
+                        if (valid) this.submitForm(el, 'edit');
+                    },
+
+                    async submitForm(el, mode) {
+                        if (this.formSubmitting) return;
+                        this.formSubmitting = true;
+                        try {
+                            const { ok, status, data } = await RisAdmin.submitForm(el);
+                            if (status === 422 && data.errors) {
+                                if (mode === 'edit') this.editErrors = { ...this.editErrors, ...data.errors };
+                                else this.createErrors = { ...this.createErrors, ...data.errors };
+                                return;
+                            }
+                            if (!ok) {
+                                RisAdmin.toast('error', data.message || 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                                return;
+                            }
+                            if (mode === 'edit') this.showEditModal = false;
+                            else this.showCreateModal = false;
+                            RisAdmin.toast('success', data.message || 'সফলভাবে সংরক্ষণ হয়েছে।');
+                            RisAdmin.refreshTable();
+                        } catch (e) {
+                            RisAdmin.toast('error', 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                        } finally {
+                            this.formSubmitting = false;
+                        }
                     }
                 }
             }

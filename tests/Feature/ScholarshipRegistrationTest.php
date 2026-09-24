@@ -245,15 +245,28 @@ class ScholarshipRegistrationTest extends TestCase
     }
 
     #[Test]
-    public function admin_can_open_create_registration_page(): void
+    public function admin_can_preview_next_registration_number_for_class(): void
     {
         /** @var User $admin */
         $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
 
         $this->actingAs($admin)
-            ->get(route('admin.scholarship.create'))
+            ->getJson(route('admin.scholarship.next-number', ['class_no' => 3]))
             ->assertOk()
-            ->assertSee('মেধাবৃত্তি');
+            ->assertJsonPath('registration_no', sprintf('%s-3001', now()->format('y')));
+    }
+
+    #[Test]
+    public function admin_index_shows_create_registration_modal(): void
+    {
+        /** @var User $admin */
+        $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
+
+        $this->actingAs($admin)
+            ->get(route('admin.scholarship.index'))
+            ->assertOk()
+            ->assertSee('নতুন রেজিস্ট্রেশন')
+            ->assertSee('রেজিস্ট্রেশন নং');
     }
 
     #[Test]

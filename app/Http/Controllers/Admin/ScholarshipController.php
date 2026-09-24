@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ScholarshipRegistration;
 use App\Support\XlsxExport;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,6 +53,20 @@ class ScholarshipController extends Controller
             'classes' => ScholarshipRegistration::CLASSES,
             'statuses' => self::STATUSES,
             'breadcrumbs' => ['মেধাবৃত্তি' => null],
+        ]);
+    }
+
+    public function nextNumber(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'class_no' => 'required|in:1,2,3,4,5',
+        ], [
+            'class_no.required' => 'শ্রেণি নির্বাচন আবশ্যক।',
+            'class_no.in' => 'সঠিক শ্রেণি নির্বাচন করুন।',
+        ]);
+
+        return response()->json([
+            'registration_no' => ScholarshipRegistration::nextRegistrationNo((int) $validated['class_no']),
         ]);
     }
 

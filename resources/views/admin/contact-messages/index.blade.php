@@ -14,7 +14,7 @@
         <div class="flex items-center gap-2">
             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 text-sm font-medium rounded-lg border border-amber-200">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                {{ $unreadCount }} টি অপঠিত
+                <span x-text="unreadCount + ' টি অপঠিত'">{{ $unreadCount }} টি অপঠিত</span>
             </span>
         </div>
     </div>
@@ -66,9 +66,9 @@
                         <th class="text-center px-4 py-3.5 font-medium text-white whitespace-nowrap sticky right-0 bg-linear-to-r from-ris-light to-ris-dark z-10">অ্যাকশন</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50">
+                <tbody class="divide-y divide-gray-50" data-table-body>
                     @forelse($messages as $index => $msg)
-                        <tr class="hover:bg-gray-50 transition-colors {{ $msg->is_read ? '' : 'bg-amber-50/40' }}">
+                        <tr class="hover:bg-gray-50 transition-colors" :class="{ 'bg-amber-50/40': !readStates[{{ $msg->id }}] }">
                             <td class="px-4 py-3 text-gray-500 whitespace-nowrap">{{ ($messages->currentPage() - 1) * $messages->perPage() + $index + 1 }}</td>
                             <td class="px-4 py-3 whitespace-nowrap">
                                 <div class="flex items-center gap-2">
@@ -83,24 +83,18 @@
                             <td class="px-4 py-3 text-gray-600 whitespace-nowrap max-w-50 truncate">{{ $msg->subject }}</td>
                             <td class="px-4 py-3 text-gray-500 whitespace-nowrap">{{ $msg->created_at->format('d/m/Y') }}</td>
                             <td class="px-4 py-3 whitespace-nowrap">
-                                @if($msg->is_read)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">পঠিত</span>
-                                @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">অপঠিত</span>
-                                @endif
+                                <span x-show="readStates[{{ $msg->id }}]" x-cloak class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">পঠিত</span>
+                                <span x-show="!readStates[{{ $msg->id }}]" x-cloak class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">অপঠিত</span>
                             </td>
                             <td class="px-4 py-3 sticky right-0 bg-white z-10">
                                 <div class="flex items-center justify-center gap-1">
                                     <button @click="openViewModal({{ $msg->id }})" class="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors cursor-pointer" title="দেখুন">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     </button>
-                                    <form method="POST" action="{{ route('admin.contact-messages.read', $msg) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="p-1.5 rounded-lg text-amber-600 bg-amber-50 hover:bg-amber-100 transition-colors cursor-pointer" title="{{ $msg->is_read ? 'অপঠিত করুন' : 'পঠিত করুন' }}">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                        </button>
-                                    </form>
+                                    <button type="button" @click="toggleRead({{ $msg->id }})" :title="readStates[{{ $msg->id }}] ? 'অপঠিত করুন' : 'পঠিত করুন'" :class="readStates[{{ $msg->id }}] ? 'text-emerald-600 bg-emerald-50 hover:bg-emerald-100' : 'text-amber-600 bg-amber-50 hover:bg-amber-100'" class="p-1.5 rounded-lg transition-colors cursor-pointer">
+                                        <svg x-show="!readStates[{{ $msg->id }}]" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        <svg x-show="readStates[{{ $msg->id }}]" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19V8l9-5 9 5v11a2 2 0 01-2 2H5a2 2 0 01-2-2zm0-11l9 5 9-5"/></svg>
+                                    </button>
                                     <form method="POST" action="{{ route('admin.contact-messages.destroy', $msg) }}" onsubmit="return confirm('আপনি কি নিশ্চিত এই বার্তাটি মুছে ফেলতে চান?')">
                                         @csrf
                                         @method('DELETE')
@@ -190,6 +184,41 @@ function contactApp() {
         showViewModal: false,
         viewData: null,
         viewLoading: false,
+        unreadCount: {{ $unreadCount }},
+        readStates: {
+            @foreach($messages as $msg)
+                {{ $msg->id }}: {{ $msg->is_read ? 'true' : 'false' }},
+            @endforeach
+        },
+
+        async toggleRead(id) {
+            try {
+                const res = await fetch(`{{ url('admin/contact-messages') }}/${id}/read`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                });
+
+                if (!res.ok) {
+                    throw new Error('Request failed');
+                }
+
+                const data = await res.json();
+                this.readStates[id] = data.is_read;
+                this.unreadCount = data.unread_count;
+
+                if (window.RisAdmin) {
+                    window.RisAdmin.toast('success', data.is_read ? 'পঠিত হিসাবে চিহ্নিত হয়েছে।' : 'অপঠিত হিসাবে চিহ্নিত হয়েছে।');
+                }
+            } catch (e) {
+                if (window.RisAdmin) {
+                    window.RisAdmin.toast('error', 'অবস্থা পরিবর্তন করতে সমস্যা হয়েছে।');
+                }
+            }
+        },
 
         async openViewModal(id) {
             this.showViewModal = true;
@@ -198,6 +227,10 @@ function contactApp() {
             try {
                 const res = await fetch(`{{ url('admin/contact-messages') }}/${id}`);
                 this.viewData = await res.json();
+                if (this.viewData.is_read && !this.readStates[id]) {
+                    this.readStates[id] = true;
+                    this.unreadCount = Math.max(0, this.unreadCount - 1);
+                }
             } catch (e) {
                 this.showViewModal = false;
                 alert('তথ্য লোড করতে সমস্যা হয়েছে।');
@@ -205,7 +238,7 @@ function contactApp() {
                 this.viewLoading = false;
             }
         },
-    }
+    };
 }
 </script>
 @endsection

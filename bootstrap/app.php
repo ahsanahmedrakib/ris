@@ -3,6 +3,7 @@
 use App\Core\Http\Middleware\CheckRole;
 use App\Core\Http\Middleware\ForceJsonResponse;
 use App\Core\Http\Middleware\TrackVisitor;
+use App\Http\Middleware\ConvertRedirectsToJson;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -20,6 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => CheckRole::class,
             'force.json' => ForceJsonResponse::class,
             'track.visitor' => TrackVisitor::class,
+        ]);
+
+        $middleware->web(append: [
+            ConvertRedirectsToJson::class,
         ]);
 
         $middleware->api(prepend: [

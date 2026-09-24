@@ -587,14 +587,10 @@
     @livewireScripts
 
     {{-- Toast --}}
-    <div x-data="{ toasts: [], show: false }" x-init="@if (session('success')) toasts.push({ type: 'success', message: '{{ session('success') }}' });
-                show = true;
-                setTimeout(() => { toasts.shift(); if(!toasts.length) show = false; }, 3000); @endif
-    @if (session('error')) toasts.push({ type: 'error', message: '{{ session('error') }}' });
-                show = true;
-                setTimeout(() => { toasts.shift(); if(!toasts.length) show = false; }, 3000); @endif" class="fixed top-5 right-5 z-9999 space-y-3">
-        <template x-for="(toast, index) in toasts" :key="index">
-            <div x-show="show" x-transition:enter="transition ease-out duration-300"
+    <div x-data="risToasts()" x-on:toast.window="pushToast($event.detail.type, $event.detail.message)"
+        class="fixed top-5 right-5 z-9999 space-y-3">
+        <template x-for="toast in toasts" :key="toast.id">
+            <div x-show="true" x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0"
                 x-transition:leave="transition ease-in duration-200"
                 x-transition:leave-start="opacity-100 translate-x-0" x-transition:leave-end="opacity-0 translate-x-8"
@@ -612,7 +608,7 @@
                         d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span class="text-sm font-medium" x-text="toast.message"></span>
-                <button @click="toasts.splice(index, 1); if(!toasts.length) show = false;"
+                <button @click="removeToast(toast.id)"
                     class="ml-auto shrink-0 opacity-60 hover:opacity-100 cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -644,6 +640,122 @@
                 },
             };
         };
+
+        window.risToasts = function() {
+            return {
+                toasts: [],
+                init() {
+                    @if(session('success'))
+                        this.pushToast('success', @js(session('success')));
+                    @endif
+                    @if(session('error'))
+                        this.pushToast('error', @js(session('error')));
+                    @endif
+                },
+                pushToast(type, message) {
+                    const toast = {
+                        id: Date.now() + Math.floor(Math.random() * 1000),
+                        type,
+                        message,
+                    };
+                    this.toasts.push(toast);
+                    setTimeout(() => this.removeToast(toast.id), 3200);
+                },
+                removeToast(id) {
+                    this.toasts = this.toasts.filter(t => t.id !== id);
+                },
+            };
+        };
+
+        window.RisAdmin = (function() {
+            function csrf() {
+                const m = document.querySelector('meta[name="csrf-token"]');
+                return m ? m.content : '';
+            }
+
+            async function submitForm(form) {
+                // Always send POST: PHP does not parse multipart bodies for
+                // PUT/PATCH/DELETE, so non-POST fetches arrive with no request
+                // data. Laravel spoofs the real verb from the hidden `_method`
+                // input included in the FormData.
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrf(),
+                    },
+                    body: new FormData(form),
+                });
+
+                let data = {};
+                try {
+                    data = await res.json();
+                } catch (e) {}
+                return { ok: res.ok, status: res.status, data };
+            }
+
+            async function refreshTable() {
+                const tbody = document.querySelector('[data-table-body]');
+                if (!tbody) return;
+                try {
+                    const res = await fetch(window.location.href, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    });
+                    if (!res.ok) return;
+                    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+                    const fresh = doc.querySelector('[data-table-body]');
+                    if (!fresh) return;
+                    tbody.innerHTML = fresh.innerHTML;
+                    if (window.Alpine && typeof window.Alpine.initTree === 'function') {
+                        window.Alpine.initTree(tbody);
+                    }
+                    if (window.RisDateMask && typeof window.RisDateMask.init === 'function') {
+                        window.RisDateMask.init(tbody);
+                    }
+                } catch (e) {}
+            }
+
+            function toast(type, message) {
+                window.dispatchEvent(new CustomEvent('toast', { detail: { type, message } }));
+            }
+
+            document.addEventListener('submit', async function(e) {
+                if (e.defaultPrevented) return;
+                const form = e.target;
+                if (!form || !form.matches('form') || !form.action) return;
+                const methodInput = form.querySelector('input[name="_method"]');
+                const method = (methodInput && methodInput.value) ?
+                    methodInput.value.toUpperCase() :
+                    (form.getAttribute('method') || 'GET').toUpperCase();
+                if (method !== 'DELETE') return;
+                if (!form.action.includes('/admin/')) return;
+
+                e.preventDefault();
+                const btn = form.querySelector('button[type="submit"]');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50', 'cursor-wait');
+                }
+                try {
+                    const { ok, data } = await submitForm(form);
+                    toast(ok ? 'success' : 'error',
+                        data && data.message ? data.message :
+                        (ok ? 'সফলভাবে মুছে ফেলা হয়েছে।' : 'মুছে ফেলতে সমস্যা হয়েছে।'));
+                    if (ok) await refreshTable();
+                } catch (err) {
+                    toast('error', 'মুছে ফেলতে সমস্যা হয়েছে।');
+                } finally {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-50', 'cursor-wait');
+                    }
+                }
+            });
+
+            return { submitForm, refreshTable, toast, csrf };
+        })();
+
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) location.reload();
         });

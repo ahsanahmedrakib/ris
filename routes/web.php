@@ -162,6 +162,7 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
 
     Route::get('/scholarship', [ScholarshipController::class, 'index'])->name('admin.scholarship.index');
     Route::post('/scholarship', [ScholarshipController::class, 'store'])->name('admin.scholarship.store');
+    Route::get('/scholarship/next-number', [ScholarshipController::class, 'nextNumber'])->name('admin.scholarship.next-number');
     Route::get('/scholarship/{scholarshipRegistration}/show', [ScholarshipController::class, 'show'])->name('admin.scholarship.show');
     Route::get('/scholarship/{scholarshipRegistration}/edit', [ScholarshipController::class, 'edit'])->name('admin.scholarship.edit');
     Route::put('/scholarship/{scholarshipRegistration}', [ScholarshipController::class, 'update'])->name('admin.scholarship.update');

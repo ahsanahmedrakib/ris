@@ -81,7 +81,7 @@
                                 অ্যাকশন</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-50" data-table-body>
                         @forelse($items as $item)
                             <tr class="hover:bg-gray-50 transition-colors"
                                 x-data="activeRow('{{ url('admin/campus-news') }}', {{ $item->id }}, {{ $item->is_active ? 'true' : 'false' }})">
@@ -507,6 +507,8 @@
                     quillCreate: null,
                     quillEdit: null,
 
+                    formSubmitting: false,
+
                     initCreateQuill() {
                         if (this.quillCreate || typeof window.Quill === 'undefined') return;
                         this.quillCreate = new window.Quill('#campusCreateQuill', {
@@ -633,7 +635,7 @@
                         if (this.quillCreate) {
                             el.querySelector('input[name="description"]').value = this.quillCreate.root.innerHTML;
                         }
-                        if (valid) el.submit();
+                        if (valid) this.submitForm(el, 'create');
                     },
 
                     validateEditForm(el) {
@@ -646,7 +648,32 @@
                         if (this.quillEdit) {
                             el.querySelector('input[name="description"]').value = this.quillEdit.root.innerHTML;
                         }
-                        if (valid) el.submit();
+                        if (valid) this.submitForm(el, 'edit');
+                    },
+
+                    async submitForm(el, mode) {
+                        if (this.formSubmitting) return;
+                        this.formSubmitting = true;
+                        try {
+                            const { ok, status, data } = await RisAdmin.submitForm(el);
+                            if (status === 422 && data.errors) {
+                                if (mode === 'edit') this.editErrors = { ...this.editErrors, ...data.errors };
+                                else this.createErrors = { ...this.createErrors, ...data.errors };
+                                return;
+                            }
+                            if (!ok) {
+                                RisAdmin.toast('error', data.message || 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                                return;
+                            }
+                            if (mode === 'edit') this.showEditModal = false;
+                            else this.showCreateModal = false;
+                            RisAdmin.toast('success', data.message || 'সফলভাবে সংরক্ষণ হয়েছে।');
+                            RisAdmin.refreshTable();
+                        } catch (e) {
+                            RisAdmin.toast('error', 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                        } finally {
+                            this.formSubmitting = false;
+                        }
                     }
                 }
             }

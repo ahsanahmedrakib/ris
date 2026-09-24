@@ -80,7 +80,7 @@
 
                         <form x-show="editingMission" x-cloak
                             action="{{ route('admin.about.mission-vision.update', $mission->id) }}" method="POST"
-                            class="space-y-3">
+                            class="space-y-3" @submit.prevent="submitAboutEntry($el)">
                             @csrf
                             @method('PUT')
                             <input type="hidden" name="type" value="mission">
@@ -121,7 +121,8 @@
                         </div>
 
                         <form x-show="editingMission" x-cloak
-                            action="{{ route('admin.about.mission-vision.store') }}" method="POST" class="space-y-3">
+                            action="{{ route('admin.about.mission-vision.store') }}" method="POST" class="space-y-3"
+                            @submit.prevent="submitAboutEntry($el)">
                             @csrf
                             <input type="hidden" name="type" value="mission">
                             <div>
@@ -198,7 +199,7 @@
 
                         <form x-show="editingVision" x-cloak
                             action="{{ route('admin.about.mission-vision.update', $vision->id) }}" method="POST"
-                            class="space-y-3">
+                            class="space-y-3" @submit.prevent="submitAboutEntry($el)">
                             @csrf
                             @method('PUT')
                             <input type="hidden" name="type" value="vision">
@@ -239,7 +240,8 @@
                         </div>
 
                         <form x-show="editingVision" x-cloak
-                            action="{{ route('admin.about.mission-vision.store') }}" method="POST" class="space-y-3">
+                            action="{{ route('admin.about.mission-vision.store') }}" method="POST" class="space-y-3"
+                            @submit.prevent="submitAboutEntry($el)">
                             @csrf
                             <input type="hidden" name="type" value="vision">
                             <div>
@@ -299,7 +301,7 @@
                                 অ্যাকশন</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-50" data-table-body>
                         @forelse($coreValues as $coreValue)
                             <tr class="hover:bg-gray-50 transition-colors"
                                 x-data="activeRow('{{ url('admin/about/core-values') }}', {{ $coreValue->id }}, {{ $coreValue->is_active ? 'true' : 'false' }})">
@@ -578,6 +580,8 @@
                     editData: null,
                     editLoading: false,
 
+                    formSubmitting: false,
+
                     createForm: {
                         title: '',
                         description: '',
@@ -652,7 +656,7 @@
                         ['title', 'description'].forEach(f => {
                             if (!this.validateCreateField(f)) valid = false;
                         });
-                        if (valid) el.submit();
+                        if (valid) this.submitForm(el, 'create');
                     },
 
                     validateEditForm(el) {
@@ -662,7 +666,53 @@
                         ['title', 'description'].forEach(f => {
                             if (!this.validateEditField(f)) valid = false;
                         });
-                        if (valid) el.submit();
+                        if (valid) this.submitForm(el, 'edit');
+                    },
+
+                    async submitForm(el, mode) {
+                        if (this.formSubmitting) return;
+                        this.formSubmitting = true;
+                        try {
+                            const { ok, status, data } = await RisAdmin.submitForm(el);
+                            if (status === 422 && data.errors) {
+                                if (mode === 'edit') this.editErrors = { ...this.editErrors, ...data.errors };
+                                else this.createErrors = { ...this.createErrors, ...data.errors };
+                                return;
+                            }
+                            if (!ok) {
+                                RisAdmin.toast('error', data.message || 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                                return;
+                            }
+                            if (mode === 'edit') this.showEditModal = false;
+                            else this.showCreateModal = false;
+                            RisAdmin.toast('success', data.message || 'সফলভাবে সংরক্ষণ হয়েছে।');
+                            RisAdmin.refreshTable();
+                        } catch (e) {
+                            RisAdmin.toast('error', 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                        } finally {
+                            this.formSubmitting = false;
+                        }
+                    },
+
+                    async submitAboutEntry(el) {
+                        if (this.formSubmitting) return;
+                        this.formSubmitting = true;
+                        try {
+                            const { ok, status, data } = await RisAdmin.submitForm(el);
+                            if (!ok) {
+                                RisAdmin.toast('error', data.message || 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                                return;
+                            }
+                            const type = el.querySelector('input[name="type"]');
+                            if (type && type.value === 'vision') this.editingVision = false;
+                            else this.editingMission = false;
+                            RisAdmin.toast('success', data.message || 'সফলভাবে সংরক্ষণ হয়েছে।');
+                            RisAdmin.refreshTable();
+                        } catch (e) {
+                            RisAdmin.toast('error', 'সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                        } finally {
+                            this.formSubmitting = false;
+                        }
                     }
                 }
             }

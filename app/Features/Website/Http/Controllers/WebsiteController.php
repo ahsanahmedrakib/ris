@@ -702,6 +702,12 @@ class WebsiteController extends Controller
             route('admin.contact-messages.show', $contact),
         );
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'আপনার বার্তা সফলভাবে পাঠানো হয়েছে। আমরা শীঘ্রই যোগাযোগ করব।',
+            ]);
+        }
+
         return redirect()->route('contact')->with('success', 'আপনার বার্তা সফলভাবে পাঠানো হয়েছে। আমরা শীঘ্রই যোগাযোগ করব।');
     }
 
