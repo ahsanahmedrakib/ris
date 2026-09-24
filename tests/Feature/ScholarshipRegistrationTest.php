@@ -255,4 +255,34 @@ class ScholarshipRegistrationTest extends TestCase
             ->assertOk()
             ->assertSee('মেধাবৃত্তি');
     }
+
+    #[Test]
+    public function public_pdf_requires_matching_secret_token(): void
+    {
+        $registration = ScholarshipRegistration::factory()->create();
+
+        $this->get(route('scholarship.pdf', [$registration->registration_no, $registration->pdf_token]))
+            ->assertOk();
+
+        $this->get(route('scholarship.pdf', [$registration->registration_no, 'wrong-token']))
+            ->assertNotFound();
+    }
+
+    #[Test]
+    public function public_pdf_without_token_is_not_accessible(): void
+    {
+        $registration = ScholarshipRegistration::factory()->create();
+
+        $this->get("/scholarship/pdf/{$registration->registration_no}")
+            ->assertNotFound();
+    }
+
+    #[Test]
+    public function each_registration_gets_a_unique_secret_token(): void
+    {
+        ScholarshipRegistration::factory()->count(3)->create();
+
+        $this->assertDatabaseCount('scholarship_registrations', 3);
+        $this->assertSame(3, ScholarshipRegistration::distinct()->count('pdf_token'));
+    }
 }

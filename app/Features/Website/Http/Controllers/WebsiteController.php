@@ -655,10 +655,12 @@ class WebsiteController extends Controller
     }
 
     // admit download
-    public function scholarshipPdf(string $registration_no): View
+    public function scholarshipPdf(string $registration_no, string $token): View
     {
         $registration = ScholarshipRegistration::where('registration_no', $registration_no)
             ->firstOrFail();
+
+        abort_unless(hash_equals((string) $registration->pdf_token, $token), 404);
 
         return view('admin.scholarship.pdf', [
             'registration' => $registration,

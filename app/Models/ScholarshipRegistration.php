@@ -7,6 +7,7 @@ use Database\Factories\ScholarshipRegistrationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class ScholarshipRegistration extends Model
 {
@@ -33,6 +34,7 @@ class ScholarshipRegistration extends Model
         'serial_no',
         'roll_no',
         'mobile_no',
+        'pdf_token',
         'bkash_no',
         'payment_method',
         'status',
@@ -42,6 +44,15 @@ class ScholarshipRegistration extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (ScholarshipRegistration $registration) {
+            if (blank($registration->pdf_token)) {
+                $registration->pdf_token = Str::lower(Str::random(32));
+            }
+        });
     }
 
     public static function nextRegistrationNo(int $classNo): string

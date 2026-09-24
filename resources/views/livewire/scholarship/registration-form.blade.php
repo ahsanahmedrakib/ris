@@ -30,7 +30,7 @@
 
             {{-- Download / Print PDF button --}}
             <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <a href="{{ route('scholarship.pdf', $registrationNo) }}" target="_blank"
+                <a href="{{ route('scholarship.pdf', [$registrationNo, $pdfToken]) }}" target="_blank"
                     class="btn-primary inline-flex items-center justify-center gap-2 text-sm px-6 py-2.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

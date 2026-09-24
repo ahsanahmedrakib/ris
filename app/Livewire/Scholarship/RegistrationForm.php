@@ -43,6 +43,8 @@ class RegistrationForm extends Component
 
     public string $registrationNo = '';
 
+    public string $pdfToken = '';
+
     public bool $confirming = false;
 
     public bool $saved = false;
@@ -189,6 +191,7 @@ class RegistrationForm extends Component
                 }
 
                 $this->registrationNo = $registration->registration_no;
+                $this->pdfToken = $registration->pdf_token;
                 $this->confirming = false;
                 $this->saved = true;
 
@@ -245,6 +248,7 @@ class RegistrationForm extends Component
             'bkashNo',
             'paymentMethod',
             'registrationNo',
+            'pdfToken',
             'confirming',
         ]);
 
