@@ -666,3 +666,69 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (e.key === 'ArrowRight') shift(1);
     });
 })();
+
+/* ── Public website page skeleton ────────────────────────────────────────────
+   The website is server rendered, so the skeleton covers the gap between a
+   visitor starting a navigation and the new document painting its data.
+   Exposed as window.RisSkeleton for views that fetch data in place.        */
+window.RisSkeleton = (function() {
+    const SHOW_DELAY = 120;
+    const el = () => document.getElementById('ris-page-skeleton');
+    let timer = null;
+
+    function start() {
+        if (timer || !el()) return;
+        timer = setTimeout(() => {
+            const node = el();
+            if (!node) return;
+            node.style.display = 'block';
+            window.scrollTo(0, 0);
+        }, SHOW_DELAY);
+    }
+
+    function stop() {
+        clearTimeout(timer);
+        timer = null;
+        const node = el();
+        if (node) node.style.display = 'none';
+    }
+
+    // Sub-renders triggered by fetch/AJAX (forms, filters) do not leave the
+    // document, so views that swap a section in place ship their own skeleton
+    // markup (see x-skeleton.class-routine) instead of this full page loader.
+    function isInternalLink(el) {
+        if (!el || el.target === '_blank' || el.hasAttribute('download')) return false;
+        if (el.hasAttribute('data-no-skeleton')) return false;
+        const href = el.getAttribute('href');
+        if (!href || href.startsWith('#') || /^(mailto:|tel:|javascript:)/i.test(href)) return false;
+        try {
+            return new URL(href, window.location.href).origin === window.location.origin;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a[href]');
+        if (isInternalLink(link)) start();
+    }, true);
+
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        if (!form || form.hasAttribute('data-no-skeleton')) return;
+        if (String(form.getAttribute('method') || 'GET').toUpperCase() === 'POST') return;
+        // Livewire owns its own requests and loading indicators.
+        if (form.closest('[wire\\:submit]')) return;
+        start();
+    }, true);
+
+    window.addEventListener('pageshow', function(e) {
+        if (e.persisted) start();
+        else stop();
+    });
+
+    window.addEventListener('load', stop);
+    document.addEventListener('DOMContentLoaded', stop);
+
+    return { start, stop };
+})();
