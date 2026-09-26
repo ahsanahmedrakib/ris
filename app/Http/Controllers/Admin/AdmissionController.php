@@ -9,7 +9,9 @@ use App\Models\ClassRoom;
 use App\Models\Student;
 use App\Models\User;
 use App\Support\NumberConverter;
+use App\Support\UniqueConstraintViolation;
 use App\Support\XlsxExport;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,19 +85,63 @@ class AdmissionController extends Controller
             $photoPath = $request->file('student_photo')->store('admissions', 'public');
         }
 
-        try {
-            $admission = Admission::create([
+        $admission = $this->persistWithAdmissionNoRetry(
+            fn (): Admission => Admission::create([
                 ...$this->payload($validated),
                 'admission_no' => Admission::nextAdmissionNo($validated['class_level'] ?? null),
                 'student_photo' => $photoPath,
-            ]);
+            ])
+        );
 
-            return redirect()->route('admin.admission.index')
-                ->with('success', 'ভর্তি আবেদন ('.$admission->admission_no.') সফলভাবে তৈরি হয়েছে।');
-        } catch (\Exception $e) {
+        if (! $admission instanceof Admission) {
             return back()->withInput()
-                ->with('error', 'ভর্তি আবেদন তৈরি করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ভর্তি আবেদন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
         }
+
+        return redirect()->route('admin.admission.index')
+            ->with('success', 'ভর্তি আবেদন ('.$admission->admission_no.') সফলভাবে তৈরি হয়েছে।');
+    }
+
+    /**
+     * Persist an admission whose admission_no is derived from a read-then-
+     * increment serial, retrying when another writer claims the same number.
+     *
+     * Two admins saving the same class at the same moment can pick the same
+     * serial. The unique index rejects the loser; each retry re-reads the serial
+     * which now includes the winner's row. The closure must therefore derive the
+     * number afresh on every attempt rather than reuse an in-memory value.
+     *
+     * @param  callable(): Admission  $persist
+     */
+    private function persistWithAdmissionNoRetry(callable $persist): ?Admission
+    {
+        for ($attempt = 1; $attempt <= 3; $attempt++) {
+            try {
+                DB::beginTransaction();
+
+                $admission = $persist();
+
+                DB::commit();
+
+                return $admission;
+            } catch (QueryException $e) {
+                DB::rollBack();
+
+                if ($attempt < 3 && UniqueConstraintViolation::matches($e)) {
+                    continue;
+                }
+
+                report($e);
+            } catch (\Throwable $e) {
+                DB::rollBack();
+
+                report($e);
+            }
+
+            return null;
+        }
+
+        return null;
     }
 
     public function show(Admission $admission)
@@ -218,6 +264,9 @@ class AdmissionController extends Controller
 
         $validated = $request->validate($rules, $this->messages());
 
+        // Captured before the loop: a failed update leaves the colliding value
+        // on the model in memory, which would make every retry reuse it.
+        $existingAdmissionNo = $admission->admission_no;
         $photoPath = $admission->student_photo;
 
         if ($request->hasFile('student_photo')) {
@@ -228,8 +277,8 @@ class AdmissionController extends Controller
             $photoPath = $request->file('student_photo')->store('admissions', 'public');
         }
 
-        try {
-            $admissionNo = $admission->admission_no ?: Admission::nextAdmissionNo($validated['class_level'] ?? null);
+        $updated = $this->persistWithAdmissionNoRetry(function () use ($admission, $validated, $existingAdmissionNo, $photoPath): Admission {
+            $admissionNo = $existingAdmissionNo ?: Admission::nextAdmissionNo($validated['class_level'] ?? null);
 
             $admission->update([
                 ...$this->payload($validated),
@@ -237,12 +286,16 @@ class AdmissionController extends Controller
                 'student_photo' => $photoPath,
             ]);
 
-            return redirect()->route('admin.admission.index')
-                ->with('success', 'ভর্তি আবেদন ('.$admissionNo.') সফলভাবে আপডেট হয়েছে।');
-        } catch (\Exception $e) {
+            return $admission;
+        });
+
+        if (! $updated instanceof Admission) {
             return back()->withInput()
-                ->with('error', 'ভর্তি আবেদন আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ভর্তি আবেদন আপডেট করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
         }
+
+        return redirect()->route('admin.admission.index')
+            ->with('success', 'ভর্তি আবেদন ('.$updated->admission_no.') সফলভাবে আপডেট হয়েছে।');
     }
 
     public function updateStatus(Request $request, Admission $admission): RedirectResponse

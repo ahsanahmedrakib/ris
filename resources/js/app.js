@@ -696,6 +696,22 @@ window.RisSkeleton = (function() {
     // Sub-renders triggered by fetch/AJAX (forms, filters) do not leave the
     // document, so views that swap a section in place ship their own skeleton
     // markup (see x-skeleton.class-routine) instead of this full page loader.
+    function hasAttrLike(el, name) {
+        return [...el.attributes].some(function(attr) {
+            return attr.name === name || attr.name.startsWith(name + '.');
+        });
+    }
+
+    // Livewire keeps modifiers inside the attribute name, so a form declared as
+    // wire:submit.prevent="save" is matched by the name "wire:submit.prevent",
+    // never by an exact [wire:submit] selector. Alpine keeps its @submit /
+    // x-on:submit handlers the same way.
+    function handlesSubmitInPlace(form) {
+        return hasAttrLike(form, 'wire:submit')
+            || hasAttrLike(form, 'x-on:submit')
+            || hasAttrLike(form, '@submit');
+    }
+
     function isInternalLink(el) {
         if (!el || el.target === '_blank' || el.hasAttribute('download')) return false;
         if (el.hasAttribute('data-no-skeleton')) return false;
@@ -717,10 +733,16 @@ window.RisSkeleton = (function() {
         const form = e.target;
         if (!form || form.hasAttribute('data-no-skeleton')) return;
         if (String(form.getAttribute('method') || 'GET').toUpperCase() === 'POST') return;
-        // Livewire owns its own requests and loading indicators.
-        if (form.closest('[wire\\:submit]')) return;
+        // Livewire and Alpine own these requests and show their own indicators.
+        if (handlesSubmitInPlace(form)) return;
         start();
     }, true);
+
+    // Safety net: an in-place request must never leave the page loader on top of
+    // the document, because these requests do not navigate the page away.
+    document.addEventListener('livewire:init', function() {
+        window.Livewire.hook('request', stop);
+    });
 
     window.addEventListener('pageshow', function(e) {
         if (e.persisted) start();

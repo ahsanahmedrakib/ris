@@ -511,6 +511,7 @@
                             const resultBox = document.getElementById('admissionResult');
                             const submitBtn = document.getElementById('admissionSubmitBtn');
                             const submitLabel = submitBtn.textContent;
+                            let submitted = false;
 
                             const showResult = (type, text) => {
                                 resultBox.classList.remove('hidden');
@@ -651,6 +652,8 @@
                             form.addEventListener('submit', function(e) {
                                 e.preventDefault();
 
+                                if (submitBtn.disabled) return;
+
                                 clearErrors();
                                 resultBox.classList.add('hidden');
 
@@ -713,6 +716,8 @@
                                         }
 
                                         if (response.ok) {
+                                            submitted = true;
+                                            submitBtn.textContent = 'আবেদন জমা হয়েছে';
                                             resultBox.classList.remove('hidden');
                                             resultBox.className =
                                                 'px-4 py-3 text-sm rounded-lg border bg-green-50 border-green-300 text-green-700';
@@ -738,6 +743,9 @@
                                         pushToast('error', 'আবেদন জমা দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
                                     })
                                     .finally(() => {
+                                        // Left disabled after success so a stray
+                                        // click cannot post the reset form again.
+                                        if (submitted) return;
                                         submitBtn.disabled = false;
                                         submitBtn.textContent = submitLabel;
                                     });

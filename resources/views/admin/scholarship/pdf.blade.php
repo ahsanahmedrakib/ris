@@ -5,11 +5,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Form & Admit Card - {{ $registration->registration_no }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+    {{-- Uses the project's compiled Tailwind 4 build; the v3 Play CDN does not
+         ship utilities such as w-62.5 and fails entirely without internet. --}}
+    @vite(['resources/css/app.css'])
+    {{-- Self-hosted so the sheet never depends on Google Fonts being reachable. --}}
     <style>
+        @font-face {
+            font-family: 'Tiro Bangla';
+            font-style: normal;
+            font-weight: 400;
+            font-display: block;
+            src: url('{{ asset('fonts/tiro-bangla-bengali-400-normal.woff2') }}') format('woff2');
+            unicode-range: U+0980-09FF;
+        }
+
+        @font-face {
+            font-family: 'Tiro Bangla';
+            font-style: italic;
+            font-weight: 400;
+            font-display: block;
+            src: url('{{ asset('fonts/tiro-bangla-bengali-400-italic.woff2') }}') format('woff2');
+            unicode-range: U+0980-09FF;
+        }
+
+        @font-face {
+            font-family: 'Tiro Bangla';
+            font-style: normal;
+            font-weight: 400;
+            font-display: block;
+            src: url('{{ asset('fonts/tiro-bangla-latin-400-normal.woff2') }}') format('woff2');
+            unicode-range: U+0000-024F, U+2000-206F, U+2190-21BB;
+        }
+    </style>
+    <style>
+        /* html2canvas, bundled inside html2pdf, cannot parse the oklch() colours
+           Tailwind 4 emits, and aborts the whole render on the first one.
+           Restate the handful this sheet uses as hex. Unlayered declarations
+           win over Tailwind's @layer theme block. */
+        :root {
+            --color-gray-100: #f3f4f6;
+            --color-gray-500: #6b7280;
+            --color-blue-600: #2563eb;
+            --color-blue-700: #1d4ed8;
+            --color-emerald-600: #059669;
+            --color-emerald-700: #047857;
+        }
+
+        /* The app stylesheet pins the root to 18px so the website can use
+           pixel-based breakpoints. This sheet is a fixed A4 layout measured
+           against the standard 16px root, so pin it back or every rem utility
+           grows 12.5% and the card spills onto a second sheet. */
+        html {
+            font-size: 16px;
+            font-family: 'Tiro Bangla', serif;
+        }
+
+        /* The app's @layer base also swaps headings onto the website heading
+           font, which the v3 CDN never did. Keep the whole sheet on one family. */
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Tiro Bangla', serif;
+        }
+
         body {
             font-family: 'Tiro Bangla', serif;
+            margin: 0;
+            padding: 0;
         }
 
         @page {
@@ -20,15 +86,17 @@
         .print-page {
             width: 210mm !important;
             max-width: 210mm !important;
+            min-height: 297mm;
             box-sizing: border-box;
             background: white;
             margin: 0 auto;
             overflow: hidden;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         @media screen {
             .print-page {
-                min-height: 297mm;
                 border: 1px solid #ccc;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             }
@@ -49,26 +117,17 @@
 
             .print-page {
                 width: 210mm !important;
-                min-height: auto;
+                min-height: 297mm;
                 box-shadow: none !important;
                 border: none !important;
             }
-        }
-
-        .print-page {
-            width: 210mm;
-            min-height: auto;
-            box-shadow: none !important;
-            border: none !important;
-            margin: 0 !important;
-        }
         }
     </style>
 </head>
 
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen py-10">
 
-    <div class="no-print mb-6 flex flex-wrap items-center justify-center gap-3">
+    <div class="no-print my-4 flex flex-wrap items-center justify-center gap-3">
         <button type="button" onclick="window.print()"
             class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition cursor-pointer">
             Print - প্রিন্ট করুন
@@ -216,7 +275,8 @@
 
     {{-- Download PDF Script --}}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    {{-- Self-hosted so the download works without reaching cdnjs. --}}
+    <script src="{{ asset('vendor/html2pdf.bundle.min.js') }}"></script>
     <script>
         function downloadAdmitPdf() {
             const element = document.getElementById('admit-card');

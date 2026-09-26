@@ -139,16 +139,18 @@ class Admission extends Model
         $academicYear = (int) (now()->format('n') >= 3 ? now()->addYear()->format('y') : now()->format('y'));
         $prefix = $academicYear.'-'.$classKey;
 
+        // The highest serial wins, not the newest row: ids and serials drift
+        // apart after a retried insert or a hand edited admission_no, and
+        // ordering by id would then hand back an already used number.
         $lastSerial = static::where('admission_no', 'like', $prefix.'%')
-            ->orderByDesc('id')
-            ->value('admission_no');
+            ->pluck('admission_no')
+            ->map(function (string $admissionNo) use ($prefix): int {
+                preg_match('/^'.preg_quote($prefix, '/').'(\d{3})$/', $admissionNo, $matches);
 
-        $serial = 1;
+                return isset($matches[1]) ? (int) $matches[1] : 0;
+            })
+            ->max() ?? 0;
 
-        if ($lastSerial && preg_match('/^'.preg_quote($prefix, '/').'(\d{3})$/', (string) $lastSerial, $m)) {
-            $serial = (int) $m[1] + 1;
-        }
-
-        return sprintf('%s-%s%03d', $academicYear, $classKey, $serial);
+        return sprintf('%s-%s%03d', $academicYear, $classKey, $lastSerial + 1);
     }
 }

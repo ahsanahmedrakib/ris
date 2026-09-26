@@ -4,6 +4,7 @@ namespace App\Livewire\Scholarship;
 
 use App\Models\ScholarshipRegistration;
 use App\Notifications\NewSubmission;
+use App\Support\UniqueConstraintViolation;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -86,76 +87,19 @@ class RegistrationForm extends Component
         $this->confirming = false;
     }
 
-    // public function confirm(): ?RedirectResponse
-    // {
-    //     $this->validate();
-
-    //     $attempts = 0;
-
-    //     do {
-    //         try {
-    //             DB::beginTransaction();
-
-    //             $number = ScholarshipRegistration::nextRegistrationNo((int) $this->classNo);
-
-    //             $registration = ScholarshipRegistration::create([
-    //                 'registration_no' => $number,
-    //                 'serial_no' => (int) substr($number, -3),
-    //                 'student_name' => $this->studentName,
-    //                 'father_name' => $this->fatherName,
-    //                 'mother_name' => $this->motherName,
-    //                 'school_name' => $this->schoolName,
-    //                 'class_no' => (int) $this->classNo,
-    //                 'roll_no' => $this->rollNo,
-    //                 'mobile_no' => $this->mobileNo,
-    //                 'bkash_no' => $this->paymentMethod === 'cash' ? null : $this->bkashNo,
-    //                 'payment_method' => $this->paymentMethod,
-    //                 'status' => 'pending',
-    //                 'created_by' => Auth::id(),
-    //             ]);
-
-    //             DB::commit();
-
-    //             if (! $this->adminMode) {
-    //                 NewSubmission::sendToAdmins(
-    //                     'scholarship',
-    //                     'নতুন মেধাবৃত্তি রেজিস্ট্রেশন',
-    //                     $registration->student_name.' ('.$registration->mobile_no.') মেধাবৃত্তির জন্য রেজিস্ট্রেশন করেছেন।',
-    //                     route('admin.scholarship.show', $registration),
-    //                 );
-    //             }
-
-    //             $this->registrationNo = $registration->registration_no;
-    //             $this->confirming = false;
-    //             $this->saved = true;
-
-    //             if ($this->adminMode) {
-    //                 return redirect()->route('admin.scholarship.index')
-    //                     ->with('success', 'মেধাবৃত্তি রেজিস্ট্রেশন ('.$registration->registration_no.') সফলভাবে তৈরি হয়েছে।');
-    //             }
-
-    //             return null;
-    //         } catch (QueryException $e) {
-    //             DB::rollBack();
-
-    //             $attempts++;
-
-    //             if (! str_contains(strtolower($e->getMessage()), 'unique')) {
-    //                 throw $e;
-    //             }
-    //         }
-    //     } while ($attempts < 3);
-
-    //     $this->addError('class_no', 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
-
-    //     return null;
-    // }
-
     public function confirm(): ?RedirectResponse
     {
         $this->validate();
 
+        // A second confirm for an already saved form means the same applicant
+        // double clicked or replayed the request, which would store a duplicate
+        // registration under a fresh number.
+        if ($this->saved) {
+            return null;
+        }
+
         $attempts = 0;
+        $registration = null;
 
         do {
             try {
@@ -181,55 +125,75 @@ class RegistrationForm extends Component
 
                 DB::commit();
 
-                if (! $this->adminMode) {
-                    NewSubmission::sendToAdmins(
-                        'scholarship',
-                        'নতুন মেধাবৃত্তি রেজিস্ট্রেশন',
-                        $registration->student_name.' ('.$registration->mobile_no.') মেধাবৃত্তির জন্য রেজিস্ট্রেশন করেছেন।',
-                        route('admin.scholarship.show', $registration),
-                    );
-                }
-
-                $this->registrationNo = $registration->registration_no;
-                $this->pdfToken = $registration->pdf_token;
-                $this->confirming = false;
-                $this->saved = true;
-
-                if ($this->adminMode) {
-                    return redirect()->route('admin.scholarship.index')
-                        ->with('success', 'মেধাবৃত্তি রেজিস্ট্রেশন ('.$registration->registration_no.') সফলভাবে তৈরি হয়েছে।');
-                }
-
-                $this->dispatch('toast', type: 'success', message: 'রেজিস্ট্রেশন সফল হয়েছে!');
-
-                return null;
+                break;
             } catch (QueryException $e) {
                 DB::rollBack();
                 $attempts++;
 
-                // Only retry on unique constraint violations
-                if (! str_contains(strtolower($e->getMessage()), 'unique')) {
-                    report($e);
-                    $this->confirming = false;
-                    $this->dispatch('toast', type: 'error', message: 'রেজিস্ট্রেশন সংরক্ষণ করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
-                    $this->addError('classNo', 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
-
-                    return null;
+                // Only a unique collision is worth retrying: the serial is read
+                // then incremented, so a competing submit that won the race is
+                // now part of the max and this attempt gets the next number.
+                if ($attempts < 3 && UniqueConstraintViolation::matches($e)) {
+                    continue;
                 }
+
+                report($e);
+
+                return $this->failWithRegistrationError();
             } catch (\Throwable $e) {
                 DB::rollBack();
                 report($e);
+
                 $this->confirming = false;
                 $this->dispatch('toast', type: 'error', message: 'একটি অপ্রত্যাশিত সমস্যা হয়েছে। আবার চেষ্টা করুন।');
-                $this->addError('classNo', 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
 
                 return null;
             }
         } while ($attempts < 3);
 
-        // Exhausted retries (unique collisions)
+        if (! $registration instanceof ScholarshipRegistration) {
+            return $this->failWithRegistrationError();
+        }
+
+        // The registration is committed at this point. A notification failure is
+        // a side effect and must never tell the applicant their registration was
+        // lost, which previously made them submit again under a new number.
+        if (! $this->adminMode) {
+            try {
+                NewSubmission::sendToAdmins(
+                    'scholarship',
+                    'নতুন মেধাবৃত্তি রেজিস্ট্রেশন',
+                    $registration->student_name.' ('.$registration->mobile_no.') মেধাবৃত্তির জন্য রেজিস্ট্রেশন করেছেন।',
+                    route('admin.scholarship.show', $registration),
+                );
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+
+        $this->registrationNo = $registration->registration_no;
+        $this->pdfToken = $registration->pdf_token;
         $this->confirming = false;
-        $this->dispatch('toast', type: 'error', message: 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+        $this->saved = true;
+
+        if ($this->adminMode) {
+            return redirect()->route('admin.scholarship.index')
+                ->with('success', 'মেধাবৃত্তি রেজিস্ট্রেশন ('.$registration->registration_no.') সফলভাবে তৈরি হয়েছে।');
+        }
+
+        $this->dispatch('toast', type: 'success', message: 'রেজিস্ট্রেশন সফল হয়েছে!');
+
+        return null;
+    }
+
+    /**
+     * Surface a save failure without pretending the registration was lost, and
+     * without leaving the form stuck on its confirmation step.
+     */
+    private function failWithRegistrationError(): ?RedirectResponse
+    {
+        $this->confirming = false;
+        $this->dispatch('toast', type: 'error', message: 'রেজিস্ট্রেশন সংরক্ষণ করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
         $this->addError('classNo', 'রেজিস্ট্রেশন তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
 
         return null;

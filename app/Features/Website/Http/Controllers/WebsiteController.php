@@ -564,89 +564,114 @@ class WebsiteController extends Controller
             'student_photo.max' => 'ছবির আকার ২ এমবির বেশি হতে পারবে না।',
         ]);
 
+        $failureMessage = 'আবেদন জমা দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।';
+
+        // The same phone and name arriving twice within a few minutes is a double
+        // submit (double click, back button, duplicate tab), not two children.
+        $recentDuplicate = Admission::where('phone', $validated['phone'] ?? null)
+            ->where('student_name_en', $validated['student_name_en'] ?? null)
+            ->where('created_at', '>=', now()->subMinutes(10))
+            ->exists();
+
+        if ($recentDuplicate) {
+            $failureMessage = 'এই আবেদনটি ইতিমধ্যে জমা হয়েছে। দয়া করে আবার জমা দেবেন না।';
+        }
+
+        $admission = null;
         $photoPath = null;
 
-        try {
-            if ($request->hasFile('student_photo')) {
-                $photoPath = $request->file('student_photo')->store('admissions', 'public');
+        if (! $recentDuplicate) {
+            try {
+                if ($request->hasFile('student_photo')) {
+                    $photoPath = $request->file('student_photo')->store('admissions', 'public');
+                }
+
+                $admission = Admission::create([
+                    'status' => 'pending',
+                    'academic_year' => $validated['academic_year'] ?? null,
+                    'roll_no' => $validated['roll_no'] ?? null,
+                    'section' => $validated['section'] ?? null,
+                    'batch' => $validated['batch'] ?? null,
+                    'admission_date' => $validated['admission_date'] ?? null,
+                    'form_collect_date' => $validated['form_collect_date'] ?? null,
+                    'form_submit_date' => $validated['form_submit_date'] ?? null,
+                    'class_level' => $validated['class_level'] ?? null,
+                    'student_name_bn' => $validated['student_name_bn'],
+                    'student_name_en' => $validated['student_name_en'],
+                    'dob' => $validated['dob'],
+                    'age' => $validated['age'] ?? null,
+                    'nationality' => $validated['nationality'] ?? null,
+                    'religion' => $validated['religion'] ?? null,
+                    'blood_group' => $validated['blood_group'] ?? null,
+                    'father_name_bn' => $validated['father_name_bn'],
+                    'father_name_en' => $validated['father_name_en'] ?? null,
+                    'father_occupation' => $validated['father_occupation'] ?? null,
+                    'mother_name_bn' => $validated['mother_name_bn'],
+                    'mother_name_en' => $validated['mother_name_en'] ?? null,
+                    'mother_occupation' => $validated['mother_occupation'] ?? null,
+                    'present_address' => $validated['present_address'] ?? null,
+                    'permanent_address' => $validated['permanent_address'] ?? null,
+                    'phone' => $validated['phone'] ?? null,
+                    'email' => $validated['email'] ?? null,
+                    'emergency_contact' => $validated['emergency_contact'] ?? null,
+                    'legal_guardian_name' => $validated['legal_guardian_name'] ?? null,
+                    'legal_guardian_occupation' => $validated['legal_guardian_occupation'] ?? null,
+                    'legal_guardian_relation' => $validated['legal_guardian_relation'] ?? null,
+                    'legal_guardian_address' => $validated['legal_guardian_address'] ?? null,
+                    'local_guardian_name' => $validated['local_guardian_name'] ?? null,
+                    'local_guardian_occupation' => $validated['local_guardian_occupation'] ?? null,
+                    'local_guardian_relation' => $validated['local_guardian_relation'] ?? null,
+                    'local_guardian_address' => $validated['local_guardian_address'] ?? null,
+                    'local_guardian_phone' => $validated['local_guardian_phone'] ?? null,
+                    'prev_school_name' => $validated['prev_school_name'] ?? null,
+                    'prev_school_address' => $validated['prev_school_address'] ?? null,
+                    'prev_roll_no' => $validated['prev_roll_no'] ?? null,
+                    'prev_marks' => $validated['prev_marks'] ?? null,
+                    'reference' => $validated['reference'] ?? null,
+                    'reference_phone' => $validated['reference_phone'] ?? null,
+                    'reference_sign' => $validated['reference_sign'] ?? null,
+                    'student_photo' => $photoPath,
+                ]);
+            } catch (\Throwable $e) {
+                report($e);
+
+                // Only the create failed, so the upload is genuinely orphaned.
+                if ($photoPath) {
+                    Storage::disk('public')->delete($photoPath);
+                }
+            }
+        }
+
+        if (! $admission instanceof Admission) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $failureMessage], 422);
             }
 
-            $admission = Admission::create([
-                'status' => 'pending',
-                'academic_year' => $validated['academic_year'] ?? null,
-                'roll_no' => $validated['roll_no'] ?? null,
-                'section' => $validated['section'] ?? null,
-                'batch' => $validated['batch'] ?? null,
-                'admission_date' => $validated['admission_date'] ?? null,
-                'form_collect_date' => $validated['form_collect_date'] ?? null,
-                'form_submit_date' => $validated['form_submit_date'] ?? null,
-                'class_level' => $validated['class_level'] ?? null,
-                'student_name_bn' => $validated['student_name_bn'],
-                'student_name_en' => $validated['student_name_en'],
-                'dob' => $validated['dob'],
-                'age' => $validated['age'] ?? null,
-                'nationality' => $validated['nationality'] ?? null,
-                'religion' => $validated['religion'] ?? null,
-                'blood_group' => $validated['blood_group'] ?? null,
-                'father_name_bn' => $validated['father_name_bn'],
-                'father_name_en' => $validated['father_name_en'] ?? null,
-                'father_occupation' => $validated['father_occupation'] ?? null,
-                'mother_name_bn' => $validated['mother_name_bn'],
-                'mother_name_en' => $validated['mother_name_en'] ?? null,
-                'mother_occupation' => $validated['mother_occupation'] ?? null,
-                'present_address' => $validated['present_address'] ?? null,
-                'permanent_address' => $validated['permanent_address'] ?? null,
-                'phone' => $validated['phone'] ?? null,
-                'email' => $validated['email'] ?? null,
-                'emergency_contact' => $validated['emergency_contact'] ?? null,
-                'legal_guardian_name' => $validated['legal_guardian_name'] ?? null,
-                'legal_guardian_occupation' => $validated['legal_guardian_occupation'] ?? null,
-                'legal_guardian_relation' => $validated['legal_guardian_relation'] ?? null,
-                'legal_guardian_address' => $validated['legal_guardian_address'] ?? null,
-                'local_guardian_name' => $validated['local_guardian_name'] ?? null,
-                'local_guardian_occupation' => $validated['local_guardian_occupation'] ?? null,
-                'local_guardian_relation' => $validated['local_guardian_relation'] ?? null,
-                'local_guardian_address' => $validated['local_guardian_address'] ?? null,
-                'local_guardian_phone' => $validated['local_guardian_phone'] ?? null,
-                'prev_school_name' => $validated['prev_school_name'] ?? null,
-                'prev_school_address' => $validated['prev_school_address'] ?? null,
-                'prev_roll_no' => $validated['prev_roll_no'] ?? null,
-                'prev_marks' => $validated['prev_marks'] ?? null,
-                'reference' => $validated['reference'] ?? null,
-                'reference_phone' => $validated['reference_phone'] ?? null,
-                'reference_sign' => $validated['reference_sign'] ?? null,
-                'student_photo' => $photoPath,
-            ]);
+            return back()->withInput()->with('error', $failureMessage);
+        }
 
+        // The admission is committed at this point. A notification failure is a
+        // side effect and must never tell the applicant their form was lost,
+        // which previously led to resubmissions and duplicate applications.
+        try {
             NewSubmission::sendToAdmins(
                 'admission',
                 'নতুন ভর্তি আবেদন',
                 $admission->student_name_bn.' ('.$admission->phone.') ভর্তি আবেদন করেছেন।',
                 route('admin.admission.show', $admission),
             );
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => 'আপনার ভর্তি আবেদন সফলভাবে জমা হয়েছে। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।',
-                ]);
-            }
-
-            return redirect()->route('admission')
-                ->with('success', 'আপনার ভর্তি আবেদন সফলভাবে জমা হয়েছে। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।');
-        } catch (\Exception $e) {
-            if ($photoPath) {
-                Storage::disk('public')->delete($photoPath);
-            }
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => 'আবেদন জমা দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।',
-                ], 422);
-            }
-
-            return back()->withInput()
-                ->with('error', 'আবেদন জমা দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+        } catch (\Throwable $e) {
+            report($e);
         }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'আপনার ভর্তি আবেদন সফলভাবে জমা হয়েছে। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।',
+            ]);
+        }
+
+        return redirect()->route('admission')
+            ->with('success', 'আপনার ভর্তি আবেদন সফলভাবে জমা হয়েছে। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।');
     }
 
     public function scholarship(): View
