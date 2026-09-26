@@ -201,11 +201,11 @@
                 </div>
             </div>
 
-            <div class="flex justify-between items-end mt-4 text-base font-bold">
+            <div class="flex justify-between items-end mt-8 text-base font-bold">
                 <div class="border-t border-black pt-1 px-4 text-center">শিক্ষার্থীর স্বাক্ষর</div>
                 <div class="flex flex-col items-center min-w-30">
                     <img src="{{ asset('images/signature.png') }}" alt="প্রধান শিক্ষকের স্বাক্ষর"
-                        class="h-14 w-auto object-contain mb-1">
+                        class="h-14 w-auto object-contain mb-1 -rotate-12">
                     <div class="border-t border-black pt-1 px-4 text-center w-full">প্রধান শিক্ষক</div>
                 </div>
             </div>
@@ -268,11 +268,11 @@
                 <p class="text-xl font-bold">মোবাইলঃ ০১৬১৯ ০০৭ ০০৬</p>
             </div>
 
-            <div class="flex justify-between items-end mt-4 text-base font-bold">
+            <div class="flex justify-between items-end text-base font-bold">
                 <div class="border-t border-black pt-1 px-4 text-center invisible">শিক্ষার্থীর স্বাক্ষর</div>
                 <div class="flex flex-col items-center min-w-30">
                     <img src="{{ asset('images/signature.png') }}" alt="প্রধান শিক্ষকের স্বাক্ষর"
-                        class="h-14 w-auto object-contain mb-1">
+                        class="h-14 w-auto object-contain mb-1 -rotate-12">
                     <div class="border-t border-black pt-1 px-4 text-center w-full">প্রধান শিক্ষক</div>
                 </div>
             </div>
