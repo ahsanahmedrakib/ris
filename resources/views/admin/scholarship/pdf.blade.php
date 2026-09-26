@@ -205,7 +205,7 @@
                 <div class="border-t border-black pt-1 px-4 text-center">শিক্ষার্থীর স্বাক্ষর</div>
                 <div class="flex flex-col items-center min-w-30">
                     <img src="{{ asset('images/signature.png') }}" alt="প্রধান শিক্ষকের স্বাক্ষর"
-                        class="h-14 w-auto object-contain mb-1 -rotate-12">
+                        class="h-14 w-auto object-contain mb-1">
                     <div class="border-t border-black pt-1 px-4 text-center w-full">প্রধান শিক্ষক</div>
                 </div>
             </div>
@@ -272,7 +272,7 @@
                 <div class="border-t border-black pt-1 px-4 text-center invisible">শিক্ষার্থীর স্বাক্ষর</div>
                 <div class="flex flex-col items-center min-w-30">
                     <img src="{{ asset('images/signature.png') }}" alt="প্রধান শিক্ষকের স্বাক্ষর"
-                        class="h-14 w-auto object-contain mb-1 -rotate-12">
+                        class="h-14 w-auto object-contain mb-1">
                     <div class="border-t border-black pt-1 px-4 text-center w-full">প্রধান শিক্ষক</div>
                 </div>
             </div>
@@ -300,7 +300,7 @@
             }
 
             btn.disabled = true;
-            btn.textContent = 'ডাউনলোড হচ্ছে...';
+            btn.textContent = 'Downloading PDF... - পিডিএফ ডাউনলোড হচ্ছে...';
 
             // Hide external images temporarily if they cause CORS errors
             const images = element.querySelectorAll('img');
@@ -353,12 +353,12 @@
                 })
                 .then(function() {
                     btn.disabled = false;
-                    btn.textContent = 'Download PDF';
+                    btn.textContent = 'Download PDF - পিডিএফ ডাউনলোড করুন';
                 })
                 .catch(function(err) {
                     console.error('PDF error:', err);
                     btn.disabled = false;
-                    btn.textContent = 'Download PDF';
+                    btn.textContent = 'Download PDF - পিডিএফ ডাউনলোড করুন';
                     alert('PDF ডাউনলোড ব্যর্থ: ' + (err && err.message ? err.message : String(err)));
                 });
         }
