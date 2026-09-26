@@ -18,7 +18,6 @@
                     <p class="text-gray-400">কোনো শ্রেণি পাওয়া যায়নি</p>
                 </div>
             @else
-                <x-skeleton.class-routine />
                 @include('web.partials.class-routine-grid')
             @endif
         </div>
@@ -32,31 +31,6 @@
             if (!grid) return;
 
             var activeClassId = {{ json_encode((int) $selectedClassId) }};
-            var skeleton = document.getElementById('routine-skeleton');
-
-            function showSkeleton(on) {
-                if (!skeleton) return;
-                skeleton.classList.toggle('hidden', !on);
-                grid.classList.toggle('hidden', on);
-            }
-
-            function loadRoutine(url, onDone) {
-                showSkeleton(true);
-                return fetch(url, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                }).then(function(res) {
-                    if (!res.ok) throw new Error('Failed to load routine');
-                    return res.text();
-                }).then(function(html) {
-                    var next = document.createElement('div');
-                    next.innerHTML = html.trim();
-                    var nextGrid = next.querySelector('#routine-grid');
-                    if (!nextGrid) throw new Error('Invalid response');
-                    grid.innerHTML = nextGrid.innerHTML;
-                    showSkeleton(false);
-                    if (onDone) onDone();
-                });
-            }
 
             grid.addEventListener('click', function(e) {
                 var btn = e.target.closest('.routine-class-btn');
@@ -69,8 +43,20 @@
                 var url = new URL(btn.href, window.location.origin);
                 url.searchParams.set('class_id', classId);
 
-                loadRoutine(url.toString(), function() {
+                fetch(url.toString(), {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                }).then(function(res) {
+                    if (!res.ok) throw new Error('Failed to load routine');
+                    return res.text();
+                }).then(function(html) {
+                    var next = document.createElement('div');
+                    next.innerHTML = html.trim();
+
+                    var nextGrid = next.querySelector('#routine-grid');
+                    if (!nextGrid) throw new Error('Invalid response');
+                    grid.innerHTML = nextGrid.innerHTML;
                     activeClassId = classId;
+
                     history.pushState({ class_id: classId }, '', url.toString());
                     window.dispatchEvent(new Event('routineUpdated'));
                 }).catch(function() {
@@ -83,8 +69,18 @@
                 var classId = params.get('class_id');
                 if (!classId) return;
 
-                loadRoutine(new URL(window.location.pathname + '?class_id=' + classId,
-                    window.location.origin).toString(), function() {
+                fetch(new URL(window.location.pathname + '?class_id=' + classId, window.location.origin)
+                    .toString(), {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                }).then(function(res) {
+                    if (!res.ok) throw new Error('Failed to load routine');
+                    return res.text();
+                }).then(function(html) {
+                    var next = document.createElement('div');
+                    next.innerHTML = html.trim();
+                    var nextGrid = next.querySelector('#routine-grid');
+                    if (!nextGrid) throw new Error('Invalid response');
+                    grid.innerHTML = nextGrid.innerHTML;
                     activeClassId = Number(classId);
                 }).catch(function() {
                     window.location.reload();

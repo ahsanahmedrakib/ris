@@ -21,9 +21,6 @@
 
 <body class="font-body antialiased text-gray-800 bg-white">
 
-    {{-- Page data skeleton: shown while the next page is loading --}}
-    <x-skeleton.page />
-
     {{-- ═══ Top Bar ═══ --}}
     <div class="bg-ris-dark text-white text-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

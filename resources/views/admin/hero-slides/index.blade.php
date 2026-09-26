@@ -335,7 +335,15 @@
                         </div>
                     </template>
                     <template x-if="viewLoading">
-                        <x-skeleton.modal />
+                        <div class="py-12 text-center">
+                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            <p class="text-gray-400 text-sm">লোড হচ্ছে...</p>
+                        </div>
                     </template>
                 </div>
             </div>
@@ -443,7 +451,15 @@
                         </form>
                     </template>
                     <template x-if="editLoading">
-                        <x-skeleton.modal />
+                        <div class="py-12 text-center">
+                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            <p class="text-gray-400 text-sm">লোড হচ্ছে...</p>
+                        </div>
                     </template>
                 </div>
             </div>

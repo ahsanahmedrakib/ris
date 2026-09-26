@@ -695,79 +695,25 @@
                 return { ok: res.ok, status: res.status, data };
             }
 
-            function tableSkeletonRow(columns) {
-                const widths = ['w-3/4', 'w-1/2', 'w-full', 'w-2/3', 'w-5/6', 'w-1/3'];
-                let cells = '';
-                for (let column = 0; column < columns; column++) {
-                    const width = column === 0 ? 'w-3/4' : widths[column % widths.length];
-                    cells += '<td class="px-4 py-3.5"><div class="skeleton h-4 ' + width + '"></div></td>';
-                }
-                return '<tr class="pointer-events-none select-none" aria-hidden="true">' + cells + '</tr>';
-            }
-
-            function showTableSkeleton(tbody) {
-                if (tbody.skeletonActive) return null;
-                const table = tbody.closest('table');
-                const columns = (table ? table.querySelectorAll('thead th').length : 0) ||
-                    tbody.children.length || 5;
-                const rows = parseInt(tbody.dataset.skeletonRows || '6', 10);
-
-                tbody.skeletonHtml = tbody.innerHTML;
-                tbody.skeletonActive = true;
-                tbody.setAttribute('aria-busy', 'true');
-                tbody.innerHTML = new Array(Math.min(Math.max(rows, 1), 15))
-                    .fill(tableSkeletonRow(columns))
-                    .join('');
-
-                return tbody.skeletonHtml;
-            }
-
-            function hideTableSkeleton(tbody, html) {
-                if (!tbody.skeletonActive) return;
-                tbody.removeAttribute('aria-busy');
-                if (typeof html === 'string') tbody.innerHTML = html;
-                tbody.skeletonActive = false;
-                tbody.skeletonHtml = null;
-            }
-
-            const SKELETON_MIN_MS = 220;
-
-            function wait(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-
             async function refreshTable() {
                 const tbody = document.querySelector('[data-table-body]');
                 if (!tbody) return;
-                const startedAt = Date.now();
-                const previous = showTableSkeleton(tbody) || tbody.skeletonHtml;
                 try {
                     const res = await fetch(window.location.href, {
                         headers: { 'X-Requested-With': 'XMLHttpRequest' },
                     });
-                    if (!res.ok) {
-                        hideTableSkeleton(tbody, previous);
-                        return;
-                    }
+                    if (!res.ok) return;
                     const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
                     const fresh = doc.querySelector('[data-table-body]');
-                    if (!fresh) {
-                        hideTableSkeleton(tbody, previous);
-                        return;
-                    }
-                    const elapsed = Date.now() - startedAt;
-                    if (elapsed < SKELETON_MIN_MS) await wait(SKELETON_MIN_MS - elapsed);
+                    if (!fresh) return;
                     tbody.innerHTML = fresh.innerHTML;
-                    hideTableSkeleton(tbody);
                     if (window.Alpine && typeof window.Alpine.initTree === 'function') {
                         window.Alpine.initTree(tbody);
                     }
                     if (window.RisDateMask && typeof window.RisDateMask.init === 'function') {
                         window.RisDateMask.init(tbody);
                     }
-                } catch (e) {
-                    hideTableSkeleton(tbody, previous);
-                }
+                } catch (e) {}
             }
 
             function toast(type, message) {
@@ -807,7 +753,7 @@
                 }
             });
 
-            return { submitForm, refreshTable, showTableSkeleton, hideTableSkeleton, toast, csrf };
+            return { submitForm, refreshTable, toast, csrf };
         })();
 
         window.addEventListener('pageshow', function(event) {

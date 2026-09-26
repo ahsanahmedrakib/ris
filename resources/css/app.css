@@ -1174,33 +1174,3 @@ html {
 .ris-cal-clear-btn:hover {
     background: var(--color-ris-gray-200);
 }
-
-/* ── Skeleton Loading ── */
-@keyframes shimmer {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
-}
-
-/* Base placeholder. Pair with a Tailwind size utility, e.g.
-   <div class="skeleton h-4 w-3/4"></div> */
-.skeleton {
-    background: linear-gradient(
-        90deg,
-        rgba(243, 244, 246, 0.8) 25%,
-        rgba(249, 250, 251, 0.9) 50%,
-        rgba(243, 244, 246, 0.8) 75%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.5s ease-in-out infinite;
-    border-radius: 0.5rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .skeleton {
-        animation: none;
-    }
-}
