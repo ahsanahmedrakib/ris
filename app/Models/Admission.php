@@ -7,6 +7,7 @@ use Database\Factories\AdmissionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Admission extends Model
@@ -105,6 +106,15 @@ class Admission extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * The student this application produced, if it has already been admitted.
+     * Both sides key on admission_no, which is unique on students.
+     */
+    public function student(): HasOne
+    {
+        return $this->hasOne(Student::class, 'admission_no', 'admission_no');
     }
 
     public function getBatchLabelAttribute(): string

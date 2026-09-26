@@ -275,7 +275,9 @@ class ScholarshipRegistrationTest extends TestCase
         $registration = ScholarshipRegistration::factory()->create();
 
         $this->get(route('scholarship.pdf', [$registration->registration_no, $registration->pdf_token]))
-            ->assertOk();
+            ->assertOk()
+            ->assertSee('images/signature.png', escape: false)
+            ->assertSee('প্রধান শিক্ষকের স্বাক্ষর', escape: false);
 
         $this->get(route('scholarship.pdf', [$registration->registration_no, 'wrong-token']))
             ->assertNotFound();
