@@ -2,9 +2,10 @@
 
 namespace App\Features\Auth\Http\Controllers;
 
-use App\Features\Auth\Services\DefaultAdminService;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
+use App\Support\JwtCookie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,8 +34,6 @@ class AuthController extends Controller
         $login = trim($validated['email']);
         $password = $validated['password'];
 
-        app(DefaultAdminService::class)->ensureDefaultAdmin();
-
         $credentials = filter_var($login, FILTER_VALIDATE_EMAIL) !== false
             ? ['email' => $login]
             : ['username' => $login];
@@ -60,6 +59,10 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
+        // Stamped into the session so EnsureUserIsCurrent can retire this
+        // session the moment the account is deactivated or the password changes.
+        $request->session()->put('token_version', (int) $user->token_version);
+
         $token = null;
 
         try {
@@ -72,9 +75,7 @@ class AuthController extends Controller
         $redirect = $this->redirectByRole($user->role);
 
         if ($token) {
-            $redirect->withCookie(
-                cookie('jwt_token', $token, 1440, '/', null, false, true)
-            );
+            $redirect->withCookie(JwtCookie::make($token));
         }
 
         return $redirect;
@@ -92,7 +93,9 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        // Without expiring the cookie the browser keeps replaying a token that
+        // the server has already invalidated.
+        return redirect()->route('login')->withCookie(JwtCookie::forget());
     }
 
     public function apiLogin(Request $request): JsonResponse
@@ -101,8 +104,6 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
-        app(DefaultAdminService::class)->ensureDefaultAdmin();
 
         if (! $token = auth()->guard('api')->attempt($credentials)) {
             return response()->json([
@@ -122,7 +123,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'সফলভাবে লগইন হয়েছে।',
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $token,
             'token_type' => 'bearer',
         ]);
@@ -163,7 +164,7 @@ class AuthController extends Controller
     public function apiMe(Request $request): JsonResponse
     {
         return response()->json([
-            'user' => $request->user(),
+            'user' => new UserResource($request->user()),
         ]);
     }
 

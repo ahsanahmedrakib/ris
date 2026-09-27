@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\TransportResource;
 use App\Models\Bus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class TransportController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(): JsonResource
     {
         $buses = Bus::withCount(['busRoutes', 'studentTransports'])->latest()->get();
 
-        return response()->json($buses);
+        return TransportResource::collection($buses);
     }
 
     public function store(Request $request): JsonResponse
@@ -33,18 +35,18 @@ class TransportController extends Controller
 
             return response()->json([
                 'message' => 'বাস সফলভাবে যোগ করা হয়েছে।',
-                'bus' => $bus,
+                'bus' => new TransportResource($bus),
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'বাস যোগ করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id): JsonResource
     {
         $bus = Bus::with(['busRoutes' => fn ($q) => $q->orderBy('stop_order'), 'studentTransports' => fn ($q) => $q->with('student.user')])->withCount(['busRoutes', 'studentTransports'])->findOrFail($id);
 
-        return response()->json($bus);
+        return new TransportResource($bus);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -66,7 +68,7 @@ class TransportController extends Controller
 
             return response()->json([
                 'message' => 'বাসের তথ্য সফলভাবে আপডেট হয়েছে।',
-                'bus' => $bus->fresh(),
+                'bus' => new TransportResource($bus->fresh()),
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'বাস আপডেট করতে সমস্যা হয়েছে।'], 500);

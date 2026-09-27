@@ -14,6 +14,8 @@ class StudentController extends Controller
 {
     public function idCard(Student $student): View
     {
+        $this->authorize('printIdCard', $student);
+
         $student->load(['user', 'classRoom']);
 
         return view('student.id-card', [
@@ -24,6 +26,8 @@ class StudentController extends Controller
 
     public function profile(Student $student): View
     {
+        $this->authorize('view', $student);
+
         $student->load(['user', 'classRoom', 'bus']);
 
         return view('student.profile', compact('student'));

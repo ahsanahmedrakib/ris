@@ -4,11 +4,13 @@ namespace App\Livewire\Scholarship;
 
 use App\Models\ScholarshipRegistration;
 use App\Notifications\NewSubmission;
+use App\Support\RateLimit;
 use App\Support\UniqueConstraintViolation;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -90,6 +92,17 @@ class RegistrationForm extends Component
     public function confirm(): ?RedirectResponse
     {
         $this->validate();
+
+        // Livewire posts to a single shared update endpoint, so route level
+        // throttles never run for this form. Without a check here the public
+        // scholarship form is an unlimited write path for applicant PII.
+        if (! $this->adminMode && $this->submitterHasReachedTheLimit()) {
+            $this->confirming = false;
+
+            $this->dispatch('toast', type: 'error', message: 'অনেকবার চেষ্টা করা হয়েছে। একটু পরে আবার চেষ্টা করুন।');
+
+            return null;
+        }
 
         // A second confirm for an already saved form means the same applicant
         // double clicked or replayed the request, which would store a duplicate
@@ -184,6 +197,22 @@ class RegistrationForm extends Component
         $this->dispatch('toast', type: 'success', message: 'রেজিস্ট্রেশন সফল হয়েছে!');
 
         return null;
+    }
+
+    /**
+     * Whether this client has already used up its public form allowance.
+     */
+    private function submitterHasReachedTheLimit(): bool
+    {
+        $key = RateLimit::byIp(request(), 'scholarship');
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            return true;
+        }
+
+        RateLimiter::hit($key, 3600);
+
+        return false;
     }
 
     /**

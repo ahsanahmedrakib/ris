@@ -100,6 +100,14 @@ class Admission extends Model
             'admission_date' => 'date',
             'form_collect_date' => 'date',
             'form_submit_date' => 'date',
+            'present_address' => 'encrypted',
+            'permanent_address' => 'encrypted',
+            'legal_guardian_address' => 'encrypted',
+            'local_guardian_address' => 'encrypted',
+            'prev_school_address' => 'encrypted',
+            'emergency_contact' => 'encrypted',
+            'local_guardian_phone' => 'encrypted',
+            'blood_group' => 'encrypted',
         ];
     }
 

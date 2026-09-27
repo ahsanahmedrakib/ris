@@ -121,7 +121,7 @@
                                 'children' => [
                                     ['label' => 'একাডেমিক ক্যালেন্ডার', 'route' => 'academic.calendar'],
                                     ['label' => 'টিউশন ফি', 'route' => 'academic.fees'],
-                                    ['label' => 'ফলাফল', 'route' => 'academic.results'],
+                                    ['label' => 'ফলাফল', 'route' => 'academic.results', 'auth' => true],
                                     ['label' => 'স্কুলের সুবিধা', 'route' => 'academic.facilities'],
                                     ['label' => 'ক্লাশ রুটিন', 'route' => 'class-routine'],
                                 ],
@@ -161,6 +161,9 @@
                                     x-transition:leave-end="opacity-0 scale-95"
                                     class="absolute left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
                                     @foreach ($item['children'] as $child)
+                                        @if (! empty($child['auth']) && ! auth()->check())
+                                            @continue
+                                        @endif
                                         <a href="{{ route($child['route']) }}"
                                             class="flex items-center gap-2.5 px-4 py-2.5 hover:bg-gray-50 transition-colors
                                             {{ request()->routeIs($child['route']) ? 'text-ris-primary font-medium' : 'text-gray-700' }}">
@@ -222,6 +225,9 @@
                         <div class="space-y-0.5">
                             <div class="px-4 py-2.5 text-sm font-medium text-ris-primary">{{ $item['label'] }}</div>
                             @foreach ($item['children'] as $child)
+                                @if (! empty($child['auth']) && ! auth()->check())
+                                    @continue
+                                @endif
                                 <a href="{{ route($child['route']) }}"
                                     class="block pl-10 pr-4 py-2 rounded-lg text-sm font-medium transition-colors
                                    {{ request()->routeIs($child['route']) ? 'bg-ris-primary/10 text-ris-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-ris-primary' }}">
@@ -294,8 +300,10 @@
                         <li><a href="{{ route('admission') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">ভর্তি</a></li>
 
-                        <li><a href="{{ route('academic.results') }}"
-                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">ফলাফল</a></li>
+                        @auth
+                            <li><a href="{{ route('academic.results') }}"
+                                    class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">ফলাফল</a></li>
+                        @endauth
                         <li><a href="{{ route('scholarship') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">মেধাবৃত্তি</a>
                         </li>

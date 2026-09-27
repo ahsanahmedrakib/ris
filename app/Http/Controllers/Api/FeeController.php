@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\FeeStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\FeeInvoiceResource;
+use App\Http\Resources\Api\V1\FeePaymentResource;
 use App\Models\FeeInvoice;
 use App\Models\FeePayment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
 class FeeController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResource
     {
         $query = FeeInvoice::with(['student.user', 'feeStructure.classRoom']);
 
@@ -22,7 +25,7 @@ class FeeController extends Controller
 
         $invoices = $query->latest()->paginate(20);
 
-        return response()->json($invoices);
+        return FeeInvoiceResource::collection($invoices);
     }
 
     public function store(Request $request): JsonResponse
@@ -60,18 +63,18 @@ class FeeController extends Controller
 
             return response()->json([
                 'message' => 'পেমেন্ট সফলভাবে রেকর্ড করা হয়েছে।',
-                'payment' => $payment->load(['student.user', 'invoice.feeStructure']),
+                'payment' => new FeePaymentResource($payment->load(['student.user', 'invoice.feeStructure'])),
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'পেমেন্ট রেকর্ড করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id): JsonResource
     {
         $invoice = FeeInvoice::with(['student.user', 'feeStructure', 'feePayments' => fn ($q) => $q->with('payer')])->findOrFail($id);
 
-        return response()->json($invoice);
+        return new FeeInvoiceResource($invoice);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -88,7 +91,7 @@ class FeeController extends Controller
 
             return response()->json([
                 'message' => 'ফি চালান সফলভাবে আপডেট হয়েছে।',
-                'invoice' => $invoice->fresh()->load(['student.user', 'feeStructure']),
+                'invoice' => new FeeInvoiceResource($invoice->fresh()->load(['student.user', 'feeStructure'])),
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'ফি চালান আপডেট করতে সমস্যা হয়েছে।'], 500);

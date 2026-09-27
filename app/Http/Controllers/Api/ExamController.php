@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\ExamResource;
 use App\Models\Exam;
 use App\Support\NumberConverter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ExamController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResource
     {
         $query = Exam::with(['classRoom', 'academicYear']);
 
@@ -20,7 +22,7 @@ class ExamController extends Controller
 
         $exams = $query->latest()->paginate(15);
 
-        return response()->json($exams);
+        return ExamResource::collection($exams);
     }
 
     public function store(Request $request): JsonResponse
@@ -46,18 +48,18 @@ class ExamController extends Controller
 
             return response()->json([
                 'message' => 'পরীক্ষা সফলভাবে তৈরি হয়েছে।',
-                'exam' => $exam->load(['classRoom', 'academicYear']),
+                'exam' => new ExamResource($exam->load(['classRoom', 'academicYear'])),
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'পরীক্ষা তৈরি করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id): JsonResource
     {
         $exam = Exam::with(['classRoom', 'academicYear', 'examResults' => fn ($q) => $q->with(['student.user', 'subject'])])->findOrFail($id);
 
-        return response()->json($exam);
+        return new ExamResource($exam);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -85,7 +87,7 @@ class ExamController extends Controller
 
             return response()->json([
                 'message' => 'পরীক্ষা সফলভাবে আপডেট হয়েছে।',
-                'exam' => $exam->fresh()->load(['classRoom', 'academicYear']),
+                'exam' => new ExamResource($exam->fresh()->load(['classRoom', 'academicYear'])),
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'পরীক্ষা আপডেট করতে সমস্যা হয়েছে।'], 500);

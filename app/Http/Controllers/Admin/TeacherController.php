@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class TeacherController extends Controller
@@ -56,7 +57,7 @@ class TeacherController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -91,11 +92,16 @@ class TeacherController extends Controller
         DB::beginTransaction();
 
         try {
+            // Never a fixed password: a shared known default would hand every new
+            // teacher account to anyone who guessed the address. The generated
+            // password is shown to the admin once so it can be passed on.
+            $temporaryPassword = Str::password(16);
+
             $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'],
-                'password' => bcrypt('password'),
+                'password' => $temporaryPassword,
                 'role' => UserRole::Teacher->value,
                 'is_active' => true,
             ]);
@@ -119,11 +125,15 @@ class TeacherController extends Controller
             DB::commit();
 
             if ($request->expectsJson()) {
-                return response()->json(['message' => 'শিক্ষক সফলভাবে যোগ করা হয়েছে।']);
+                return response()->json([
+                    'message' => 'শিক্ষক সফলভাবে যোগ করা হয়েছে।',
+                    'temporary_password' => $temporaryPassword,
+                ]);
             }
 
             return redirect()->route('admin.teachers.index')
-                ->with('success', 'শিক্ষক সফলভাবে যোগ করা হয়েছে।');
+                ->with('success', 'শিক্ষক সফলভাবে যোগ করা হয়েছে।')
+                ->with('temporary_password', $temporaryPassword);
         } catch (\Exception $e) {
             DB::rollBack();
 

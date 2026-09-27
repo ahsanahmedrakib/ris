@@ -4,16 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\StudentResource;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class StudentController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResource
     {
         $query = Student::with(['classRoom', 'user']);
 
@@ -32,7 +34,7 @@ class StudentController extends Controller
 
         $students = $query->latest()->paginate(15);
 
-        return response()->json($students);
+        return StudentResource::collection($students);
     }
 
     public function store(Request $request): JsonResponse
@@ -71,7 +73,7 @@ class StudentController extends Controller
 
             return response()->json([
                 'message' => 'ছাত্র/ছাত্রী সফলভাবে যোগ করা হয়েছে।',
-                'student' => $student->load(['user', 'classRoom']),
+                'student' => new StudentResource($student->load(['user', 'classRoom'])),
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -80,11 +82,11 @@ class StudentController extends Controller
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id): JsonResource
     {
         $student = Student::with(['user', 'classRoom', 'parents', 'attendances', 'examResults' => fn ($q) => $q->with('exam', 'subject')])->findOrFail($id);
 
-        return response()->json($student);
+        return new StudentResource($student);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -110,7 +112,7 @@ class StudentController extends Controller
 
             return response()->json([
                 'message' => 'ছাত্র/ছাত্রী সফলভাবে আপডেট হয়েছে।',
-                'student' => $student->fresh()->load(['user', 'classRoom']),
+                'student' => new StudentResource($student->fresh()->load(['user', 'classRoom'])),
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'ছাত্র/ছাত্রী আপডেট করতে সমস্যা হয়েছে।'], 500);

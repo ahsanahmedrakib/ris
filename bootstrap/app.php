@@ -1,7 +1,9 @@
 <?php
 
 use App\Core\Http\Middleware\CheckRole;
+use App\Core\Http\Middleware\EnsureUserIsCurrent;
 use App\Core\Http\Middleware\ForceJsonResponse;
+use App\Core\Http\Middleware\SecurityHeaders;
 use App\Core\Http\Middleware\TrackVisitor;
 use App\Http\Middleware\ConvertRedirectsToJson;
 use Illuminate\Foundation\Application;
@@ -21,15 +23,45 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => CheckRole::class,
             'force.json' => ForceJsonResponse::class,
             'track.visitor' => TrackVisitor::class,
+            'security.headers' => SecurityHeaders::class,
+            'user.current' => EnsureUserIsCurrent::class,
         ]);
 
         $middleware->web(append: [
             ConvertRedirectsToJson::class,
+            EnsureUserIsCurrent::class,
+            SecurityHeaders::class,
         ]);
 
         $middleware->api(prepend: [
             ForceJsonResponse::class,
         ]);
+
+        $middleware->api(append: [
+            EnsureUserIsCurrent::class,
+            SecurityHeaders::class,
+        ]);
+
+        $middleware->encryptCookies(except: [
+            'jwt_token',
+        ]);
+
+        // Behind a load balancer, the request arrives with the proxy's IP. Without
+        // this every generated URL and every rate limit bucket is keyed off the
+        // proxy, so one school could exhaust another's quota and HTTPS detection
+        // fails outright.
+        $middleware->trustProxies(
+            at: array_filter(explode(',', (string) env('TRUSTED_PROXIES', ''))),
+            headers: Request::HEADER_X_FORWARDED_FOR
+                | Request::HEADER_X_FORWARDED_HOST
+                | Request::HEADER_X_FORWARDED_PORT
+                | Request::HEADER_X_FORWARDED_PROTO
+                | Request::HEADER_X_FORWARDED_AWS_ELB,
+        );
+
+        $middleware->trustHosts(
+            at: array_filter(explode(',', (string) env('TRUSTED_HOSTS', ''))),
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

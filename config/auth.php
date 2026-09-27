@@ -122,18 +122,20 @@ return [
     /*
     |--------------------------------------------------------------------------
     | Default Administrator
-    |--------------------------------------------------------------------------
-    |
-    | When the users table is empty, these credentials are used to bootstrap a
-    | super administrator account automatically the first time someone logs in.
-    |
-    */
+     |--------------------------------------------------------------------------
+     |
+     | Defaults for `php artisan app:provision-admin`, which is the only thing
+     | that creates the first administrator. There is deliberately no fallback
+     | password: a fresh install refuses to provision until a real one is set,
+     | so no anonymous request can conjure a known-password admin.
+     |
+     */
 
     'default_admin' => [
         'name' => env('DEFAULT_ADMIN_NAME', 'Super Admin'),
         'username' => env('DEFAULT_ADMIN_USERNAME', 'admin'),
         'email' => env('DEFAULT_ADMIN_EMAIL', 'admin@ris.local'),
-        'password' => env('DEFAULT_ADMIN_PASSWORD', 'password'),
+        'password' => env('DEFAULT_ADMIN_PASSWORD'),
     ],
 
 ];

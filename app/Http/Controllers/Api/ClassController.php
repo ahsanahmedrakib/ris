@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\ClassRoomResource;
 use App\Models\ClassRoom;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ClassController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(): JsonResource
     {
         $classes = ClassRoom::with(['academicYear', 'classTeacher'])->withCount('students')->get();
 
-        return response()->json($classes);
+        return ClassRoomResource::collection($classes);
     }
 
     public function store(Request $request): JsonResponse
@@ -32,18 +34,18 @@ class ClassController extends Controller
 
             return response()->json([
                 'message' => 'শ্রেণি সফলভাবে তৈরি হয়েছে।',
-                'class' => $class->load(['academicYear', 'classTeacher']),
+                'class' => new ClassRoomResource($class->load(['academicYear', 'classTeacher'])),
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'শ্রেণি তৈরি করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id): JsonResource
     {
         $class = ClassRoom::with(['academicYear', 'classTeacher', 'students' => fn ($q) => $q->with('user')])->withCount('students')->findOrFail($id);
 
-        return response()->json($class);
+        return new ClassRoomResource($class);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -63,7 +65,7 @@ class ClassController extends Controller
 
             return response()->json([
                 'message' => 'শ্রেণি সফলভাবে আপডেট হয়েছে।',
-                'class' => $class->fresh()->load(['academicYear', 'classTeacher']),
+                'class' => new ClassRoomResource($class->fresh()->load(['academicYear', 'classTeacher'])),
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'শ্রেণি আপডেট করতে সমস্যা হয়েছে।'], 500);

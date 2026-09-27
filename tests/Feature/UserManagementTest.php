@@ -138,30 +138,62 @@ class UserManagementTest extends TestCase
     }
 
     #[Test]
-    public function default_admin_is_created_when_users_table_is_empty_on_login(): void
+    public function logging_in_never_creates_an_administrator(): void
     {
+        // Provisioning used to run inside the login request, so an anonymous
+        // POST to /login conjured a known-password admin whenever the users
+        // table was empty.
         $this->assertSame(0, User::count());
 
         $this->post(route('login.submit'), [
-            'email' => config('auth.default_admin.email'),
-            'password' => config('auth.default_admin.password'),
-        ])->assertRedirect(route('admin.dashboard'));
+            'email' => 'admin@ris.local',
+            'password' => 'password',
+        ]);
 
-        $this->assertAuthenticatedAs(User::where('email', config('auth.default_admin.email'))->first());
-        $this->assertSame('admin', User::where('email', config('auth.default_admin.email'))->value('role'));
+        $this->assertSame(0, User::count());
+        $this->assertGuest();
     }
 
     #[Test]
-    public function default_admin_is_not_recreated_when_users_exist(): void
+    public function the_provision_command_refuses_to_use_the_known_default_password(): void
     {
-        $admin = $this->admin();
-        $admin->update(['email' => config('auth.default_admin.email')]);
+        config(['auth.default_admin.password' => 'password']);
 
-        $this->post(route('login.submit'), [
-            'email' => config('auth.default_admin.email'),
-            'password' => 'password',
-        ])->assertRedirect(route('admin.dashboard'));
+        $this->artisan('app:provision-admin', ['--password' => 'password'])
+            ->assertFailed();
 
-        $this->assertSame(1, User::count());
+        $this->assertSame(0, User::count());
+    }
+
+    #[Test]
+    public function the_provision_command_creates_an_administrator_with_a_strong_password(): void
+    {
+        config(['auth.default_admin.password' => null]);
+
+        $this->artisan('app:provision-admin', [
+            '--name' => 'Head Teacher',
+            '--username' => 'head',
+            '--email' => 'head@school.test',
+            '--password' => 'Str0ng-Passw0rd!2026',
+        ])->assertSuccessful();
+
+        $admin = User::where('email', 'head@school.test')->firstOrFail();
+
+        $this->assertSame('admin', $admin->role);
+        $this->assertTrue($admin->is_active);
+        $this->assertTrue(Hash::check('Str0ng-Passw0rd!2026', $admin->password));
+    }
+
+    #[Test]
+    public function the_provision_command_does_nothing_once_an_admin_exists(): void
+    {
+        $this->admin();
+
+        $this->artisan('app:provision-admin', [
+            '--email' => 'second@school.test',
+            '--password' => 'Str0ng-Passw0rd!2026',
+        ])->assertSuccessful();
+
+        $this->assertNull(User::where('email', 'second@school.test')->first());
     }
 }

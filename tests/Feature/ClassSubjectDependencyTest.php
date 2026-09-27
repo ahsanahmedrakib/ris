@@ -26,6 +26,11 @@ class ClassSubjectDependencyTest extends TestCase
         return User::factory()->create(['role' => 'admin']);
     }
 
+    private function parent(): User
+    {
+        return User::factory()->create(['role' => UserRole::Parent->value]);
+    }
+
     /**
      * @return array{year: AcademicYear, class: ClassRoom, teacher: User}
      */
@@ -326,8 +331,20 @@ class ClassSubjectDependencyTest extends TestCase
     }
 
     #[Test]
-    public function public_results_page_shows_class_marks_table(): void
+    public function results_page_requires_authentication(): void
     {
+        $school = $this->school();
+        $subject = $this->subject($school);
+        $exam = $this->exam($school, $subject, withStudent: true);
+
+        $this->get(route('academic.results', ['class_id' => $school['class']->id]))
+            ->assertRedirect();
+    }
+
+    #[Test]
+    public function staff_results_page_shows_class_marks_table(): void
+    {
+        $admin = $this->admin();
         $school = $this->school();
         $subject = $this->subject($school);
         $exam = $this->exam($school, $subject, withStudent: true);
@@ -338,17 +355,45 @@ class ClassSubjectDependencyTest extends TestCase
             'subject_id' => $subject->id,
             'marks_obtained' => 85,
             'grade' => ExamResult::calculateGrade(85, 100, 33),
-            'entered_by' => $this->admin()->id,
+            'entered_by' => $admin->id,
         ]);
 
-        $this->get(route('academic.results', [
-            'class_id' => $school['class']->id,
-            'exam_id' => $exam['exam']->id,
-        ]))
+        $this->actingAs($admin)
+            ->get(route('academic.results', [
+                'class_id' => $school['class']->id,
+                'exam_id' => $exam['exam']->id,
+            ]))
             ->assertOk()
             ->assertSee('বার্ষিক পরীক্ষা')
             ->assertSee('85.0')
             ->assertSee($exam['student']->user->name);
+    }
+
+    #[Test]
+    public function a_parent_only_sees_their_own_childs_results(): void
+    {
+        $school = $this->school();
+        $subject = $this->subject($school);
+        $exam = $this->exam($school, $subject, withStudent: true);
+
+        $parent = $this->parent();
+        $parent->parentStudents()->attach($exam['student']->id, ['relation' => 'father']);
+
+        ExamResult::create([
+            'exam_id' => $exam['exam']->id,
+            'student_id' => $exam['student']->id,
+            'subject_id' => $subject->id,
+            'marks_obtained' => 85,
+            'grade' => ExamResult::calculateGrade(85, 100, 33),
+            'entered_by' => $this->admin()->id,
+        ]);
+
+        $response = $this->actingAs($parent)
+            ->get(route('academic.results', ['class_id' => $school['class']->id]));
+
+        $response->assertOk();
+        $response->assertSee($exam['student']->user->name);
+        $response->assertDontSee($school['teacher']->name);
     }
 
     #[Test]

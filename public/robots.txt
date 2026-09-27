@@ -1,2 +1,35 @@
+# The public marketing pages stay crawlable so the school can be found. Anything
+# that is not the public site is a record of a real child, a parent or a member
+# of staff, so it is kept out of search indexes. This is not access control --
+# it only keeps those URLs from being indexed and cached by crawlers.
+
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /parent
+Disallow: /login
+Disallow: /logout
+Disallow: /profile
+Disallow: /student
+Disallow: /academic/results
+Disallow: /scholarship/pdf/
+Disallow: /api
+Disallow: /livewire
+Disallow: /storage
+Disallow: /*?*
+
+# The gallery is public content and stays crawlable, but these folders hold
+# photographs of named people: applicants, staff and testimonial subjects.
+Disallow: /images/admissions
+Disallow: /images/avatars
+Disallow: /images/teachers
+Disallow: /images/testimonial-photos
+
+# Uploaded documents are served straight from the web root, and some of them
+# are admissions paperwork. They should never appear in a file search index.
+User-agent: *
+Disallow: /*.pdf
+Disallow: /*.doc
+Disallow: /*.docx
+Disallow: /*.xls
+Disallow: /*.xlsx
+Disallow: /*.csv

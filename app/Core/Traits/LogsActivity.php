@@ -37,6 +37,29 @@ trait LogsActivity
         'isbn',
     ];
 
+    /**
+     * Never written to the audit trail.
+     *
+     * A password change would otherwise store the bcrypt hash, which is enough
+     * to mount an offline cracking attempt, alongside whatever secret the model
+     * happens to keep.
+     *
+     * @var list<string>
+     */
+    private const REDACTED_ATTRIBUTES = [
+        'password',
+        'password_confirmation',
+        'current_password',
+        'new_password',
+        'new_password_confirmation',
+        'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'api_token',
+        'token',
+        'secret',
+    ];
+
     public static function bootLogsActivity(): void
     {
         static::created(fn (Model $model) => self::recordActivity($model, 'create'));
@@ -70,9 +93,30 @@ trait LogsActivity
             'subject_type' => get_class($model),
             'subject_id' => $model->getKey(),
             'description' => self::activityDescription($model, $action),
-            'properties' => $action === 'update' ? $model->getChanges() : null,
+            'properties' => $action === 'update' ? self::redactedChanges($model) : null,
             'ip_address' => request()->ip(),
         ]);
+    }
+
+    /**
+     * The changed attributes, with anything sensitive replaced by a marker.
+     *
+     * The marker keeps the audit trail honest: a reader can still see that the
+     * password changed, without being handed the hash itself.
+     *
+     * @return array<string, mixed>
+     */
+    private static function redactedChanges(Model $model): array
+    {
+        $changes = $model->getChanges();
+
+        foreach (self::REDACTED_ATTRIBUTES as $attribute) {
+            if (array_key_exists($attribute, $changes)) {
+                $changes[$attribute] = '[redacted]';
+            }
+        }
+
+        return $changes;
     }
 
     private static function deleteAction(Model $model): string

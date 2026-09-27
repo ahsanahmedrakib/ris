@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\PayrollResource;
 use App\Models\Payroll;
 use App\Models\Staff;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class PayrollController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResource
     {
         $query = Payroll::with('staff.user');
 
@@ -24,7 +26,7 @@ class PayrollController extends Controller
 
         $payrolls = $query->latest('year')->latest('month')->paginate(20);
 
-        return response()->json($payrolls);
+        return PayrollResource::collection($payrolls);
     }
 
     public function store(Request $request): JsonResponse
@@ -66,18 +68,18 @@ class PayrollController extends Controller
 
             return response()->json([
                 'message' => 'বেতন স্লিপ সফলভাবে তৈরি হয়েছে।',
-                'payroll' => $payroll->load('staff.user'),
+                'payroll' => new PayrollResource($payroll->load('staff.user')),
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'বেতন প্রক্রিয়া করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id): JsonResource
     {
         $payroll = Payroll::with('staff.user')->findOrFail($id);
 
-        return response()->json($payroll);
+        return new PayrollResource($payroll);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -98,7 +100,7 @@ class PayrollController extends Controller
 
             return response()->json([
                 'message' => 'বেতন সফলভাবে আপডেট হয়েছে।',
-                'payroll' => $payroll->fresh()->load('staff.user'),
+                'payroll' => new PayrollResource($payroll->fresh()->load('staff.user')),
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'বেতন আপডেট করতে সমস্যা হয়েছে।'], 500);

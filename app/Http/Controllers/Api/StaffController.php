@@ -4,16 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\StaffResource;
 use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class StaffController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResource
     {
         $query = Staff::with('user');
 
@@ -28,7 +30,7 @@ class StaffController extends Controller
 
         $staff = $query->latest()->paginate(15);
 
-        return response()->json($staff);
+        return StaffResource::collection($staff);
     }
 
     public function store(Request $request): JsonResponse
@@ -60,7 +62,7 @@ class StaffController extends Controller
 
             return response()->json([
                 'message' => 'কর্মচারী সফলভাবে যোগ করা হয়েছে।',
-                'staff' => $staff->load('user'),
+                'staff' => new StaffResource($staff->load('user')),
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -69,11 +71,11 @@ class StaffController extends Controller
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id): JsonResource
     {
         $staff = Staff::with(['user', 'payrolls'])->findOrFail($id);
 
-        return response()->json($staff);
+        return new StaffResource($staff);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -95,7 +97,7 @@ class StaffController extends Controller
 
             return response()->json([
                 'message' => 'কর্মচারীর তথ্য সফলভাবে আপডেট হয়েছে।',
-                'staff' => $staff->fresh()->load('user'),
+                'staff' => new StaffResource($staff->fresh()->load('user')),
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'কর্মচারী আপডেট করতে সমস্যা হয়েছে।'], 500);

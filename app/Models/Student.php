@@ -33,6 +33,8 @@ class Student extends Model
         return [
             'date_of_birth' => 'date',
             'is_active' => 'boolean',
+            'address' => 'encrypted',
+            'blood_group' => 'encrypted',
         ];
     }
 

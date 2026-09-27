@@ -20,6 +20,7 @@ class ProfileController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
 
         $validated = $request->validate([
@@ -88,6 +89,11 @@ class ProfileController extends Controller
             'password' => $request->password,
         ]);
 
-        return back()->with('success', 'পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে।');
+        // The password change bumps token_version, which retires every other
+        // session and token. Re-stamp this one so the user is not bounced out
+        // of the tab they just used to change their own password.
+        $request->session()->put('token_version', (int) $user->fresh()->token_version);
+
+        return back()->with('success', 'পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে। অন্য ডিভাইস থেকে লগআউট করা হয়েছে।');
     }
 }

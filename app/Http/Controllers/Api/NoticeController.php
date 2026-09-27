@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\NoticeResource;
 use App\Models\Notice;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
 class NoticeController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(): JsonResource
     {
         $notices = Notice::with('publisher')->latest('published_at')->paginate(15);
 
-        return response()->json($notices);
+        return NoticeResource::collection($notices);
     }
 
     public function store(Request $request): JsonResponse
@@ -42,18 +44,18 @@ class NoticeController extends Controller
 
             return response()->json([
                 'message' => 'নোটিফিকেশন সফলভাবে প্রকাশিত হয়েছে।',
-                'notice' => $notice->load('publisher'),
+                'notice' => new NoticeResource($notice->load('publisher')),
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'নোটিফিকেশন প্রকাশ করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id): JsonResource
     {
         $notice = Notice::with('publisher')->findOrFail($id);
 
-        return response()->json($notice);
+        return new NoticeResource($notice);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -71,7 +73,7 @@ class NoticeController extends Controller
 
             return response()->json([
                 'message' => 'নোটিফিকেশন সফলভাবে আপডেট হয়েছে।',
-                'notice' => $notice->fresh()->load('publisher'),
+                'notice' => new NoticeResource($notice->fresh()->load('publisher')),
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'নোটিফিকেশন আপডেট করতে সমস্যা হয়েছে।'], 500);

@@ -716,6 +716,78 @@
                 } catch (e) {}
             }
 
+            // Drives the inline status dropdowns in the row tables. Saving used
+            // to call $el.form.submit(), which reloaded the whole page and threw
+            // away scroll position, filters and any open modal just to change one
+            // cell. This posts the change in the background instead.
+            //
+            // `admitted` locks the extra action (admitting a student) so a status
+            // change cannot reveal it for a record that is already admitted.
+            function statusRow(url, initial, opts) {
+                const options = opts || {};
+                const BADGES = {
+                    pending: 'bg-yellow-100 text-yellow-800',
+                    approved: 'bg-emerald-100 text-emerald-800',
+                    rejected: 'bg-red-100 text-red-800',
+                };
+                const alreadyAdmitted = !!options.admitted;
+
+                return {
+                    status: initial,
+                    saved: initial,
+                    busy: false,
+                    canAdmit: !!options.canAdmit,
+                    get badge() {
+                        return BADGES[this.status] || '';
+                    },
+                    async save() {
+                        if (this.busy || this.status === this.saved) return;
+
+                        const next = this.status;
+                        this.busy = true;
+
+                        try {
+                            const body = new FormData();
+                            body.append('status', next);
+                            body.append('_method', 'PATCH');
+                            body.append('_token', csrf());
+
+                            // POST plus a _method spoof, because PHP does not parse
+                            // a multipart body for PATCH and the value would be lost.
+                            const res = await fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': csrf(),
+                                },
+                                body: body,
+                            });
+
+                            let data = {};
+                            try {
+                                data = await res.json();
+                            } catch (e) {}
+
+                            if (!res.ok) {
+                                this.status = this.saved;
+                                toast('error', data.message || 'স্ট্যাটাস পরিবর্তন করা যায়নি।');
+                                return;
+                            }
+
+                            this.saved = next;
+                            this.canAdmit = next === 'approved' && !alreadyAdmitted;
+                            toast('success', data.message || 'স্ট্যাটাস পরিবর্তন করা হয়েছে।');
+                        } catch (err) {
+                            this.status = this.saved;
+                            toast('error', 'স্ট্যাটাস পরিবর্তন করা যায়নি।');
+                        } finally {
+                            this.busy = false;
+                        }
+                    },
+                };
+            }
+
             function toast(type, message) {
                 window.dispatchEvent(new CustomEvent('toast', { detail: { type, message } }));
             }
@@ -753,7 +825,7 @@
                 }
             });
 
-            return { submitForm, refreshTable, toast, csrf };
+            return { submitForm, refreshTable, toast, csrf, statusRow };
         })();
 
         window.addEventListener('pageshow', function(event) {

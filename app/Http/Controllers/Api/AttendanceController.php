@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\AttendanceResource;
 use App\Models\Attendance;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResource
     {
         $query = Attendance::with(['student.user', 'classRoom', 'marker']);
 
@@ -24,7 +26,7 @@ class AttendanceController extends Controller
 
         $attendances = $query->latest('date')->paginate(20);
 
-        return response()->json($attendances);
+        return AttendanceResource::collection($attendances);
     }
 
     public function store(Request $request): JsonResponse
@@ -45,18 +47,18 @@ class AttendanceController extends Controller
 
             return response()->json([
                 'message' => 'উপস্থিতি সফলভাবে সংরক্ষিত হয়েছে।',
-                'attendance' => $attendance->load(['student.user', 'classRoom']),
+                'attendance' => new AttendanceResource($attendance->load(['student.user', 'classRoom'])),
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'উপস্থিতি সংরক্ষণ করতে সমস্যা হয়েছে।'], 500);
         }
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id): JsonResource
     {
         $attendance = Attendance::with(['student.user', 'classRoom', 'marker'])->findOrFail($id);
 
-        return response()->json($attendance);
+        return new AttendanceResource($attendance);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -73,7 +75,7 @@ class AttendanceController extends Controller
 
             return response()->json([
                 'message' => 'উপস্থিতি সফলভাবে আপডেট হয়েছে।',
-                'attendance' => $attendance->fresh()->load(['student.user', 'classRoom']),
+                'attendance' => new AttendanceResource($attendance->fresh()->load(['student.user', 'classRoom'])),
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'উপস্থিতি আপডেট করতে সমস্যা হয়েছে।'], 500);

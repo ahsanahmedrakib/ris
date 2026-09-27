@@ -91,7 +91,7 @@
                     <div x-show="expandedNotice === {{ $notice->id }}" x-collapse x-cloak class="border-t border-gray-100">
                         <div class="p-5 sm:p-6 bg-gray-50/50">
                             <div class="prose prose-sm max-w-none text-gray-700 leading-relaxed">
-                                {!! nl2br(e($notice->body ?? $notice->content ?? '')) !!}
+                                {!! \App\Support\HtmlSanitizer::clean($notice->body ?? $notice->content ?? '') !!}
                             </div>
 
                             @if(isset($notice->attachment))

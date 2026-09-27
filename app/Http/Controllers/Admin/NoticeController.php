@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
+use App\Support\HtmlSanitizer;
 use App\Support\XlsxExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -64,6 +65,7 @@ class NoticeController extends Controller
 
         try {
             $validated['category'] = $validated['category'] ?? 'general';
+            $validated['content'] = HtmlSanitizer::clean($validated['content']);
             $validated['published_by'] = Auth::id();
             $validated['published_at'] = $validated['published_at'] ?? now();
             $validated['is_active'] = $validated['is_active'] ?? true;
@@ -141,6 +143,7 @@ class NoticeController extends Controller
 
         try {
             $validated['category'] = $validated['category'] ?? $notice->category ?? 'general';
+            $validated['content'] = HtmlSanitizer::clean($validated['content']);
             $notice->update($validated);
 
             return redirect()->route('admin.notices.index')

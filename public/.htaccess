@@ -18,8 +18,53 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # Belt and braces: never execute or hand out a script that reached the web
+    # root. This has to be a RewriteRule rather than a FilesMatch, because
+    # FilesMatch also matches index.php and would 403 the whole site via
+    # DirectoryIndex. The exception is matched on the URL path so that no
+    # other file named index.php (for example uploads/a/index.php) slips past.
+    RewriteRule ^index\.php$ - [L]
+    RewriteRule "(?i)\.(php|phps|php[0-9]|phtml|phar|pl|py|cgi|asp|aspx|jsp|sh|bash|exe|com|bat|cmd)$" - [F,L]
+
+    # Refuse dotfile path segments. A stray .env or .git in the web root is a
+    # full disclosure, and a dropped .htaccess would otherwise re-enable
+    # execution in the upload folders that just denied it. ACME challenges are
+    # the one exception, and they live in a directory rather than a basename.
+    RewriteCond %{REQUEST_URI} !^/\.well-known/
+    RewriteRule "(?i)(^|/)\." - [F,L]
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+# Fallback for hosts without mod_rewrite: deny the inert-but-sensitive
+# extensions. The executable ones are handled above, which is why they are
+# absent here.
+<FilesMatch "(?i)\.(ini|log|sql|bak|old|orig|save|swp|dist|sample|env)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Server-side sources that must never be downloadable, even if a deploy
+# mistake leaves them inside public/.
+<FilesMatch "(?i)^(composer\.(json|lock)|package(-lock)?\.json|artisan|phpunit\.xml.*|vite\.config\..*|server\.php|\.env.*|.*\.md)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# No directory listings anywhere.
+<IfModule mod_autoindex.c>
+    Options -Indexes
 </IfModule>

@@ -77,7 +77,8 @@
                 </thead>
                 <tbody class="divide-y divide-gray-50">
                     @forelse($admissions as $index => $admission)
-                        <tr class="hover:bg-gray-50 transition-colors">
+                        <tr class="hover:bg-gray-50 transition-colors"
+                            x-data="RisAdmin.statusRow(@js(route('admin.admission.status', $admission)), @js($admission->status), { canAdmit: {{ $admission->status === 'approved' && ! in_array($admission->admission_no, $admittedNos) ? 'true' : 'false' }}, admitted: {{ in_array($admission->admission_no, $admittedNos) ? 'true' : 'false' }} })">
                             <td class="px-4 py-3 text-gray-500 whitespace-nowrap">{{ ($admissions->currentPage() - 1) * $admissions->perPage() + $index + 1 }}</td>
                             <td class="px-4 py-3 whitespace-nowrap">
                                 <button @click="openViewModal({{ $admission->id }})" class="font-heading font-semibold text-ris-primary hover:underline cursor-pointer">{{ $admission->admission_no }}</button>
@@ -95,15 +96,17 @@
                             <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $admission->roll_no ?? '-' }}</td>
                             <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $admission->phone ?? '-' }}</td>
                             <td class="px-4 py-3 whitespace-nowrap">
-                                <form method="POST" action="{{ route('admin.admission.status', $admission) }}" x-data="{ status: '{{ $admission->status }}' }">
-                                    @csrf
-                                    @method('PATCH')
-                                    <select name="status" x-model="status" @change="$el.form.submit()" class="text-xs font-medium rounded-full px-2.5 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-ris-primary/20 {{ $admission->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }} {{ $admission->status === 'approved' ? 'bg-emerald-100 text-emerald-800' : '' }} {{ $admission->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}">
+                                <form method="POST" action="{{ route('admin.admission.status', $admission) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <select name="status" x-model="status" @change="save()" :class="badge"
+                                            :disabled="busy"
+                                            class="text-xs font-medium rounded-full px-2.5 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-ris-primary/20 disabled:opacity-60 disabled:cursor-wait">
                                         <option value="pending" {{ $admission->status === 'pending' ? 'selected' : '' }}>পেন্ডিং</option>
                                         <option value="approved" {{ $admission->status === 'approved' ? 'selected' : '' }}>অনুমোদিত</option>
                                         <option value="rejected" {{ $admission->status === 'rejected' ? 'selected' : '' }}>প্রত্যাখ্যাত</option>
-                                    </select>
-                                </form>
+                                        </select>
+                                    </form>
                             </td>
                             <td class="px-4 py-3 text-gray-500 whitespace-nowrap">{{ $admission->created_at->format('d/m/Y') }}</td>
                             <td class="px-4 py-3 sticky right-0 bg-white z-10">
@@ -111,11 +114,9 @@
                                     <button @click="openViewModal({{ $admission->id }})" class="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors cursor-pointer" title="দেখুন">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     </button>
-                                    @if($admission->status === 'approved' && ! in_array($admission->admission_no, $admittedNos))
-                                        <button @click="openAdmitModal({{ $admission->id }})" class="p-1.5 rounded-lg text-emerald-700 bg-emerald-100 hover:bg-emerald-200 transition-colors cursor-pointer" title="ভর্তি করুন">
+                                    <button x-show="canAdmit" x-cloak @click="openAdmitModal({{ $admission->id }})" class="p-1.5 rounded-lg text-emerald-700 bg-emerald-100 hover:bg-emerald-200 transition-colors cursor-pointer" title="ভর্তি করুন">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         </button>
-                                    @endif
                                     <button @click="openEditModal({{ $admission->id }})" class="p-1.5 rounded-lg text-amber-600 bg-amber-50 hover:bg-amber-100 transition-colors cursor-pointer" title="সম্পাদনা">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </button>

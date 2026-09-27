@@ -135,11 +135,12 @@
                                 </td>
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     <form method="POST" action="{{ route('admin.scholarship.status', $registration) }}"
-                                        x-data="{ status: '{{ $registration->status }}' }">
+                                        x-data="RisAdmin.statusRow(@js(route('admin.scholarship.status', $registration)), @js($registration->status))">
                                         @csrf
                                         @method('PATCH')
-                                        <select name="status" x-model="status" @change="$el.form.submit()"
-                                            class="text-xs font-medium rounded-full px-2.5 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-ris-primary/20 {{ $registration->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }} {{ $registration->status === 'approved' ? 'bg-emerald-100 text-emerald-800' : '' }} {{ $registration->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}">
+                                        <select name="status" x-model="status" @change="save()" :class="badge"
+                                            :disabled="busy"
+                                            class="text-xs font-medium rounded-full px-2.5 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-ris-primary/20 disabled:opacity-60 disabled:cursor-wait">
                                             <option value="pending"
                                                 {{ $registration->status === 'pending' ? 'selected' : '' }}>পেন্ডিং
                                             </option>

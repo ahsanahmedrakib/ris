@@ -3,6 +3,7 @@
 namespace App\Features\Website\Http\Controllers;
 
 use App\Enums\FeeType;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\AboutContent;
 use App\Models\AcademicCalendar;
@@ -30,7 +31,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -349,6 +349,9 @@ class WebsiteController extends Controller
 
     public function academicResults(Request $request): View
     {
+        $user = $request->user();
+        $role = $user->role;
+
         $classes = ClassRoom::get();
         $exams = Exam::latest('start_date')->get();
 
@@ -356,59 +359,66 @@ class WebsiteController extends Controller
         $search = trim((string) $request->input('search'));
         $examId = $request->input('exam_id');
 
-        $students = new Collection;
         $examGroups = collect();
 
-        if ($selectedClass) {
-            $studentQuery = Student::with('user')
-                ->where('class_id', $selectedClass)
-                ->orderBy('roll_no');
+        // Results are scoped to whoever is asking: a parent only ever sees their
+        // own children, a student only themselves, staff see a whole class.
+        $studentQuery = match ($role) {
+            UserRole::Parent->value => $user->parentStudents()->with('user')->orderBy('roll_no'),
+            UserRole::Student->value => Student::with('user')->where('user_id', $user->id),
+            default => Student::with('user')->orderBy('roll_no'),
+        };
 
-            if ($request->filled('roll_no')) {
-                $studentQuery->where('roll_no', $request->input('roll_no'));
-            }
-
-            if ($search !== '') {
-                $studentQuery->where(function ($q) use ($search) {
-                    $q->where('admission_no', 'like', "%{$search}%")
-                        ->orWhereHas('user', function ($uq) use ($search) {
-                            $uq->where('name', 'like', "%{$search}%");
-                        });
-                });
-            }
-
-            $students = $studentQuery->get();
-
-            if ($students->isNotEmpty()) {
-                $resultQuery = ExamResult::with(['subject', 'exam'])
-                    ->whereIn('student_id', $students->pluck('id'));
-
-                if ($examId) {
-                    $resultQuery->where('exam_id', $examId);
-                }
-
-                $allResults = $resultQuery->orderBy('exam_id')->orderBy('subject_id')->get();
-
-                $examGroups = $allResults->groupBy('exam_id')->map(function ($rows) use ($students) {
-                    $exam = $rows->first()->exam;
-                    $subjectIds = $rows->pluck('subject_id')->unique();
-
-                    $rowsByStudent = $rows->groupBy('student_id')
-                        ->map(fn ($studentRows) => $studentRows->keyBy('subject_id'));
-
-                    $studentTotals = $students->mapWithKeys(function ($student) use ($rowsByStudent) {
-                        $studentRows = $rowsByStudent->get($student->id, collect());
-                        $total = $studentRows->sum('marks_obtained');
-
-                        return [$student->id => $total];
-                    });
-
-                    return compact('exam', 'subjectIds', 'rowsByStudent', 'studentTotals');
-                })->values();
-            }
+        if ($role !== UserRole::Parent->value && $role !== UserRole::Student->value && $selectedClass) {
+            $studentQuery->where('class_id', $selectedClass);
         }
 
-        $subjects = $selectedClass
+        if ($request->filled('roll_no')) {
+            $studentQuery->where('roll_no', $request->input('roll_no'));
+        }
+
+        if ($search !== '') {
+            $studentQuery->where(function ($q) use ($search) {
+                $q->where('admission_no', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($uq) use ($search) {
+                        $uq->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        $students = $studentQuery->get();
+
+        if ($students->isNotEmpty()) {
+            $resultQuery = ExamResult::with(['subject', 'exam'])
+                ->whereIn('student_id', $students->pluck('id'));
+
+            if ($examId) {
+                $resultQuery->where('exam_id', $examId);
+            }
+
+            $allResults = $resultQuery->orderBy('exam_id')->orderBy('subject_id')->get();
+
+            $examGroups = $allResults->groupBy('exam_id')->map(function ($rows) use ($students) {
+                $exam = $rows->first()->exam;
+                $subjectIds = $rows->pluck('subject_id')->unique();
+
+                $rowsByStudent = $rows->groupBy('student_id')
+                    ->map(fn ($studentRows) => $studentRows->keyBy('subject_id'));
+
+                $studentTotals = $students->mapWithKeys(function ($student) use ($rowsByStudent) {
+                    $studentRows = $rowsByStudent->get($student->id, collect());
+                    $total = $studentRows->sum('marks_obtained');
+
+                    return [$student->id => $total];
+                });
+
+                return compact('exam', 'subjectIds', 'rowsByStudent', 'studentTotals');
+            })->values();
+        }
+
+        $staffViewingClass = in_array($role, [UserRole::Admin->value, UserRole::Teacher->value], true);
+
+        $subjects = ($selectedClass && $staffViewingClass)
             ? Subject::where('class_id', $selectedClass)->orderBy('name')->get()
             : collect();
 
