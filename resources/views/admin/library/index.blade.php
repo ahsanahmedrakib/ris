@@ -567,7 +567,7 @@
     </div>
 
     @section('scripts')
-        <script>
+        <script nonce="{{ $cspNonce }}">
             function libraryApp() {
                 return {
                     showCreateModal: false,

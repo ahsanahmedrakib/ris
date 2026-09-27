@@ -503,7 +503,7 @@
                         </div>
                     </form>
 
-                    <script>
+                    <script nonce="{{ $cspNonce }}">
                         document.addEventListener('DOMContentLoaded', function() {
                             const form = document.getElementById('admissionForm');
                             if (!form) return;

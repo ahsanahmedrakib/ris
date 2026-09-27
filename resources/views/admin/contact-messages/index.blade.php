@@ -178,7 +178,7 @@
 </div>
 
 @section('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
 function contactApp() {
     return {
         showViewModal: false,

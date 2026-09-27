@@ -377,7 +377,7 @@
     </div>
 
     @section('scripts')
-        <script>
+        <script nonce="{{ $cspNonce }}">
             function subjectApp() {
                 return {
                     showCreateModal: false,

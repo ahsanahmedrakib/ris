@@ -115,7 +115,7 @@
                         </button>
                     </form>
 
-                    <script>
+                    <script nonce="{{ $cspNonce }}">
                         function contactForm() {
                             return {
                                 form: {

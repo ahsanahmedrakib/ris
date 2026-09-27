@@ -5,15 +5,28 @@ namespace App\Core\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class SecurityHeaders
 {
+    /**
+     * The view variable every inline <script> tag has to echo back.
+     */
+    public const NONCE_VARIABLE = 'cspNonce';
+
     public function handle(Request $request, Closure $next): Response
     {
+        // Generated per request so a nonce can never be reused, and shared with
+        // the views before they render. Inline scripts are only allowed when
+        // they carry it, which keeps 'unsafe-inline' out of script-src.
+        $nonce = base64_encode(random_bytes(18));
+
+        View::share(self::NONCE_VARIABLE, $nonce);
+
         $response = $next($request);
 
-        foreach ($this->headersFor($request) as $header => $value) {
+        foreach ($this->headersFor($request, $nonce) as $header => $value) {
             if (! $response->headers->has($header)) {
                 $response->headers->set($header, $value);
             }
@@ -31,7 +44,7 @@ class SecurityHeaders
     /**
      * @return array<string, string>
      */
-    protected function headersFor(Request $request): array
+    protected function headersFor(Request $request, string $nonce = ''): array
     {
         $headers = [
             'X-Content-Type-Options' => 'nosniff',
@@ -40,7 +53,7 @@ class SecurityHeaders
             'X-Permitted-Cross-Domain-Policies' => 'none',
             'Cross-Origin-Opener-Policy' => 'same-origin',
             'Cross-Origin-Resource-Policy' => 'same-origin',
-            'Content-Security-Policy' => $this->contentSecurityPolicy($request),
+            'Content-Security-Policy' => $this->contentSecurityPolicy($request, $nonce),
         ];
 
         // HSTS is only honoured over HTTPS, so it is only ever sent over HTTPS.
@@ -52,14 +65,25 @@ class SecurityHeaders
     }
 
     /**
-     * The policy allows this app's own assets plus whatever the configured
-     * third parties need. Images are wide open because uploads are served
-     * straight from the public directory and can be any image type.
+     * The policy allows this app's own assets plus the handful of third parties
+     * the layouts genuinely load: Google Fonts for typography, jsDelivr for the
+     * Quill editor, and the QR service used on teacher profile pages. Images
+     * stay wide open because uploads are served straight from the public
+     * directory and can be any image type.
      */
-    protected function contentSecurityPolicy(Request $request): string
+    protected function contentSecurityPolicy(Request $request, string $nonce = ''): string
     {
         $extra = (array) Config::get('security.csp', []);
         $isDevelopment = (bool) ($extra['development'] ?? false);
+
+        $scriptSrc = "'self' 'unsafe-eval' https://cdn.jsdelivr.net";
+        $styleSrc = "'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net";
+        $fontSrc = "'self' data: https://fonts.gstatic.com";
+        $imageSrc = "'self' data: blob: https://api.qrserver.com";
+
+        if ($nonce !== '') {
+            $scriptSrc .= " 'nonce-{$nonce}'";
+        }
 
         $directives = [
             "default-src 'self'",
@@ -75,10 +99,14 @@ class SecurityHeaders
             // 'unsafe-inline', which is what actually lets injected markup run.
             // Dropping it needs Livewire's CSP build (livewire.csp_safe) plus
             // expressions simple enough for its interpreter to handle.
-            "script-src 'self' 'unsafe-eval'",
-            "style-src 'self' 'unsafe-inline'",
-            "img-src 'self' data: blob:",
-            "font-src 'self' data:",
+            //
+            // 'unsafe-inline' is deliberately absent: the many inline Alpine
+            // factories in the admin views carry a per request nonce instead, so
+            // injected markup still cannot execute.
+            "script-src {$scriptSrc}",
+            "style-src {$styleSrc}",
+            "img-src {$imageSrc}",
+            "font-src {$fontSrc}",
             "connect-src 'self'",
             "frame-src 'self'",
         ];

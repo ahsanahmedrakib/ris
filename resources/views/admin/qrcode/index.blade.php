@@ -129,7 +129,7 @@
 @endsection
 
 @section('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     function qrGenerator() {
         return {
             link: '{{ route('home') }}',

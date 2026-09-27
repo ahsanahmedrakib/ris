@@ -429,7 +429,7 @@
     </div>
 
     @section('scripts')
-        <script>
+        <script nonce="{{ $cspNonce }}">
             function transportApp() {
                 return {
                     showCreateModal: false,

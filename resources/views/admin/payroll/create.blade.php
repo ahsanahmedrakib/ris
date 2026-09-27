@@ -124,7 +124,7 @@
 
 </div>
 
-<script>
+<script nonce="{{ $cspNonce }}">
     document.getElementById('select-all').addEventListener('change', function () {
         document.querySelectorAll('.staff-check').forEach(cb => cb.checked = this.checked);
     });

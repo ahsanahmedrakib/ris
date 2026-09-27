@@ -284,7 +284,7 @@
 
     {{-- Self-hosted so the download works without reaching cdnjs. --}}
     <script src="{{ asset('vendor/html2pdf.bundle.min.js') }}"></script>
-    <script>
+    <script nonce="{{ $cspNonce }}">
         function downloadAdmitPdf() {
             const element = document.getElementById('admit-card');
             const btn = document.getElementById('downloadPdfBtn');

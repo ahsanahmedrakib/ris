@@ -25,7 +25,7 @@
 @endsection
 
 @section('scripts')
-    <script>
+    <script nonce="{{ $cspNonce }}">
         (function() {
             var grid = document.getElementById('routine-grid');
             if (!grid) return;

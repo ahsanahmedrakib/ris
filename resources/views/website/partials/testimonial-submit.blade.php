@@ -110,7 +110,7 @@
     </div>
 </div>
 
-<script>
+<script nonce="{{ $cspNonce }}">
     function testimonialSubmit() {
         return {
             open: false,

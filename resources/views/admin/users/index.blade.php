@@ -561,7 +561,7 @@
     </div>
 
     @section('scripts')
-        <script>
+        <script nonce="{{ $cspNonce }}">
             function activeRow(baseUrl, id, active) {
                 return {
                     active,

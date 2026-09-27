@@ -623,7 +623,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         window.navGroups = function(activeGroup) {
             return {
                 openGroup: localStorage.getItem('risNavOpenGroup') || activeGroup,

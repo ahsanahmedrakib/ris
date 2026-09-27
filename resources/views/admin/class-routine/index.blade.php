@@ -515,7 +515,7 @@
     </div>
 
     @section('scripts')
-        <script>
+        <script nonce="{{ $cspNonce }}">
             function classRoutineApp() {
                 return {
                     showCreateModal: false,

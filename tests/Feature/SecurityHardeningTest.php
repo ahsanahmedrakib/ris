@@ -48,7 +48,19 @@ class SecurityHardeningTest extends TestCase
         $csp = $this->get(route('home'))->assertSuccessful()->headers->get('Content-Security-Policy');
 
         $this->assertStringContainsString("script-src 'self' 'unsafe-eval'", $csp);
-        $this->assertSame("script-src 'self' 'unsafe-eval'", trim($this->scriptSource($csp)));
+
+        // The only things permitted beyond 'self' and 'unsafe-eval' are the
+        // nonce, which is how the inline Alpine factories run without handing
+        // 'unsafe-inline' back to injected markup, and jsDelivr for the Quill
+        // editor the admin layout loads.
+        $this->assertSame(
+            1,
+            preg_match(
+                "/^script-src 'self' 'unsafe-eval' https:\/\/cdn\.jsdelivr\.net 'nonce-[A-Za-z0-9+\\/=]+'$/",
+                trim($this->scriptSource($csp)),
+            ),
+            'Unexpected production script-src: '.trim($this->scriptSource($csp)),
+        );
     }
 
     #[Test]

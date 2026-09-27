@@ -390,7 +390,7 @@
 @endsection
 
 @section('scripts')
-        <script>
+        <script nonce="{{ $cspNonce }}">
             function feeStructuresApp() {
                 return {
                     showCreateModal: false,

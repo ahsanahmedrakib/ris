@@ -99,7 +99,7 @@
 @endsection
 
 @section('scripts')
-    <script>
+    <script nonce="{{ $cspNonce }}">
         function resultSheetApp() {
             return {
                 totalMarks: {{ $exam->total_marks }},

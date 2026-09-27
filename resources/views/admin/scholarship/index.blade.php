@@ -713,7 +713,7 @@
     </div>
 
     @section('scripts')
-        <script>
+        <script nonce="{{ $cspNonce }}">
             function scholarshipApp() {
                 return {
                     showCreateModal: false,

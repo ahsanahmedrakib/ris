@@ -154,7 +154,7 @@
     </div>
 
     @section('scripts')
-        <script>
+        <script nonce="{{ $cspNonce }}">
             function profileApp() {
                 return {
                     photoPreview: {{ json_encode(Auth::user()->avatarUrl) }},
