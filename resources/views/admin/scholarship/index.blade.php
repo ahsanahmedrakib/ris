@@ -790,6 +790,12 @@
                         }
                     },
 
+                    // A notification link lands here as ?view=<id>; open that record's
+                    // modal instead of leaving the list empty-looking.
+                    init() {
+                        const pendingView = RisAdmin.takeViewParam();
+                        if (pendingView) this.openViewModal(pendingView);
+                    },
                     async openViewModal(id) {
                         this.showViewModal = true;
                         this.viewLoading = true;

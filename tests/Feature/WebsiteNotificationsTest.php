@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Livewire\Scholarship\RegistrationForm as ScholarshipRegistrationForm;
 use App\Models\Admission;
+use App\Models\ScholarshipRegistration;
 use App\Models\User;
 use App\Notifications\NewSubmission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -91,7 +92,7 @@ class WebsiteNotificationsTest extends TestCase
         foreach ($admins as $admin) {
             $this->assertEquals(1, $admin->notifications()->count());
             $this->assertEquals('admission', $admin->notifications()->first()->data['type']);
-            $this->assertEquals(route('admin.admission.show', $admission), $admin->notifications()->first()->data['url']);
+            $this->assertEquals(route('admin.admission.index').'?view='.$admission->id, $admin->notifications()->first()->data['url']);
         }
 
         $teacher = User::where('role', 'teacher')->first();
@@ -114,7 +115,7 @@ class WebsiteNotificationsTest extends TestCase
         foreach ($admins as $admin) {
             $this->assertEquals(1, $admin->notifications()->count());
             $this->assertEquals('contact', $admin->notifications()->first()->data['type']);
-            $this->assertEquals(route('admin.contact-messages.show', 1), $admin->notifications()->first()->data['url']);
+            $this->assertEquals(route('admin.contact-messages.index').'?view=1', $admin->notifications()->first()->data['url']);
         }
     }
 
@@ -132,7 +133,7 @@ class WebsiteNotificationsTest extends TestCase
         foreach ($admins as $admin) {
             $this->assertEquals(1, $admin->notifications()->count());
             $this->assertEquals('testimonial', $admin->notifications()->first()->data['type']);
-            $this->assertEquals(route('admin.testimonials.show', 1), $admin->notifications()->first()->data['url']);
+            $this->assertEquals(route('admin.testimonials.index').'?view=1', $admin->notifications()->first()->data['url']);
         }
     }
 
@@ -150,6 +151,15 @@ class WebsiteNotificationsTest extends TestCase
         foreach ($admins as $admin) {
             $this->assertEquals(1, $admin->notifications()->count());
             $this->assertEquals('scholarship', $admin->notifications()->first()->data['type']);
+
+            // The link must reach the listing page and open the modal there.
+            // Pointing it at admin.scholarship.show renders raw JSON instead.
+            $registration = ScholarshipRegistration::query()->latest('id')->first();
+
+            $this->assertEquals(
+                route('admin.scholarship.index').'?view='.$registration->id,
+                $admin->notifications()->first()->data['url'],
+            );
         }
     }
 

@@ -177,7 +177,7 @@ class RegistrationForm extends Component
                     'scholarship',
                     'নতুন মেধাবৃত্তি রেজিস্ট্রেশন',
                     $registration->student_name.' ('.$registration->mobile_no.') মেধাবৃত্তির জন্য রেজিস্ট্রেশন করেছেন।',
-                    route('admin.scholarship.show', $registration),
+                    route('admin.scholarship.index').'?view='.$registration->id,
                 );
             } catch (\Throwable $e) {
                 report($e);

@@ -255,7 +255,7 @@ class WebsiteController extends Controller
                 'testimonial',
                 'নতুন মতামত',
                 $testimonial->name.' একটি মতামত জমা দিয়েছেন।',
-                route('admin.testimonials.show', $testimonial),
+                route('admin.testimonials.index').'?view='.$testimonial->id,
             );
 
             if ($request->expectsJson()) {
@@ -669,7 +669,7 @@ class WebsiteController extends Controller
                 'admission',
                 'নতুন ভর্তি আবেদন',
                 $admission->student_name_bn.' ('.$admission->phone.') ভর্তি আবেদন করেছেন।',
-                route('admin.admission.show', $admission),
+                route('admin.admission.index').'?view='.$admission->id,
             );
         } catch (\Throwable $e) {
             report($e);
@@ -735,7 +735,7 @@ class WebsiteController extends Controller
             'contact',
             'নতুন কনটাক্ট মেসেজ',
             $contact->name.' ('.$contact->subject.') মেসেজ পাঠিয়েছেন।',
-            route('admin.contact-messages.show', $contact),
+            route('admin.contact-messages.index').'?view='.$contact->id,
         );
 
         if ($request->expectsJson()) {

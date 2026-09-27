@@ -695,6 +695,34 @@
                 return { ok: res.ok, status: res.status, data };
             }
 
+            /**
+             * Read ?view=<id> from the address bar, then strip it.
+             *
+             * Notification links point at a listing page with ?view=<id> so the
+             * list opens the record in its own modal. Linking straight to the
+             * JSON endpoint behind that modal would dump raw JSON in the
+             * browser, because that endpoint exists for fetch(), not navigation.
+             * The parameter is removed once consumed so a refresh, a bookmark or
+             * a shared link does not re-open the modal on every load.
+             */
+            function takeViewParam() {
+                const params = new URLSearchParams(window.location.search);
+                const raw = params.get('view');
+
+                if (raw === null || !/^\d+$/.test(raw)) return null;
+
+                params.delete('view');
+
+                const query = params.toString();
+                const clean = window.location.pathname
+                    + (query ? '?' + query : '')
+                    + window.location.hash;
+
+                window.history.replaceState({}, '', clean);
+
+                return parseInt(raw, 10);
+            }
+
             async function refreshTable() {
                 const tbody = document.querySelector('[data-table-body]');
                 if (!tbody) return;
@@ -825,7 +853,7 @@
                 }
             });
 
-            return { submitForm, refreshTable, toast, csrf, statusRow };
+            return { submitForm, refreshTable, toast, csrf, statusRow, takeViewParam };
         })();
 
         window.addEventListener('pageshow', function(event) {
