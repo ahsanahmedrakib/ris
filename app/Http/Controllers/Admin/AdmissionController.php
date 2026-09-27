@@ -83,7 +83,7 @@ class AdmissionController extends Controller
         $photoPath = null;
 
         if ($request->hasFile('student_photo')) {
-            $photoPath = $request->file('student_photo')->store('admissions', 'public');
+            $photoPath = Media::storeImage($request->file('student_photo'), 'admissions');
         }
 
         $admission = $this->persistWithAdmissionNoRetry(
@@ -275,7 +275,7 @@ class AdmissionController extends Controller
                 Storage::disk('public')->delete($admission->student_photo);
             }
 
-            $photoPath = $request->file('student_photo')->store('admissions', 'public');
+            $photoPath = Media::storeImage($request->file('student_photo'), 'admissions');
         }
 
         $updated = $this->persistWithAdmissionNoRetry(function () use ($admission, $validated, $existingAdmissionNo, $photoPath): Admission {

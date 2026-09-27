@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\Media;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,7 +52,7 @@ class ProfileController extends Controller
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            $data['avatar'] = Media::storeImage($request->file('avatar'), 'avatars');
         }
 
         if ($request->boolean('remove_avatar')) {

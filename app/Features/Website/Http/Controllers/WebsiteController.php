@@ -237,7 +237,7 @@ class WebsiteController extends Controller
         $photoPath = null;
 
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('testimonial-photos', 'public');
+            $photoPath = Media::storeImage($request->file('photo'), 'testimonial-photos');
         }
 
         try {
@@ -594,7 +594,7 @@ class WebsiteController extends Controller
         if (! $recentDuplicate) {
             try {
                 if ($request->hasFile('student_photo')) {
-                    $photoPath = $request->file('student_photo')->store('admissions', 'public');
+                    $photoPath = Media::storeImage($request->file('student_photo'), 'admissions');
                 }
 
                 $admission = Admission::create([

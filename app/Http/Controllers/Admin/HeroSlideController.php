@@ -59,7 +59,7 @@ class HeroSlideController extends Controller
         ]);
 
         try {
-            $imagePath = $request->file('image')->store('hero-slides', 'public');
+            $imagePath = Media::storeImage($request->file('image'), 'hero-slides');
 
             HeroSlide::create([
                 'title' => $validated['title'],
@@ -136,7 +136,7 @@ class HeroSlideController extends Controller
                     Storage::disk('public')->delete($item->image);
                 }
 
-                $validated['image'] = $request->file('image')->store('hero-slides', 'public');
+                $validated['image'] = Media::storeImage($request->file('image'), 'hero-slides');
             }
 
             $validated['is_active'] = $validated['is_active'] ?? $item->is_active;

@@ -61,7 +61,7 @@ class CampusNewsController extends Controller
 
         try {
             $imagePath = $request->hasFile('image')
-                ? $request->file('image')->store('campus-news', 'public')
+                ? Media::storeImage($request->file('image'), 'campus-news')
                 : null;
 
             CampusNews::create([
@@ -138,7 +138,7 @@ class CampusNewsController extends Controller
                     Storage::disk('public')->delete($item->image);
                 }
 
-                $validated['image'] = $request->file('image')->store('campus-news', 'public');
+                $validated['image'] = Media::storeImage($request->file('image'), 'campus-news');
             }
 
             $validated['is_active'] = $validated['is_active'] ?? $item->is_active;

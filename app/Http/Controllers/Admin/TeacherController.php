@@ -106,7 +106,7 @@ class TeacherController extends Controller
                 'is_active' => true,
             ]);
 
-            $photoPath = $request->file('photo')->store('teachers', 'public');
+            $photoPath = Media::storeImage($request->file('photo'), 'teachers');
 
             TeacherProfile::create([
                 'user_id' => $user->id,
@@ -241,7 +241,7 @@ class TeacherController extends Controller
                 if ($photoPath) {
                     Storage::disk('public')->delete($photoPath);
                 }
-                $photoPath = $request->file('photo')->store('teachers', 'public');
+                $photoPath = Media::storeImage($request->file('photo'), 'teachers');
             }
 
             $profileData = [

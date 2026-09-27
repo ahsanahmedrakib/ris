@@ -65,7 +65,7 @@ class GalleryController extends Controller
         ]);
 
         try {
-            $imagePath = $request->file('image')->store('gallery', 'public');
+            $imagePath = Media::storeImage($request->file('image'), 'gallery');
 
             GalleryItem::create([
                 'title' => $validated['title'],
@@ -138,7 +138,7 @@ class GalleryController extends Controller
                     Storage::disk('public')->delete($item->image);
                 }
 
-                $validated['image'] = $request->file('image')->store('gallery', 'public');
+                $validated['image'] = Media::storeImage($request->file('image'), 'gallery');
             }
 
             $validated['is_active'] = $validated['is_active'] ?? $item->is_active;

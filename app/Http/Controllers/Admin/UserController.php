@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -60,7 +61,7 @@ class UserController extends Controller
         $avatarPath = null;
 
         if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $avatarPath = Media::storeImage($request->file('avatar'), 'avatars');
         }
 
         User::create([
@@ -144,7 +145,7 @@ class UserController extends Controller
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            $data['avatar'] = Media::storeImage($request->file('avatar'), 'avatars');
         }
 
         if ($request->boolean('remove_avatar')) {

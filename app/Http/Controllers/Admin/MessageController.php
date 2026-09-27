@@ -61,11 +61,13 @@ class MessageController extends Controller
             'photo.max' => 'ছবির আকার ২ এমবির বেশি হতে পারবে না।',
         ]);
 
-        try {
-            $photoPath = null;
+        // Declared before the try so the catch block can always reach it, even
+        // when the failure happens before the upload is attempted.
+        $photoPath = null;
 
+        try {
             if ($request->hasFile('photo')) {
-                $photoPath = $request->file('photo')->store('messages', 'public');
+                $photoPath = Media::storeImage($request->file('photo'), 'messages');
             }
 
             Message::create([
@@ -150,7 +152,7 @@ class MessageController extends Controller
                     Storage::disk('public')->delete($message->photo);
                 }
 
-                $validated['photo'] = $request->file('photo')->store('messages', 'public');
+                $validated['photo'] = Media::storeImage($request->file('photo'), 'messages');
             }
 
             $validated['is_active'] = $validated['is_active'] ?? $message->is_active;

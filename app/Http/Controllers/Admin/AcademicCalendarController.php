@@ -64,7 +64,7 @@ class AcademicCalendarController extends Controller
         ]);
 
         try {
-            $filePath = $request->file('file')->store('academic-calendars', 'public_files');
+            $filePath = Media::storeFile($request->file('file'), 'academic-calendars');
 
             AcademicCalendar::create([
                 'title' => $validated['title'],
@@ -140,7 +140,7 @@ class AcademicCalendarController extends Controller
                     Storage::disk('public_files')->delete($calendar->file_path);
                 }
 
-                $validated['file_path'] = $request->file('file')->store('academic-calendars', 'public_files');
+                $validated['file_path'] = Media::storeFile($request->file('file'), 'academic-calendars');
             }
 
             $validated['is_active'] = $validated['is_active'] ?? $calendar->is_active;

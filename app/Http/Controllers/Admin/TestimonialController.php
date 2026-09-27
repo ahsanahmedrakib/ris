@@ -81,7 +81,7 @@ class TestimonialController extends Controller
 
         try {
             if ($request->hasFile('photo')) {
-                $photoPath = $request->file('photo')->store('testimonial-photos', 'public');
+                $photoPath = Media::storeImage($request->file('photo'), 'testimonial-photos');
             }
 
             Testimonial::create([
@@ -168,7 +168,7 @@ class TestimonialController extends Controller
                     Storage::disk('public')->delete($testimonial->photo);
                 }
 
-                $validated['photo'] = $request->file('photo')->store('testimonial-photos', 'public');
+                $validated['photo'] = Media::storeImage($request->file('photo'), 'testimonial-photos');
             }
 
             $validated['is_active'] = $validated['is_active'] ?? $testimonial->is_active;
