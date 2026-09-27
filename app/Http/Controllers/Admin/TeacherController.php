@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\TeacherProfile;
 use App\Models\User;
+use App\Support\Media;
 use App\Support\XlsxExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -145,7 +146,7 @@ class TeacherController extends Controller
             'email' => $teacher->email,
             'phone' => $teacher->phone,
             'is_active' => $teacher->is_active,
-            'photo' => $teacher->teacherProfile?->photo ? Storage::url($teacher->teacherProfile->photo) : null,
+            'photo' => $teacher->teacherProfile?->photo ? Media::images()->url($teacher->teacherProfile->photo) : null,
             'designation' => $teacher->teacherProfile?->designation,
             'subject' => $teacher->teacherProfile?->subject,
             'qualification' => $teacher->teacherProfile?->qualification,
@@ -170,7 +171,7 @@ class TeacherController extends Controller
             'email' => $teacher->email,
             'phone' => $teacher->phone,
             'is_active' => $teacher->is_active,
-            'photo' => $teacher->teacherProfile?->photo ? Storage::url($teacher->teacherProfile->photo) : null,
+            'photo' => $teacher->teacherProfile?->photo ? Media::images()->url($teacher->teacherProfile->photo) : null,
             'designation' => $teacher->teacherProfile?->designation ?? '',
             'subject' => $teacher->teacherProfile?->subject ?? '',
             'qualification' => $teacher->teacherProfile?->qualification ?? '',

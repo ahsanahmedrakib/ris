@@ -80,7 +80,7 @@
                                         <div
                                             class="relative w-8 h-8 rounded-full overflow-hidden shrink-0 {{ $user->avatar ? '' : 'bg-ris-primary/10' }} flex items-center justify-center">
                                             @if ($user->avatar)
-                                                <img src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}"
+                                                <img src="{{ \App\Support\Media::images()->url($user->avatar) }}" alt="{{ $user->name }}"
                                                     class="w-full h-full object-cover">
                                             @else
                                                 <span

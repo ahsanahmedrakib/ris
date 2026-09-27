@@ -8,12 +8,12 @@ use App\Models\Attendance;
 use App\Models\ClassRoom;
 use App\Models\Student;
 use App\Models\User;
+use App\Support\Media;
 use App\Support\XlsxExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -134,7 +134,7 @@ class StudentController extends Controller
             'name' => $student->user?->name,
             'email' => $student->user?->email,
             'phone' => $student->user?->phone,
-            'photo' => $student->user?->avatar ? Storage::url($student->user->avatar) : null,
+            'photo' => $student->user?->avatar ? Media::images()->url($student->user->avatar) : null,
             'class' => $student->classRoom?->name,
             'section' => $student->section,
             'roll_no' => $student->roll_no,
@@ -165,7 +165,7 @@ class StudentController extends Controller
             'name' => $student->user?->name ?? '',
             'email' => $student->user?->email ?? '',
             'phone' => $student->user?->phone ?? '',
-            'photo' => $student->user?->avatar ? Storage::url($student->user->avatar) : null,
+            'photo' => $student->user?->avatar ? Media::images()->url($student->user->avatar) : null,
             'admission_no' => $student->admission_no ?? '',
             'class_id' => $student->class_id ?? '',
             'section' => $student->section ?? '',

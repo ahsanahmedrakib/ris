@@ -40,8 +40,17 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'root' => public_path('images'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/images',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
+        'public_files' => [
+            'driver' => 'local',
+            'root' => public_path('files'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/files',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -67,14 +76,13 @@ return [
     | Symbolic Links
     |--------------------------------------------------------------------------
     |
-    | Here you may configure the symbolic links that will be created when the
-    | `storage:link` Artisan command is executed. The array keys should be
-    | the locations of the links and the values should be their targets.
+    | Uploads are written straight into the "public" tree (public/images and
+    | public/files), so no symbolic link is required to serve them. This is
+    | declared as an explicit empty array to stop the framework default of
+    | public/storage -> storage/app/public from being merged back in.
     |
     */
 
-    'links' => [
-        public_path('storage') => storage_path('app/public'),
-    ],
+    'links' => [],
 
 ];

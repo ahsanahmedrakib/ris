@@ -25,6 +25,7 @@ use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Testimonial;
 use App\Notifications\NewSubmission;
+use App\Support\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -108,7 +109,7 @@ class WebsiteController extends Controller
             return $news->map(fn (CampusNews $item): array => [
                 'title' => $item->title,
                 'date' => $this->banglaDate($item->date),
-                'image' => $item->image ? Storage::url($item->image) : null,
+                'image' => $item->image ? Media::images()->url($item->image) : null,
             ])->all();
         }
 
@@ -176,7 +177,7 @@ class WebsiteController extends Controller
         }
 
         return $slides->map(fn (HeroSlide $slide): array => [
-            'image' => Storage::url($slide->image),
+            'image' => Media::images()->url($slide->image),
             'title' => $slide->title,
             'subtitle' => $slide->subtitle,
             'btn_text' => $slide->btn_text,
@@ -309,7 +310,7 @@ class WebsiteController extends Controller
     {
         abort_unless($academicCalendar->is_active, 404);
 
-        $path = Storage::disk('public')->path($academicCalendar->file_path);
+        $path = Storage::disk('public_files')->path($academicCalendar->file_path);
 
         abort_unless(file_exists($path), 404);
 

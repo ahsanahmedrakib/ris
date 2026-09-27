@@ -18,7 +18,7 @@
                 {{-- Left: Photo + QR --}}
                 <div class="text-center lg:text-left">
                     @if($teacher->teacherProfile?->photo)
-                        <img src="{{ Storage::url($teacher->teacherProfile->photo) }}" alt="{{ $teacher->name }}" class="w-48 h-48 rounded-full object-cover mx-auto lg:mx-0 shadow-lg">
+                        <img src="{{ \App\Support\Media::images()->url($teacher->teacherProfile->photo) }}" alt="{{ $teacher->name }}" class="w-48 h-48 rounded-full object-cover mx-auto lg:mx-0 shadow-lg">
                     @else
                         <div class="w-48 h-48 rounded-full bg-ris-primary/10 flex items-center justify-center text-ris-primary text-5xl font-semibold mx-auto lg:mx-0 shadow-lg">
                             {{ mb_substr($teacher->name, 0, 1) }}

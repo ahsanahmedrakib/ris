@@ -164,7 +164,7 @@
                 'title' => 'চেয়ারম্যানের বাণী',
                 'name' => 'রেফাউল হক',
                 'designation' => 'চেয়ারম্যান, রেশমা ইন্টারন্যাশনাল স্কুল',
-                'photo' => 'images/home/rhm.png',
+                'photo' => 'assets/home/rhm.png',
                 'message' =>
                     'প্রিয় অভিভাবকগণ, আমরা বিশ্বাস করি প্রতিটি শিশু অসাধারণ সম্ভাবনায় পূর্ণ। রেশমা ইন্টারন্যাশনাল স্কুল আপনার সন্তানের এই সম্ভাবনাকে সমৃদ্ধ করতে প্রতিশ্রুতিবদ্ধ।',
             ],
@@ -172,7 +172,7 @@
                 'title' => 'চেয়ারপার্সনের বাণী',
                 'name' => 'রেশমা আকতার',
                 'designation' => 'চেয়ারপার্সন, রেশমা ইন্টারন্যাশনাল স্কুল',
-                'photo' => 'images/home/ra.jpg',
+                'photo' => 'assets/home/ra.jpg',
                 'message' =>
                     'শিক্ষার মাধ্যমেই একটি জাতি সত্যিকার অর্থে এগিয়ে যেতে পারে। রেশমা ইন্টারন্যাশনাল স্কুল আমাদের সন্তানদের জন্য মানসম্মত ও আধুনিক শিক্ষার পরিবেশ নিশ্চিত করার প্রতি প্রতিশ্রুতিবদ্ধ।',
             ],
@@ -180,7 +180,7 @@
                 'title' => 'প্রতিষ্ঠাতার বাণী',
                 'name' => 'কুদরত-ই-ইবতিহাজ জয়',
                 'designation' => 'প্রতিষ্ঠাতা, রেশমা ইন্টারন্যাশনাল স্কুল',
-                'photo' => 'images/home/kej.png',
+                'photo' => 'assets/home/kej.png',
                 'message' =>
                     'শিক্ষাই জাতির মেরুদণ্ড। আমাদের সন্তানদের মানসম্মত শিক্ষা দান এবং তাদের সুনাগরিক হিসাবে গড়ে তুলতে আমি রেশমা ইন্টারন্যাশনাল স্কুলকে প্রতিষ্ঠা করেছি।',
             ],
@@ -188,7 +188,7 @@
                 'title' => 'প্রধান শিক্ষকের বাণী',
                 'name' => 'সাইফুল ইসলাম',
                 'designation' => 'প্রধান শিক্ষক, রেশমা ইন্টারন্যাশনাল স্কুল',
-                'photo' => 'images/home/si.jpg',
+                'photo' => 'assets/home/si.jpg',
                 'message' =>
                     'প্রিয় শিক্ষার্থী ও অভিভাবকগণ, শিক্ষা হলো আলোর পথ যা জীবনকে আলোকিত করে। আমাদের স্কুলে আমরা আধুনিক শিক্ষা পদ্ধতির পাশাপাশি নৈতিক মূল্যবোধ ও সুশিক্ষার পরিবেশ তৈরি করেছি।',
             ],
@@ -201,7 +201,7 @@
                     'name' => $m->name,
                     'designation' => $m->designation,
                     'message' => $m->message,
-                    'photo_url' => $m->photo ? Storage::url($m->photo) : null,
+                    'photo_url' => $m->photo ? \App\Support\Media::images()->url($m->photo) : null,
                 ],
             )
             : collect($fallbackMessages)->map(
@@ -484,7 +484,7 @@
                 {{-- Left: Campus image --}}
                 <div class="lg:col-span-5 min-w-0">
                     <div class="relative h-64 sm:h-80 lg:h-full rounded-2xl overflow-hidden shadow-card group">
-                        <img src="{{ asset('images/home/campus.jpg') }}" alt="Campus Life"
+                        <img src="{{ asset('assets/home/campus.jpg') }}" alt="Campus Life"
                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         <div class="absolute inset-0 bg-linear-to-t from-ris-dark/70 via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4 right-4">
@@ -768,7 +768,7 @@
                                     data-title="{{ $item->title }}"
                                     data-category="{{ $item->category ?? '' }}"
                                     data-caption="{{ $item->description ?? '' }}">
-                                    <img src="{{ Storage::url($item->image) }}" alt="{{ $item->title }}"
+                                    <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}"
                                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                     <div
                                         class="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300 flex items-end">

@@ -84,7 +84,7 @@
                                 x-data="activeRow('{{ url('admin/messages') }}', {{ $message->id }}, {{ $message->is_active ? 'true' : 'false' }})">
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     @if ($message->photo)
-                                        <img src="{{ Storage::url($message->photo) }}" alt="{{ $message->name }}"
+                                        <img src="{{ \App\Support\Media::images()->url($message->photo) }}" alt="{{ $message->name }}"
                                             class="w-9 h-9 rounded-full object-cover">
                                     @else
                                         <div

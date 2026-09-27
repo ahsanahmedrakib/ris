@@ -21,7 +21,7 @@
             {{-- Avatar with gradient ring --}}
             <div class="mx-auto w-20 h-20 rounded-2xl p-[3px] gradient-logo shadow-lg ring-4 ring-white overflow-hidden">
                 @if ($teacher->teacherProfile?->photo)
-                    <img src="{{ Storage::url($teacher->teacherProfile->photo) }}" alt="{{ $teacher->name }}"
+                    <img src="{{ \App\Support\Media::images()->url($teacher->teacherProfile->photo) }}" alt="{{ $teacher->name }}"
                         class="w-full h-full rounded-[13px] object-cover group-hover:scale-105 transition-transform duration-300">
                 @else
                     <div

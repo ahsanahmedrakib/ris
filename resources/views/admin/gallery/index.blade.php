@@ -92,7 +92,7 @@
                             <tr class="hover:bg-gray-50 transition-colors"
                                 x-data="activeRow('{{ url('admin/gallery') }}', {{ $item->id }}, {{ $item->is_active ? 'true' : 'false' }})">
                                 <td class="px-4 py-3 whitespace-nowrap">
-                                    <img src="{{ Storage::url($item->image) }}" alt="{{ $item->title }}"
+                                    <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}"
                                         class="w-16 h-12 rounded-lg object-cover">
                                 </td>
                                 <td class="px-4 py-3">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CampusNews;
+use App\Support\Media;
 use App\Support\XlsxExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -88,7 +89,7 @@ class CampusNewsController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'date' => $item->date?->format('Y-m-d'),
-            'image' => $item->image ? Storage::url($item->image) : null,
+            'image' => $item->image ? Media::images()->url($item->image) : null,
             'description' => $item->description,
             'is_active' => $item->is_active,
             'status_label' => $item->is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়',
@@ -104,7 +105,7 @@ class CampusNewsController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'date' => $item->date?->format('Y-m-d'),
-            'image' => $item->image ? Storage::url($item->image) : null,
+            'image' => $item->image ? Media::images()->url($item->image) : null,
             'description' => $item->description,
             'sort_order' => $item->sort_order,
             'is_active' => $item->is_active,

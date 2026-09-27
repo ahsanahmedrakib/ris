@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\Core\Traits\LogsActivity;
+use App\Support\Media;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -32,7 +32,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->avatar ? url(Storage::url($this->avatar)) : null;
+        return $this->avatar ? url(Media::images()->url($this->avatar)) : null;
     }
 
     protected function casts(): array

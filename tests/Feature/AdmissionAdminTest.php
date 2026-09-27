@@ -9,6 +9,7 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -132,6 +133,8 @@ class AdmissionAdminTest extends TestCase
     #[Test]
     public function admin_can_create_admission_with_generated_number(): void
     {
+        Storage::fake('public');
+
         /** @var User $admin */
         $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
         $year = now()->format('n') >= 3 ? now()->addYear()->format('y') : now()->format('y');
@@ -155,6 +158,8 @@ class AdmissionAdminTest extends TestCase
     #[Test]
     public function admin_update_generates_admission_number_when_class_assigned(): void
     {
+        Storage::fake('public');
+
         /** @var User $admin */
         $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
         $year = now()->format('n') >= 3 ? now()->addYear()->format('y') : now()->format('y');
@@ -221,6 +226,8 @@ class AdmissionAdminTest extends TestCase
     #[Test]
     public function admin_can_update_admission(): void
     {
+        Storage::fake('public');
+
         /** @var User $admin */
         $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
 

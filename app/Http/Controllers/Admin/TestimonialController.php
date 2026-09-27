@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
+use App\Support\Media;
 use Database\Seeders\WebsiteContentSeeder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -113,7 +114,7 @@ class TestimonialController extends Controller
             'id' => $testimonial->id,
             'name' => $testimonial->name,
             'designation' => $testimonial->designation,
-            'photo' => $testimonial->photo ? Storage::url($testimonial->photo) : null,
+            'photo' => $testimonial->photo ? Media::images()->url($testimonial->photo) : null,
             'message' => $testimonial->message,
             'rating' => $testimonial->rating,
             'is_active' => $testimonial->is_active,
@@ -130,7 +131,7 @@ class TestimonialController extends Controller
             'id' => $testimonial->id,
             'name' => $testimonial->name,
             'designation' => $testimonial->designation,
-            'photo' => $testimonial->photo ? Storage::url($testimonial->photo) : null,
+            'photo' => $testimonial->photo ? Media::images()->url($testimonial->photo) : null,
             'message' => $testimonial->message,
             'rating' => (string) $testimonial->rating,
             'sort_order' => (string) $testimonial->sort_order,

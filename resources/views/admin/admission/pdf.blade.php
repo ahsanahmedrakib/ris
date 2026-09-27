@@ -124,7 +124,7 @@
             <div class="shrink-0">
                 @if ($admission->student_photo)
                     <div class="border border-pink-700 p-0.5 bg-gray-50 inline-block">
-                        <img src="{{ asset('storage/' . $admission->student_photo) }}" alt="শিক্ষার্থীর ছবি"
+                        <img src="{{ \App\Support\Media::images()->url($admission->student_photo) }}" alt="শিক্ষার্থীর ছবি"
                             class="w-20 h-20 object-cover">
                     </div>
                 @endif
@@ -557,7 +557,7 @@
             <div class="shrink-0 text-center">
                 @if ($admission->student_photo)
                     <div class="border border-pink-700 p-0.5 bg-gray-50 inline-block">
-                        <img src="{{ asset('storage/' . $admission->student_photo) }}" alt="শিক্ষার্থীর ছবি"
+                        <img src="{{ \App\Support\Media::images()->url($admission->student_photo) }}" alt="শিক্ষার্থীর ছবি"
                             class="w-20 h-20 object-cover">
                     </div>
                 @endif

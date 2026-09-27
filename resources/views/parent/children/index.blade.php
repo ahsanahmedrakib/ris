@@ -30,7 +30,7 @@
                                 <div
                                     class="w-16 h-16 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-white font-heading font-bold text-2xl shrink-0 overflow-hidden">
                                     @if ($child->user?->avatar)
-                                        <img src="{{ Storage::url($child->user->avatar) }}" alt="{{ $child->user->name }}"
+                                        <img src="{{ \App\Support\Media::images()->url($child->user->avatar) }}" alt="{{ $child->user->name }}"
                                             class="w-full h-full rounded-full object-cover">
                                     @else
                                         {{ mb_substr($child->user?->name ?? 'ছ', 0, 1) }}

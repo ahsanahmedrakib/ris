@@ -23,7 +23,7 @@
                 {{-- Left: Photo + Identity --}}
                 <div class="text-center lg:text-left">
                     @if($student->user?->avatar)
-                        <img src="{{ Storage::url($student->user->avatar) }}" alt="{{ $student->user->name }}"
+                        <img src="{{ \App\Support\Media::images()->url($student->user->avatar) }}" alt="{{ $student->user->name }}"
                             class="w-48 h-56 rounded-2xl object-cover mx-auto lg:mx-0 shadow-lg">
                     @else
                         <div

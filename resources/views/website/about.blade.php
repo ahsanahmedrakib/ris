@@ -35,7 +35,7 @@
                 </div>
                 <div
                     class="rounded-2xl flex items-center justify-center reveal-right animate-float-slow">
-                    <img src="{{ asset('images/about/ris.png') }}" alt="Resma International School"
+                    <img src="{{ asset('assets/about/ris.png') }}" alt="Resma International School"
                         class="w-auto object-cover">
                 </div>
             </div>

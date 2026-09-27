@@ -26,7 +26,7 @@
                     <div
                         class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/20 border-3 border-white/30 flex items-center justify-center text-white font-heading font-bold text-3xl sm:text-4xl shrink-0">
                         @if ($student->user?->avatar)
-                            <img src="{{ Storage::url($student->user->avatar) }}" alt="{{ $student->user->name }}"
+                            <img src="{{ \App\Support\Media::images()->url($student->user->avatar) }}" alt="{{ $student->user->name }}"
                                 class="w-full h-full rounded-full object-cover">
                         @else
                             {{ mb_substr($student->user?->name ?? 'ছ', 0, 1) }}

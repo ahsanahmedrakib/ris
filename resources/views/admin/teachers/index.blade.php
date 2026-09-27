@@ -89,7 +89,7 @@
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     <div class="flex items-center gap-2">
                                         @if ($teacher->teacherProfile?->photo)
-                                            <img src="{{ Storage::url($teacher->teacherProfile->photo) }}"
+                                            <img src="{{ \App\Support\Media::images()->url($teacher->teacherProfile->photo) }}"
                                                 alt="{{ $teacher->name }}" class="w-8 h-8 rounded-full object-cover">
                                         @else
                                             <div

@@ -84,7 +84,7 @@
                                 x-data="activeRow('{{ url('admin/testimonials') }}', {{ $testimonial->id }}, {{ $testimonial->is_active ? 'true' : 'false' }})">
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     @if ($testimonial->photo)
-                                        <img src="{{ Storage::url($testimonial->photo) }}" alt="{{ $testimonial->name }}"
+                                        <img src="{{ \App\Support\Media::images()->url($testimonial->photo) }}" alt="{{ $testimonial->name }}"
                                             class="w-9 h-9 rounded-full object-cover">
                                     @else
                                         <div

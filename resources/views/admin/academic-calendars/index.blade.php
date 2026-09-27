@@ -124,7 +124,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                             </svg>
                                         </button>
-                                        <a href="{{ Storage::url($calendar->file_path) }}" target="_blank"
+                                        <a href="{{ \App\Support\Media::files()->url($calendar->file_path) }}" target="_blank"
                                             class="p-1.5 rounded-lg text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors"
                                             title="ফাইল দেখুন">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

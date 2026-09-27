@@ -276,7 +276,7 @@ class ScholarshipRegistrationTest extends TestCase
 
         $this->get(route('scholarship.pdf', [$registration->registration_no, $registration->pdf_token]))
             ->assertOk()
-            ->assertSee('images/signature.png', escape: false)
+            ->assertSee('assets/signature.png', escape: false)
             ->assertSee('প্রধান শিক্ষকের স্বাক্ষর', escape: false);
 
         $this->get(route('scholarship.pdf', [$registration->registration_no, 'wrong-token']))

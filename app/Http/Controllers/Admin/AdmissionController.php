@@ -8,6 +8,7 @@ use App\Models\Admission;
 use App\Models\ClassRoom;
 use App\Models\Student;
 use App\Models\User;
+use App\Support\Media;
 use App\Support\NumberConverter;
 use App\Support\UniqueConstraintViolation;
 use App\Support\XlsxExport;
@@ -195,7 +196,7 @@ class AdmissionController extends Controller
             'reference' => $admission->reference,
             'reference_phone' => $admission->reference_phone,
             'reference_sign' => $admission->reference_sign,
-            'student_photo' => $admission->student_photo ? asset('storage/'.ltrim($admission->student_photo, '/')) : null,
+            'student_photo' => $admission->student_photo ? Media::images()->url(ltrim($admission->student_photo, '/')) : null,
             'created_at' => $admission->created_at->format('d/m/Y h:i A'),
             'creator_name' => $admission->creator?->name ?? 'অনলাইন (শিক্ষার্থী)',
             'admitted' => Student::where('admission_no', $admission->admission_no)->exists(),
@@ -250,7 +251,7 @@ class AdmissionController extends Controller
             'reference' => $admission->reference,
             'reference_phone' => $admission->reference_phone,
             'reference_sign' => $admission->reference_sign,
-            'student_photo' => $admission->student_photo ? asset('storage/'.$admission->student_photo) : null,
+            'student_photo' => $admission->student_photo ? Media::images()->url($admission->student_photo) : null,
         ]);
     }
 

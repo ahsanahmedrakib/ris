@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Message;
+use App\Support\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -98,7 +99,7 @@ class MessageController extends Controller
             'title' => $message->title,
             'name' => $message->name,
             'designation' => $message->designation,
-            'photo' => $message->photo ? Storage::url($message->photo) : null,
+            'photo' => $message->photo ? Media::images()->url($message->photo) : null,
             'message' => $message->message,
             'is_active' => $message->is_active,
             'status_label' => $message->is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়',
@@ -115,7 +116,7 @@ class MessageController extends Controller
             'title' => $message->title,
             'name' => $message->name,
             'designation' => $message->designation,
-            'photo' => $message->photo ? Storage::url($message->photo) : null,
+            'photo' => $message->photo ? Media::images()->url($message->photo) : null,
             'message' => $message->message,
             'sort_order' => (string) $message->sort_order,
             'is_active' => $message->is_active,

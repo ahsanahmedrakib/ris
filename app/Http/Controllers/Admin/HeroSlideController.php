@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
+use App\Support\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -86,7 +87,7 @@ class HeroSlideController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'subtitle' => $item->subtitle,
-            'image' => Storage::url($item->image),
+            'image' => Media::images()->url($item->image),
             'btn_text' => $item->btn_text,
             'link' => $item->link,
             'is_active' => $item->is_active,
@@ -103,7 +104,7 @@ class HeroSlideController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'subtitle' => $item->subtitle,
-            'image' => Storage::url($item->image),
+            'image' => Media::images()->url($item->image),
             'btn_text' => $item->btn_text,
             'link' => $item->link,
             'is_active' => $item->is_active,

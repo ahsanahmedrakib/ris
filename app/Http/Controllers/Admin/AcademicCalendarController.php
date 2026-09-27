@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicCalendar;
+use App\Support\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -63,7 +64,7 @@ class AcademicCalendarController extends Controller
         ]);
 
         try {
-            $filePath = $request->file('file')->store('academic-calendars', 'public');
+            $filePath = $request->file('file')->store('academic-calendars', 'public_files');
 
             AcademicCalendar::create([
                 'title' => $validated['title'],
@@ -90,7 +91,7 @@ class AcademicCalendarController extends Controller
             'id' => $calendar->id,
             'title' => $calendar->title,
             'description' => $calendar->description,
-            'file_url' => Storage::url($calendar->file_path),
+            'file_url' => Media::files()->url($calendar->file_path),
             'file_name' => $calendar->file_name,
             'year' => $calendar->year,
             'sort_order' => (string) $calendar->sort_order,
@@ -108,7 +109,7 @@ class AcademicCalendarController extends Controller
             'id' => $calendar->id,
             'title' => $calendar->title,
             'description' => $calendar->description,
-            'file_url' => Storage::url($calendar->file_path),
+            'file_url' => Media::files()->url($calendar->file_path),
             'file_name' => $calendar->file_name,
             'year' => $calendar->year,
             'sort_order' => (string) $calendar->sort_order,
@@ -136,10 +137,10 @@ class AcademicCalendarController extends Controller
         try {
             if ($request->hasFile('file')) {
                 if ($calendar->file_path) {
-                    Storage::disk('public')->delete($calendar->file_path);
+                    Storage::disk('public_files')->delete($calendar->file_path);
                 }
 
-                $validated['file_path'] = $request->file('file')->store('academic-calendars', 'public');
+                $validated['file_path'] = $request->file('file')->store('academic-calendars', 'public_files');
             }
 
             $validated['is_active'] = $validated['is_active'] ?? $calendar->is_active;

@@ -512,7 +512,7 @@
                             <div
                                 class="w-8 h-8 rounded-full gradient-logo flex items-center justify-center text-white text-sm font-heading font-semibold overflow-hidden shrink-0">
                                 @if (Auth::user()->avatar)
-                                    <img src="{{ Storage::url(Auth::user()->avatar) }}"
+                                    <img src="{{ \App\Support\Media::images()->url(Auth::user()->avatar) }}"
                                         alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
                                 @else
                                     {{ mb_substr(Auth::user()->name ?? 'A', 0, 1) }}

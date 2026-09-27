@@ -154,7 +154,7 @@
             <div class="card-body">
                 <div class="photo">
                     @if($student->user?->avatar)
-                        <img src="{{ asset('storage/'.$student->user->avatar) }}" alt="ছবি">
+                        <img src="{{ \App\Support\Media::images()->url($student->user->avatar) }}" alt="ছবি">
                     @else
                         <div class="placeholder">
                             {{ mb_substr($student->user?->name ?? 'ছ', 0, 1) }}

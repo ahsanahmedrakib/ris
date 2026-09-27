@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\GalleryItem;
+use App\Support\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -91,7 +92,7 @@ class GalleryController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'description' => $item->description,
-            'image' => Storage::url($item->image),
+            'image' => Media::images()->url($item->image),
             'category' => $item->category,
             'is_active' => $item->is_active,
             'status_label' => $item->is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়',
@@ -107,7 +108,7 @@ class GalleryController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'description' => $item->description,
-            'image' => Storage::url($item->image),
+            'image' => Media::images()->url($item->image),
             'category' => $item->category,
             'is_active' => $item->is_active,
         ]);

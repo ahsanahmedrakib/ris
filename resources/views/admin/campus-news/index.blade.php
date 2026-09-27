@@ -87,7 +87,7 @@
                                 x-data="activeRow('{{ url('admin/campus-news') }}', {{ $item->id }}, {{ $item->is_active ? 'true' : 'false' }})">
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     @if ($item->image)
-                                        <img src="{{ Storage::url($item->image) }}" alt="{{ $item->title }}"
+                                        <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}"
                                             class="w-24 h-12 rounded-lg object-cover">
                                     @else
                                         <div class="w-24 h-12 rounded-lg bg-ris-primary/10 flex items-center justify-center">
