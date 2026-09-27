@@ -15,10 +15,12 @@
 /auth.json
 /node_modules
 /public/build
-/public/files
+/public/files/*
+!/public/files/.htaccess
 /public/fonts-manifest.dev.json
 /public/hot
-/public/images
+/public/images/*
+!/public/images/.htaccess
 /storage/*.key
 /storage/pail
 /vendor

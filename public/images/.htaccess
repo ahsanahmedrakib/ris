@@ -1,0 +1,47 @@
+# Uploads live inside the web root so that images and PDFs can be served
+# directly, which means the web server will happily execute anything that
+# lands here. Deny script execution outright and never hand out a directory
+# listing: these folders are for passive assets only.
+
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Covers handlers that are not mod_php, such as php-fpm.
+<IfModule mod_proxy_fcgi.c>
+    SetEnvIfNoCase ^(?<fcgi_root>.*\.php)$ SCRIPT_FILENAME=%{fcgi_root}SCRIPT_FILENAME
+    SetEnvIfNoCase ^(?<fcgi_root>.*\.php)$ DOCUMENT_ROOT=%{fcgi_root}DOCUMENT_ROOT
+</IfModule>
+
+# Nothing in an uploads directory should ever be run, whatever it is named.
+<FilesMatch "(?i)\.(php|phps|php\d|phtml|phar|pl|py|cgi|asp|aspx|jsp|sh|bash|exe|com|bat|cmd|htaccess|ini)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Block requests for dotfiles, which is how .htaccess overrides get smuggled in.
+<FilesMatch "(?i)^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# No directory listings: an index of uploads reveals filenames and structure.
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
