@@ -53,9 +53,11 @@ class InlineStatusUpdateTest extends TestCase
             ->assertSuccessful()
             ->getContent();
 
-        // The exact old handler. Matching the bare string would also hit the
-        // pagination per_page filter and the comment explaining the change.
-        $this->assertStringNotContainsString('@change="$el.form.submit()"', $html);
+        // Scoped to the status select itself. The pagination per_page filter
+        // and the class/class_id filters legitimately submit their form, so
+        // asserting the handler is absent from the whole page would only
+        // guard against a pagination regression.
+        $this->assertStatusSelectSavesWithoutSubmitting($html);
         $this->assertStringContainsString('RisAdmin.statusRow(', $html);
         $this->assertStringContainsString('@change="save()"', $html);
         $this->assertStringContainsString(':class="badge"', $html);
@@ -71,10 +73,29 @@ class InlineStatusUpdateTest extends TestCase
             ->assertSuccessful()
             ->getContent();
 
-        $this->assertStringNotContainsString('@change="$el.form.submit()"', $html);
+        $this->assertStatusSelectSavesWithoutSubmitting($html);
         $this->assertStringContainsString('RisAdmin.statusRow(', $html);
         $this->assertStringContainsString('@change="save()"', $html);
         $this->assertStringContainsString(':class="badge"', $html);
+    }
+
+    /**
+     * The status control must call save(), never submit the surrounding form,
+     * because a native submit would navigate away and drop the inline update.
+     */
+    private function assertStatusSelectSavesWithoutSubmitting(string $html): void
+    {
+        preg_match_all('/<select\b[^>]*\bname="status"[^>]*>/i', $html, $selects);
+
+        $this->assertNotEmpty($selects[0], 'No status select was rendered.');
+
+        foreach ($selects[0] as $select) {
+            $this->assertStringNotContainsString(
+                'form.submit()',
+                $select,
+                "The status select submits its form instead of calling save(): {$select}",
+            );
+        }
     }
 
     #[Test]

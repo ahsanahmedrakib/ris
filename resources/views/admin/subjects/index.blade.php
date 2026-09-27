@@ -71,7 +71,7 @@
                                             </svg>
                                         </button>
                                         <form method="POST" action="{{ route('admin.subjects.destroy', $subject) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই বিষয় মুছে ফেলতে চান?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই বিষয় মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

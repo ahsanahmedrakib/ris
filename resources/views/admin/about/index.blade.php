@@ -63,7 +63,7 @@
                                 </button>
                                 <form action="{{ route('admin.about.mission-vision.destroy', $mission->id) }}"
                                     method="POST"
-                                    onsubmit="return confirm('আপনি কি নিশ্চিত মিশনটি মুছে ফেলতে চান? এটি ওয়েবসাইট থেকে সরানো হবে।')">
+                                    @submit="if (! confirm('আপনি কি নিশ্চিত মিশনটি মুছে ফেলতে চান? এটি ওয়েবসাইট থেকে সরানো হবে।')) $event.preventDefault()">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
@@ -182,7 +182,7 @@
                                 </button>
                                 <form action="{{ route('admin.about.mission-vision.destroy', $vision->id) }}"
                                     method="POST"
-                                    onsubmit="return confirm('আপনি কি নিশ্চিত ভিশনটি মুছে ফেলতে চান? এটি ওয়েবসাইট থেকে সরানো হবে।')">
+                                    @submit="if (! confirm('আপনি কি নিশ্চিত ভিশনটি মুছে ফেলতে চান? এটি ওয়েবসাইট থেকে সরানো হবে।')) $event.preventDefault()">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
@@ -343,7 +343,7 @@
                                         </button>
                                         <form method="POST"
                                             action="{{ route('admin.about.core-values.destroy', $coreValue->id) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই মূল্যবোধটি মুছে ফেলতে চান?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই মূল্যবোধটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

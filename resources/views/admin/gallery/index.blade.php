@@ -141,7 +141,7 @@
                                             </svg>
                                         </button>
                                         <form method="POST" action="{{ route('admin.gallery.destroy', $item->id) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই ছবিটি মুছে ফেলতে চান?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই ছবিটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

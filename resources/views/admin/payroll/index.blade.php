@@ -78,7 +78,7 @@
                         </select>
                     </div>
                     <div class="flex items-end">
-                        <button type="submit" onclick="return confirm('আপনি কি এই মাসের বেতন প্রক্রিয়াকরণ করতে চান?')" class="px-6 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm w-full sm:w-auto cursor-pointer">
+                        <button type="submit" @click="if (! confirm('আপনি কি এই মাসের বেতন প্রক্রিয়াকরণ করতে চান?')) $event.preventDefault()" class="px-6 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm w-full sm:w-auto cursor-pointer">
                             বেতন প্রক্রিয়াকরণ করুন
                         </button>
                     </div>

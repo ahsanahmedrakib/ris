@@ -49,7 +49,7 @@
                             </td>
                             <td class="px-5 py-3.5">
                                 @if($borrowing->returned_at === null)
-                                    <form method="POST" action="{{ route('admin.library.return', $borrowing) }}" onsubmit="return confirm('বইটি ফেরত নিশ্চিত করছেন?');">
+                                    <form method="POST" action="{{ route('admin.library.return', $borrowing) }}" @submit="if (! confirm('বইটি ফেরত নিশ্চিত করছেন?')) $event.preventDefault()">
                                         @csrf
                                         <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-lg hover:bg-emerald-100 transition-colors cursor-pointer">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>

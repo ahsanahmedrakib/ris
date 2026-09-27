@@ -13,7 +13,7 @@
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <form method="GET" action="{{ route('admin.class-routines.index') }}">
-                    <select name="class_id" onchange="this.form.submit()"
+                    <select name="class_id" @change="$el.form.submit()"
                         class="px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-white focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors cursor-pointer">
                         <option value="">সকল শ্রেণি</option>
                         @foreach ($classes as $class)

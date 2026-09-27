@@ -58,7 +58,7 @@
                     </svg>
                     হোম পেজে ফিরুন
                 </a>
-                <button onclick="history.back()"
+                <button @click="history.back()"
                     class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 font-heading font-medium rounded-xl hover:bg-gray-200 transition-colors cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

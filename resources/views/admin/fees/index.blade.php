@@ -146,7 +146,7 @@
                                             </svg>
                                         </a>
                                         <form method="POST" action="#"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

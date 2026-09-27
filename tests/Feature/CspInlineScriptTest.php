@@ -162,6 +162,30 @@ class CspInlineScriptTest extends TestCase
     }
 
     #[Test]
+    public function no_view_uses_an_inline_event_handler(): void
+    {
+        // A nonced <script nonce="..."> is allowed, but an onclick/onsubmit
+        // attribute is not: the browser treats it as an inline script and
+        // blocks it. That is what silently removed the delete confirmation in
+        // production while local development still showed it, because
+        // 'unsafe-inline' is only present in the development policy.
+        $offenders = [];
+
+        foreach ($this->bladeFiles() as $file) {
+            if (preg_match('/\son[a-z]+\s*=/i', (string) file_get_contents($file)) === 1) {
+                $offenders[] = $file;
+            }
+        }
+
+        $this->assertSame(
+            [],
+            $offenders,
+            'Inline event handlers are blocked by the production CSP. Use an Alpine '
+                .'directive such as @submit, @click or @change instead. '.implode(', ', $offenders),
+        );
+    }
+
+    #[Test]
     public function every_external_script_the_views_load_is_allowed_by_the_policy(): void
     {
         $csp = $this->policy();

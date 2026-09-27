@@ -78,7 +78,7 @@
                                             </svg>
                                         </button>
                                         <form method="POST" action="{{ route('admin.classes.destroy', $class) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই শ্রেণি মুছে ফেলতে চান?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই শ্রেণি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

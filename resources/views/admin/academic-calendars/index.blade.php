@@ -152,7 +152,7 @@
                                         </button>
                                         <form method="POST"
                                             action="{{ route('admin.academic-calendars.destroy', $calendar->id) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই ক্যালেন্ডারটি মুছে ফেলতে চান?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই ক্যালেন্ডারটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

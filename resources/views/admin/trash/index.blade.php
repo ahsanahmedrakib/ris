@@ -127,7 +127,7 @@
                                         </form>
                                         <form method="POST"
                                             action="{{ route('admin.trash.force-delete', [$item['type'], $record->getKey()]) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত? এটি স্থায়ীভাবে মুছে যাবে এবং আর পুনরুদ্ধার করা যাবে না!')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত? এটি স্থায়ীভাবে মুছে যাবে এবং আর পুনরুদ্ধার করা যাবে না!')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

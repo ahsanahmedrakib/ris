@@ -24,7 +24,7 @@
                     {{ $invoice->status === 'paid' ? 'পরিশোধিত' : ($invoice->status === 'partial' ? 'আংশিক' : ($invoice->status === 'overdue' ? 'মেয়াদোত্তীর্ণ' : 'মুলতুবি')) }}
                 </span>
             </div>
-            <form method="POST" action="{{ route('admin.fees.destroy', $invoice) }}" onsubmit="return confirm('আপনি কি নিশ্চিত এই চালানটি মুছে ফেলতে চান?');">
+            <form method="POST" action="{{ route('admin.fees.destroy', $invoice) }}" @submit="if (! confirm('আপনি কি নিশ্চিত এই চালানটি মুছে ফেলতে চান?')) $event.preventDefault()">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">

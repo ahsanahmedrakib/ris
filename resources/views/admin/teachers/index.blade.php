@@ -153,7 +153,7 @@
                                             </svg>
                                         </button>
                                         <form method="POST" action="{{ route('admin.teachers.destroy', $teacher) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই শিক্ষককে ডিলিট করতে চান?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই শিক্ষককে ডিলিট করতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

@@ -87,7 +87,7 @@
                                             </svg>
                                         </button>
                                         <form method="POST" action="{{ route('admin.transport.destroy', $bus) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই বাসটি মুছে ফেলতে চান?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই বাসটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

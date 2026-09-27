@@ -135,7 +135,7 @@
                                             </svg>
                                         </button>
                                         <form method="POST" action="{{ route('admin.library.destroy', $book) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই বইটি মুছে ফেলতে চান?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই বইটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

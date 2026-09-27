@@ -120,7 +120,7 @@
                                             ফলাফল
                                         </a>
                                         <form method="POST" action="{{ route('admin.exams.destroy', $exam) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই পরীক্ষাটি মুছে ফেলতে চান?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই পরীক্ষাটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

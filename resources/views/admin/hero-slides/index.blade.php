@@ -141,7 +141,7 @@
                                             </svg>
                                         </button>
                                         <form method="POST" action="{{ route('admin.hero-slides.destroy', $item->id) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই স্লাইডটি মুছে ফেলতে চান?')">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই স্লাইডটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

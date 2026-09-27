@@ -77,7 +77,7 @@
                                         </button>
                                         <form method="POST"
                                             action="{{ route('admin.fees.structures.destroy', $structure) }}"
-                                            onsubmit="return confirm('আপনি কি নিশ্চিত এই ফি কাঠামোটি মুছে ফেলতে চান?');">
+                                            @submit="if (! confirm('আপনি কি নিশ্চিত এই ফি কাঠামোটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

@@ -128,7 +128,7 @@
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5l-2-2z"/></svg>
                                         </a>
                                     @endif
-                                    <form method="POST" action="{{ route('admin.admission.destroy', $admission) }}" onsubmit="return confirm('আপনি কি নিশ্চিত এই ভর্তি আবেদনটি মুছে ফেলতে চান?')">
+                                    <form method="POST" action="{{ route('admin.admission.destroy', $admission) }}" @submit="if (! confirm('আপনি কি নিশ্চিত এই ভর্তি আবেদনটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="p-1.5 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors cursor-pointer" title="মুছুন">

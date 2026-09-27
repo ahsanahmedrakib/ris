@@ -101,7 +101,7 @@
 <body class="bg-gray-100 flex flex-col items-center py-8 gap-8">
 
     <div class="no-print my-6">
-        <button onclick="window.print()"
+        <button @click="window.print()"
             class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition cursor-pointer">
             Print / Save PDF
         </button>

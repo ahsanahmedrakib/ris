@@ -13,7 +13,7 @@
             @foreach($queryParams as $key => $val)
                 <input type="hidden" name="{{ $key }}" value="{{ $val }}">
             @endforeach
-            <select name="per_page" onchange="this.form.submit()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none bg-white cursor-pointer">
+            <select name="per_page" @change="$el.form.submit()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none bg-white cursor-pointer">
                 @foreach([10, 25, 50, 100] as $size)
                     <option value="{{ $size }}" {{ request('per_page', 15) == $size ? 'selected' : '' }}>{{ $size }}</option>
                 @endforeach
