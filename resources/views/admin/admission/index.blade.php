@@ -75,7 +75,7 @@
                         <th class="text-center px-4 py-3.5 font-medium text-white whitespace-nowrap sticky right-0 bg-linear-to-r from-ris-light to-ris-dark z-10">অ্যাকশন</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50">
+                <tbody class="divide-y divide-gray-50" data-table-body>
                     @forelse($admissions as $index => $admission)
                         <tr class="hover:bg-gray-50 transition-colors"
                             x-data="RisAdmin.statusRow(@js(route('admin.admission.status', $admission)), @js($admission->status), { canAdmit: {{ $admission->status === 'approved' && ! in_array($admission->admission_no, $admittedNos) ? 'true' : 'false' }}, admitted: {{ in_array($admission->admission_no, $admittedNos) ? 'true' : 'false' }} })">

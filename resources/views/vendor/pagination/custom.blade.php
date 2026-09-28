@@ -5,7 +5,9 @@
     $queryParams = request()->except(['page', 'per_page']);
 @endphp
 
-<div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 py-3 border-t border-gray-100">
+{{-- `data-refresh` keeps the row totals and the page links in step with the
+     table body when a record is added, edited or deleted in place. --}}
+<div data-refresh class="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 py-3 border-t border-gray-100">
     {{-- Left: Per Page --}}
     <div class="flex items-center gap-2 text-sm text-gray-600">
         <span>প্রতি পৃষ্ঠায়</span>

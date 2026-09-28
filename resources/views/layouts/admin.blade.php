@@ -723,25 +723,54 @@
                 return parseInt(raw, 10);
             }
 
+            /**
+             * Re-render a listing after a create/edit/delete, in place.
+             *
+             * Only the marked regions are swapped, so the scroll position, the
+             * active filters and any half-filled modal all survive the request.
+             * `data-table-body` is the rows; `data-refresh` covers the other bits
+             * that follow the row count — a totals badge, a summary card, the
+             * pager — so they do not go stale either. Keep the marks at the same
+             * depth and in the same order in the markup, because regions are
+             * paired up positionally with the re-rendered page.
+             *
+             * Returns false when there was nothing to swap, or the swap did not
+             * come back cleanly, leaving the caller to navigate instead. A page
+             * with no marks at all — a single-record screen — always lands here.
+             */
             async function refreshTable() {
-                const tbody = document.querySelector('[data-table-body]');
-                if (!tbody) return;
+                const selector = '[data-table-body], [data-refresh]';
+                const regions = Array.from(document.querySelectorAll(selector));
+                if (!regions.length) return false;
+
                 try {
                     const res = await fetch(window.location.href, {
                         headers: { 'X-Requested-With': 'XMLHttpRequest' },
                     });
-                    if (!res.ok) return;
+                    if (!res.ok) return false;
                     const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-                    const fresh = doc.querySelector('[data-table-body]');
-                    if (!fresh) return;
-                    tbody.innerHTML = fresh.innerHTML;
-                    if (window.Alpine && typeof window.Alpine.initTree === 'function') {
-                        window.Alpine.initTree(tbody);
-                    }
-                    if (window.RisDateMask && typeof window.RisDateMask.init === 'function') {
-                        window.RisDateMask.init(tbody);
-                    }
-                } catch (e) {}
+                    const fresh = doc.querySelectorAll(selector);
+                    let swapped = 0;
+                    regions.forEach((region, i) => {
+                        if (!fresh[i]) return;
+                        // Tear the outgoing tree down first, or the effects of the
+                        // rows being discarded keep running off the old nodes.
+                        if (window.Alpine && typeof window.Alpine.destroyTree === 'function') {
+                            window.Alpine.destroyTree(region);
+                        }
+                        region.innerHTML = fresh[i].innerHTML;
+                        if (window.Alpine && typeof window.Alpine.initTree === 'function') {
+                            window.Alpine.initTree(region);
+                        }
+                        if (window.RisDateMask && typeof window.RisDateMask.init === 'function') {
+                            window.RisDateMask.init(region);
+                        }
+                        swapped++;
+                    });
+                    return swapped > 0;
+                } catch (e) {
+                    return false;
+                }
             }
 
             // Drives the inline status dropdowns in the row tables. Saving used
@@ -839,10 +868,20 @@
                 }
                 try {
                     const { ok, data } = await submitForm(form);
-                    toast(ok ? 'success' : 'error',
-                        data && data.message ? data.message :
-                        (ok ? 'সফলভাবে মুছে ফেলা হয়েছে।' : 'মুছে ফেলতে সমস্যা হয়েছে।'));
-                    if (ok) await refreshTable();
+                    if (!ok) {
+                        toast('error', data && data.message ? data.message : 'মুছে ফেলতে সমস্যা হয়েছে।');
+                        return;
+                    }
+                    if (await refreshTable()) {
+                        toast('success', data && data.message ? data.message : 'সফলভাবে মুছে ফেলা হয়েছে।');
+                        return;
+                    }
+                    // Nothing on this page mirrors the change — it is a
+                    // single-record screen, or the refresh did not come back — so
+                    // go where the server sent the browser, exactly as a native
+                    // submit would have. The flash rides along and the layout
+                    // replays it as a toast.
+                    window.location.href = (data && data.redirect) || window.location.href;
                 } catch (err) {
                     toast('error', 'মুছে ফেলতে সমস্যা হয়েছে।');
                 } finally {

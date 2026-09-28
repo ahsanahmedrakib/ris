@@ -12,7 +12,7 @@
                 <p class="text-sm text-gray-500 mt-1">মুছে ফেলা সকল ডেটা এখানে দেখা যাবে — পুনরুদ্ধার বা স্থায়ীভাবে মুছুন</p>
             </div>
             <div class="flex items-center gap-2">
-                <span
+                <span data-refresh
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-50 border border-red-200 text-sm font-medium rounded-lg text-red-600">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -81,7 +81,7 @@
                                 অ্যাকশন</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-50" data-table-body>
                         @forelse($trashed as $index => $item)
                             @php $record = $item['record']; @endphp
                             <tr class="hover:bg-gray-50 transition-colors">

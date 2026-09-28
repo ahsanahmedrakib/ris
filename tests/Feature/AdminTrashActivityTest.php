@@ -95,6 +95,59 @@ class AdminTrashActivityTest extends TestCase
     }
 
     #[Test]
+    public function trash_force_delete_answers_ajax_with_json_and_keeps_the_flash_for_the_reload(): void
+    {
+        $admin = $this->admin();
+        $notice = $this->makeNotice($admin);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.notices.destroy', $notice));
+
+        // The admin layout posts deletes over fetch() and then reloads the page,
+        // so the endpoint has to answer with JSON and leave the flash in the
+        // session for the reloaded page to replay as a toast.
+        $this->actingAs($admin)
+            ->deleteJson(route('admin.trash.force-delete', ['notice', $notice->id]))
+            ->assertOk()
+            ->assertJsonPath('type', 'success');
+
+        $this->assertDatabaseMissing('notices', ['id' => $notice->id]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.trash.index'))
+            ->assertOk()
+            ->assertSee('ডেটা স্থায়ীভাবে মুছে ফেলা হয়েছে।');
+    }
+
+    #[Test]
+    public function trash_page_marks_every_region_the_in_place_refresh_swaps(): void
+    {
+        $admin = $this->admin();
+        $notice = $this->makeNotice($admin);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.notices.destroy', $notice));
+
+        $html = $this->actingAs($admin)
+            ->get(route('admin.trash.index'))
+            ->assertOk()
+            ->getContent();
+
+        // The admin layout re-renders a listing by swapping every
+        // `[data-table-body]` / `[data-refresh]` region, pairing them up with the
+        // re-rendered page by position. The trash page has three — the trashed
+        // count, the rows and the pager — and all three have to be marked or the
+        // force delete would leave the screen stale.
+        preg_match_all('/<[^>]+(data-table-body|data-refresh)[^>]*>/', $html, $matches);
+
+        $this->assertCount(3, $matches[0], 'Expected the trashed count, the rows and the pager to be marked.');
+
+        $this->assertStringContainsString('data-refresh', $matches[0][0], 'The trashed count badge should be marked.');
+        $this->assertStringContainsString('data-table-body', $matches[0][1], 'The table body should be marked.');
+        $this->assertStringContainsString('data-refresh', $matches[0][2], 'The pager should be marked.');
+    }
+
+    #[Test]
     public function scholarship_registration_delete_is_soft_and_restorable(): void
     {
         $admin = $this->admin();

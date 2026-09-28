@@ -11,7 +11,7 @@
     </div>
 
     {{-- Summary Cards --}}
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
+    <div data-refresh class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
         <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between">
                 <div>
@@ -180,6 +180,9 @@
                         const data = await res.json();
                         if (res.ok) {
                             this.active = data.is_active;
+                            // The "ইতিমোধ্যে পরিশোধিত" total follows the status,
+                            // so pull the summary cards in with the row.
+                            if (window.RisAdmin) window.RisAdmin.refreshTable();
                         } else {
                             alert(data.message || 'স্ট্যাটাস পরিবর্তন করা যায়নি।');
                         }

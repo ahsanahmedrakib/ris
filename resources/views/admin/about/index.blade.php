@@ -32,7 +32,7 @@
             <div class="grid md:grid-cols-2 gap-6">
 
                 {{-- Mission --}}
-                <div class="rounded-2xl border border-gray-200 bg-gray-50/50 p-5">
+                <div data-refresh class="rounded-2xl border border-gray-200 bg-gray-50/50 p-5">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-11 h-11 rounded-xl bg-ris-primary/10 flex items-center justify-center">
                             <svg class="w-6 h-6 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +153,7 @@
                 </div>
 
                 {{-- Vision --}}
-                <div class="rounded-2xl border border-gray-200 bg-gray-50/50 p-5">
+                <div data-refresh class="rounded-2xl border border-gray-200 bg-gray-50/50 p-5">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-11 h-11 rounded-xl bg-ris-primary/10 flex items-center justify-center">
                             <svg class="w-6 h-6 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">

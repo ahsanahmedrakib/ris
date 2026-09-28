@@ -160,7 +160,7 @@
         </div>
 
         @if(isset($notices) && $notices instanceof \Illuminate\Pagination\LengthAwarePaginator && $notices->hasPages())
-            <div class="px-5 py-3 border-t border-gray-100">
+            <div data-refresh class="px-5 py-3 border-t border-gray-100">
                 {{ $notices->links() }}
             </div>
         @endif
