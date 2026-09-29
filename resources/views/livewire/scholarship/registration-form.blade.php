@@ -50,8 +50,7 @@
             {{-- Card Header --}}
             <div class="gradient-logo px-6 py-6 text-center">
                 <h2 class="font-heading font-bold text-white text-xl sm:text-2xl leading-snug">আক্‌রামুন্নেছা-জলিল ও
-                    রেশমা</h2>
-                <h2 class="font-heading font-bold text-white text-xl sm:text-2xl mt-1">রেজাউল মেধাবৃত্তি ২০২৬</h2>
+                    রেশমা-রেফাউল মেধাবৃত্তি ২০২৬</h2>
                 <p class="mt-2 text-white/80 text-sm">রেজিস্ট্রেশন ফরম</p>
             </div>
 
