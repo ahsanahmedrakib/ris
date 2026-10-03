@@ -103,7 +103,7 @@
                     @foreach ($rows as [$key, $value])
                         <div class="flex gap-3">
                             <dt class="w-44 shrink-0 text-gray-500">{{ $key }}</dt>
-                            <dd class="flex-1 font-medium text-gray-900 break-words">
+                            <dd class="flex-1 font-medium text-gray-900 wrap-break-word">
                                 {{ $key === 'dob' ? \Illuminate\Support\Carbon::parse($value)->format('d/m/Y') : $value }}
                             </dd>
                         </div>
