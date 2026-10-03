@@ -293,6 +293,74 @@ class ScholarshipRegistrationTest extends TestCase
     }
 
     #[Test]
+    public function the_pdf_sheet_offers_a_working_print_and_download_on_both_copies(): void
+    {
+        $registration = ScholarshipRegistration::factory()->create(['registration_no' => '26-3006']);
+
+        $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin@example.com']);
+
+        $copies = [
+            'admin' => $this->actingAs($admin)
+                ->get(route('admin.scholarship.pdf', $registration))
+                ->assertOk()
+                ->getContent(),
+            'public' => $this->get(route('scholarship.pdf', [$registration->registration_no, $registration->pdf_token]))
+                ->assertOk()
+                ->getContent(),
+        ];
+
+        foreach ($copies as $which => $html) {
+            // This sheet is a standalone document with no layout behind it, so
+            // Alpine is never loaded and an @click directive is dead markup: the
+            // button renders and does nothing. Both actions must bind with
+            // addEventListener under the CSP nonce instead, exactly like
+            // admission/sheet-actions.blade.php.
+            $this->assertStringNotContainsString('@click', $html, "{$which} copy uses an Alpine directive with no Alpine on the page.");
+            $this->assertStringNotContainsString('onclick=', $html, "{$which} copy uses an inline handler, which the production CSP blocks.");
+
+            $this->assertStringContainsString('id="printSheetBtn"', $html, "{$which} copy has no print button.");
+            $this->assertStringContainsString('id="downloadSheetBtn"', $html, "{$which} copy has no download button.");
+            $this->assertStringContainsString("addEventListener('click'", $html, "{$which} copy binds nothing to its buttons.");
+            $this->assertStringContainsString('window.print()', $html, "{$which} copy never calls the print dialog.");
+
+            // Download: the self-hosted bundle, and the export settings the
+            // sheet needs to come out right -- A4, one pagination strategy,
+            // letter-spacing dropped in the clone so the Bangla conjuncts are
+            // not pulled apart, and the trailing blank page removed before the
+            // file is written.
+            $this->assertStringContainsString('html2pdf.bundle.min.js', $html, "{$which} copy does not load html2pdf.");
+            $this->assertStringContainsString("format: 'a4'", $html, "{$which} copy does not export A4.");
+            $this->assertStringContainsString("pagebreak: { mode: ['avoid-all'] }", $html);
+            $this->assertStringContainsString('letter-spacing: normal !important', $html, "{$which} copy would break the Bangla conjuncts in the PDF.");
+            $this->assertStringContainsString('scrollX: 0', $html, "{$which} copy rasterises from the current scroll position.");
+            $this->assertStringContainsString('getNumberOfPages()', $html, "{$which} copy keeps the blank trailing page.");
+            $this->assertStringContainsString('pdf.save(filename)', $html);
+            $this->assertStringContainsString('admit-26-3006.pdf', $html, "{$which} copy does not name the download after the registration.");
+
+            // html2canvas cannot parse Tailwind 4's oklch() and aborts the whole
+            // export, so every colour on the page needs a hex override. Derived
+            // from the rendered markup rather than hardcoded, so adding a
+            // coloured utility without an override fails here instead of
+            // silently breaking the download.
+            preg_match_all('/--(?:color-)?([a-z]+-\d+|white|black)\s*:\s*([^;]+);/', $html, $overrides);
+            $overrides = array_combine($overrides[1], $overrides[2]);
+
+            preg_match_all(
+                '/(?:bg|text|border|ring|fill|stroke|divide|placeholder|decoration|from|to|via)-((?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|white|black)(?:-\d+)?)/',
+                $html,
+                $used
+            );
+
+            $this->assertNotEmpty(array_unique($used[1]));
+
+            foreach (array_unique($used[1]) as $colour) {
+                $this->assertArrayHasKey($colour, $overrides, "{$which} copy has no hex override for --color-{$colour}.");
+                $this->assertStringStartsWith('#', $overrides[$colour], "--color-{$colour} is not hex.");
+            }
+        }
+    }
+
+    #[Test]
     public function each_registration_gets_a_unique_secret_token(): void
     {
         ScholarshipRegistration::factory()->count(3)->create();
