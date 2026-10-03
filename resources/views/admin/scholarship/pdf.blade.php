@@ -40,11 +40,17 @@
     <style>
         /* html2canvas, bundled inside html2pdf, cannot parse the oklch() colours
            Tailwind 4 emits, and aborts the whole render on the first one.
-           Restate the handful this sheet uses as hex. Unlayered declarations
-           win over Tailwind's @layer theme block. */
+           Restate the handful this sheet uses as hex, toolbar included, because
+           html2canvas walks the cloned document and parses ancestors such as
+           <body> too. Unlayered declarations win over Tailwind's @layer theme
+           block. */
         :root {
+            --color-white: #ffffff;
+            --color-black: #000000;
             --color-gray-100: #f3f4f6;
+            --color-gray-400: #9ca3af;
             --color-gray-500: #6b7280;
+            --color-gray-600: #4b5563;
             --color-blue-600: #2563eb;
             --color-blue-700: #1d4ed8;
             --color-emerald-600: #059669;
@@ -110,6 +116,12 @@
             html,
             body {
                 width: 210mm;
+                /* The screen layout centres the card with min-h-screen and a
+                   py-10 gutter. Both resolve against the viewport, so in print
+                   they push the sheet off the page and emit a blank second
+                   sheet. */
+                min-height: 0 !important;
+                height: auto !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 background: white !important;
@@ -127,16 +139,26 @@
 
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen py-10">
 
+    {{--
+         This page is a standalone document rendered by both admin.scholarship.pdf
+         and the applicant's token link, so it has no layout and therefore no
+         Alpine. Buttons must bind with addEventListener under the CSP nonce, the
+         same way resources/views/admission/sheet-actions.blade.php does; an
+         @click directive here is inert markup and the button silently does
+         nothing.
+     --}}
     <div class="no-print my-4 flex flex-wrap items-center justify-center gap-3">
-        <button type="button" @click="window.print()"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition cursor-pointer">
-            Print - প্রিন্ট করুন
+        <button type="button" id="printSheetBtn"
+            class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-6 rounded shadow transition cursor-pointer">
+            প্রিন্ট করুন - Print
         </button>
 
-        <button type="button" id="downloadPdfBtn" @click="downloadAdmitPdf()"
-            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded shadow transition cursor-pointer">
-            Download PDF - পিডিএফ ডাউনলোড করুন
+        <button type="button" id="downloadSheetBtn"
+            class="bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white font-bold py-2 px-6 rounded shadow transition cursor-pointer">
+            পিডিএফ ডাউনলোড করুন - Download PDF
         </button>
+
+        <p id="downloadSheetHint" class="w-full text-center text-xs text-gray-600" role="status" aria-live="polite"></p>
     </div>
 
     <div id="admit-card" class="print-page text-black text-sm relative px-6 py-3">
@@ -283,85 +305,144 @@
     {{-- Download PDF Script --}}
 
     {{-- Self-hosted so the download works without reaching cdnjs. --}}
-    <script src="{{ asset('vendor/html2pdf.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/html2pdf.bundle.min.js') }}" defer></script>
     <script nonce="{{ $cspNonce }}">
-        function downloadAdmitPdf() {
-            const element = document.getElementById('admit-card');
-            const btn = document.getElementById('downloadPdfBtn');
-            const fileName = 'admit-{{ $registration->registration_no }}.pdf';
+        document.addEventListener('DOMContentLoaded', function () {
+            var printBtn = document.getElementById('printSheetBtn');
+            var downloadBtn = document.getElementById('downloadSheetBtn');
+            var hint = document.getElementById('downloadSheetHint');
+            var sheet = document.getElementById('admit-card');
 
-            if (!element) {
-                alert('Admit card element পাওয়া যায়নি।');
-                return;
-            }
-            if (typeof html2pdf === 'undefined') {
-                alert('html2pdf লোড হয়নি। পেজ রিফ্রেশ করে আবার চেষ্টা করুন।');
-                return;
+            if (printBtn) {
+                printBtn.addEventListener('click', function () {
+                    window.print();
+                });
             }
 
-            btn.disabled = true;
-            btn.textContent = 'Downloading PDF... - পিডিএফ ডাউনলোড হচ্ছে...';
+            if (!downloadBtn || !sheet) {
+                return;
+            }
 
-            // Hide external images temporarily if they cause CORS errors
-            const images = element.querySelectorAll('img');
-            const prevSrc = [];
-            images.forEach(function(img, i) {
-                prevSrc[i] = img.src;
-                // Optional: comment next line if logo must appear in PDF
-                // img.style.visibility = 'hidden';
-                img.crossOrigin = 'anonymous';
-            });
+            var idleLabel = downloadBtn.textContent;
 
-            const opt = {
-                filename: fileName,
-                image: {
-                    type: 'jpeg',
-                    quality: 0.98
-                },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    allowTaint: true,
-                    logging: true, // see errors in F12 Console
-                    scrollX: 0,
-                    scrollY: 0,
-                    backgroundColor: '#ffffff',
-                },
-                jsPDF: {
-                    unit: 'mm',
-                    format: 'a4',
-                    orientation: 'portrait',
-                },
-                pagebreak: {
-                    mode: ['avoid-all']
-                },
-                enableLinks: false,
+            var restore = function (message) {
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = idleLabel;
+                if (hint) {
+                    hint.textContent = message || '';
+                }
             };
 
-            html2pdf()
-                .set(opt)
-                .from(element)
-                .toPdf()
-                .get('pdf')
-                .then(function(pdf) {
-                    // Keep only first page (removes empty page 2)
-                    const total = pdf.internal.getNumberOfPages();
-                    for (let i = total; i > 1; i--) {
-                        pdf.deletePage(i);
+            // Resolves once the fonts and every image on the sheet are usable.
+            // html2pdf rasterises a clone of the document inside an iframe and
+            // does not wait for that clone to be ready: rasterising before the
+            // Bangla webfont loads makes the browser fall back to a font with no
+            // conjunct support (the reph in ভর্তি is dropped and ফরম becomes
+            // ফ্রম), and an undecoded logo/signature exports blank.
+            var settle = function () {
+                var waits = [];
+
+                if (document.fonts && document.fonts.ready) {
+                    waits.push(document.fonts.ready);
+                }
+
+                Array.prototype.forEach.call(document.images, function (img) {
+                    if (img.decode) {
+                        waits.push(img.decode().catch(function () { }));
+                    } else if (!img.complete) {
+                        waits.push(new Promise(function (resolve) {
+                            img.addEventListener('load', resolve, { once: true });
+                            img.addEventListener('error', resolve, { once: true });
+                        }));
                     }
-                    pdf.save(fileName);
-                })
-                .then(function() {
-                    btn.disabled = false;
-                    btn.textContent = 'Download PDF - পিডিএফ ডাউনলোড করুন';
-                })
-                .catch(function(err) {
-                    console.error('PDF error:', err);
-                    btn.disabled = false;
-                    btn.textContent = 'Download PDF - পিডিএফ ডাউনলোড করুন';
-                    alert('PDF ডাউনলোড ব্যর্থ: ' + (err && err.message ? err.message : String(err)));
                 });
-        }
+
+                return Promise.all(waits);
+            };
+
+            if (typeof window.html2pdf !== 'function') {
+                downloadBtn.disabled = true;
+                restore('ফরম ডাউনলোডের জন্য প্রয়োজনীয় ফাইলটি লোড হয়নি। প্রিন্ট অপশনটি ব্যবহার করুন।');
+
+                return;
+            }
+
+            downloadBtn.addEventListener('click', function () {
+                var filename = 'admit-{{ $registration->registration_no }}.pdf';
+
+                downloadBtn.disabled = true;
+                downloadBtn.textContent = 'পিডিএফ ডাউনলোড হচ্ছে - Downloading PDF...';
+                if (hint) {
+                    hint.textContent = '';
+                }
+
+                settle().then(function () {
+                    return window.html2pdf().set({
+                        margin: 0,
+                        filename: filename,
+                        // JPEG, not PNG: at scale 2 this sheet rasterises to
+                        // ~1600x2260 px and PNG encoding is slow enough that
+                        // the button looks broken.
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: {
+                            scale: 2,
+                            useCORS: true,
+                            backgroundColor: '#ffffff',
+                            logging: false,
+                            // Always rasterise from the top of the card. Left to
+                            // its own devices html2canvas measures from the
+                            // current scroll position, so the lower half of the
+                            // admit card lands outside the rasterised region and
+                            // exports empty.
+                            scrollX: 0,
+                            scrollY: 0,
+                            // html2canvas does not hand letter-spacing to the
+                            // browser as a property of the run: it walks the
+                            // glyphs and spaces them one by one, so the shaping
+                            // of a Bangla cluster is thrown away and the
+                            // conjuncts come apart in the PDF. The tracking on
+                            // screen is decorative, so drop it for the
+                            // rasterised clone only -- the page on screen and the
+                            // browser print keep their original spacing.
+                            onclone: function (doc) {
+                                var reset = doc.createElement('style');
+                                reset.textContent =
+                                    '*, *::before, *::after { letter-spacing: normal !important; word-spacing: normal !important; }';
+                                doc.head.appendChild(reset);
+                            }
+                        },
+                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                        // 'avoid-all' renders the card as one continuous flow
+                        // and lets jsPDF cut it at the A4 boundary, which is what
+                        // the 210mm/297mm .print-page is already sized for.
+                        pagebreak: { mode: ['avoid-all'] },
+                        enableLinks: false
+                    }).from(sheet)
+                        .toContainer()
+                        .toCanvas()
+                        .toImg()
+                        .toPdf()
+                        .get('pdf')
+                        .then(function (pdf) {
+                            // html2pdf rounds the canvas height up, so a card
+                            // measuring exactly one A4 page can come back with a
+                            // blank second. Drop trailing pages only.
+                            while (pdf.internal.getNumberOfPages() > 1) {
+                                pdf.deletePage(pdf.internal.getNumberOfPages());
+                            }
+
+                            pdf.save(filename);
+                            restore();
+                        });
+                }).catch(function (error) {
+                    restore('ফরম ডাউনলোড করা যায়নি। প্রিন্ট অপশনটি ব্যবহার করুন।');
+
+                    if (window.console) {
+                        window.console.error(error);
+                    }
+                });
+            });
+        });
     </script>
 
 
