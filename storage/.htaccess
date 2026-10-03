@@ -1,0 +1,12 @@
+# Everything written here is private: compiled views, sessions, logs and cache.
+# This directory sits outside the web root when the cPanel document root is set
+# to public/, which is the required layout. The rule below is the safety net for
+# the case where the whole repository is mistakenly used as the document root.
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

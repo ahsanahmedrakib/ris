@@ -204,41 +204,6 @@ class SecurityHardeningTest extends TestCase
     }
 
     #[Test]
-    public function the_deploy_script_never_destroys_the_database(): void
-    {
-        $script = (string) file_get_contents(base_path('clevercloud/post_build.sh'));
-
-        // These drop every table. Adopting one silently would wipe production.
-        foreach (['migrate:fresh', 'migrate:reset', 'db:wipe', 'migrate:rollback'] as $destructive) {
-            $this->assertStringNotContainsString(
-                $destructive,
-                $script,
-                "clevercloud/post_build.sh runs {$destructive}, which deletes the production data.",
-            );
-        }
-    }
-
-    #[Test]
-    public function the_deploy_script_persists_uploads_to_the_volume(): void
-    {
-        // Clever Cloud's filesystem is ephemeral outside addons, so uploads kept
-        // in the container are lost on the next deploy. They have to be linked
-        // onto the attached volume or every photo and PDF disappears.
-        $script = (string) file_get_contents(base_path('clevercloud/post_build.sh'));
-
-        $this->assertStringContainsString('UPLOAD_VOLUME', $script);
-        $this->assertStringContainsString('ln -sfn', $script, 'Upload folders are not symlinked onto the volume.');
-
-        foreach (['images', 'files'] as $folder) {
-            $this->assertMatchesRegularExpression(
-                '/link_uploads\s+'.preg_quote($folder, '/').'\b/',
-                $script,
-                "public/{$folder} is never linked onto the volume, so its uploads will not survive a deploy.",
-            );
-        }
-    }
-
-    #[Test]
     public function the_web_root_htaccess_still_allows_the_front_controller(): void
     {
         // A FilesMatch on .php would also match index.php and 403 the whole

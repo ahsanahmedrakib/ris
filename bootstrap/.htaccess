@@ -1,0 +1,12 @@
+# Holds the cached configuration, routes and events, and nothing here is meant to
+# be requested directly. bootstrap/cache/config.php in particular contains every
+# secret from .env in plain text. Outside the web root when the document root is
+# set to public/; denied here in case that is misconfigured.
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
