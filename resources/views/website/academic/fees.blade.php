@@ -30,7 +30,7 @@
             @if ($classes->count() && $feeTypes->count())
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden reveal">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-sm min-w-[640px]">
+                        <table class="w-full text-sm min-w-160">
                             <thead>
                                 <tr class="bg-ris-dark text-white">
                                     <th class="text-left px-5 py-4 font-heading font-semibold whitespace-nowrap">শ্রেণি</th>
@@ -47,37 +47,21 @@
                                     <tr class="hover:bg-ris-primary/5 transition-colors">
                                         <td class="px-5 py-4 font-medium text-ris-dark whitespace-nowrap">
                                             {{ $class->name }}
-                                            @if ($class->section)
-                                                <span class="text-gray-400 font-normal">({{ $class->section }})</span>
-                                            @endif
                                         </td>
                                         @foreach ($feeTypes as $type)
                                             @php
                                                 $structure = $class->feeStructures->firstWhere('fee_type', $type->value);
                                             @endphp
                                             <td class="px-5 py-4 text-right {{ $structure ? 'text-gray-700' : 'text-gray-300' }}">
-                                                {{ $structure ? '৳'.number_format($structure->amount) : '—' }}
+                                                {{ $structure ? '৳'.\App\Support\NumberConverter::toBangla(number_format($structure->amount)) : '—' }}
                                             </td>
                                         @endforeach
                                         <td class="px-5 py-4 text-right font-heading font-bold text-ris-primary">
-                                            ৳{{ number_format($class->feeStructures->sum('amount')) }}
+                                            ৳{{ \App\Support\NumberConverter::toBangla(number_format($class->feeStructures->sum('amount'))) }}
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
-                            <tfoot>
-                                <tr class="bg-gray-50 border-t border-gray-100">
-                                    <td class="px-5 py-4 font-heading font-bold text-ris-dark">সর্বমোট</td>
-                                    @foreach ($feeTypes as $type)
-                                        <td class="px-5 py-4 text-right font-semibold text-gray-700">
-                                            ৳{{ number_format($classes->sum(fn ($class) => $class->feeStructures->firstWhere('fee_type', $type->value)?->amount ?? 0)) }}
-                                        </td>
-                                    @endforeach
-                                    <td class="px-5 py-4 text-right font-heading font-bold text-ris-primary text-base">
-                                        ৳{{ number_format($classes->sum(fn ($class) => $class->feeStructures->sum('amount'))) }}
-                                    </td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>

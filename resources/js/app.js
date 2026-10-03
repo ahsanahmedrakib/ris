@@ -9,6 +9,12 @@ import 'swiper/css/bundle';
 
     const isDatetime = (el) => el.dataset.dateMask === 'datetime';
 
+    // The mask can only work with ASCII digits, but this is a Bangla form, so
+    // a Bangla keyboard layout or a pasted Bangla date used to be stripped to
+    // an empty string and then reported as a missing field instead of a bad date.
+    const BANGLA_DIGITS = '০১২৩৪৫৬৭৮৯';
+    const toAsciiDigits = (v) => v.replace(/[০-৯]/g, (d) => BANGLA_DIGITS.indexOf(d));
+
     const dmyFromIso = (v) => {
         const m = ISO_RE.exec(v);
         return m ? `${m[3]}/${m[2]}/${m[1]}` : null;
@@ -33,9 +39,42 @@ import 'swiper/css/bundle';
 
     const toDisplay = (el, v) => (isDatetime(el) ? dmyDtFromIso(v) : dmyFromIso(v));
 
+    /**
+     * Year-first input, e.g. 2019-05-10, 2019/05/10 or 20190510, split into
+     * [year, month, day]. Masking that as dd/mm/yyyy reorders it into an
+     * impossible date such as 0510-19-20, which then fails validation with a
+     * confusing "must be a valid date". Returns null when the input is not
+     * year-first, so plain dd/mm/yyyy typing is left to the mask below.
+     * A compact value is only read as year-first when its parts form a real
+     * date, otherwise 19052019 (19 May 2019) would be misread as year 1905.
+     */
+    const yearFirstParts = (raw) => {
+        const separated = /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})(?:[T\s].*)?$/.exec(raw);
+        const compact = raw.replace(/\D/g, '');
+        const squashed = !separated && compact.length === 8
+            ? [null, compact.slice(0, 4), compact.slice(4, 6), compact.slice(6, 8)]
+            : null;
+        const parts = separated || squashed;
+        if (!parts) return null;
+        const [, y, m, d] = parts;
+        const year = Number(y), month = Number(m), day = Number(d);
+        const plausible = year >= 1900 && year <= 2200 && month >= 1 && month <= 12
+            && day >= 1 && day <= 31;
+        return plausible ? [String(y).padStart(4, '0'), String(m).padStart(2, '0'), String(d).padStart(2, '0')] : null;
+    };
+
     const maskValue = (el) => {
+        const raw = toAsciiDigits(el.value).trim();
+        const iso = yearFirstParts(raw);
+        if (iso) {
+            const [y, m, d] = iso;
+            const out = `${d}/${m}/${y}`;
+            if (el.value !== out) el.value = out;
+            return;
+        }
+
         const max = isDatetime(el) ? 12 : 8;
-        const digits = el.value.replace(/\D/g, '').slice(0, max);
+        const digits = raw.replace(/\D/g, '').slice(0, max);
         let out = digits.slice(0, 2);
         if (digits.length > 2) out += '/' + digits.slice(2, 4);
         if (digits.length > 4) out += '/' + digits.slice(4, 8);

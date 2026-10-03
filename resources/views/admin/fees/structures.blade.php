@@ -31,7 +31,6 @@
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">শিক্ষাবর্ষ</th>
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">ধরন</th>
                             <th class="text-right px-4 py-3.5 font-medium text-white whitespace-nowrap">পরিমাণ</th>
-                            <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">শেষ তারিখ</th>
                             <th class="text-left px-4 py-3.5 font-medium text-white">বিবরণ</th>
                             <th
                                 class="text-right px-4 py-3.5 font-medium text-white whitespace-nowrap sticky right-0 bg-linear-to-r from-ris-light to-ris-dark z-10">
@@ -58,9 +57,6 @@
                                 </td>
                                 <td class="px-4 py-3 text-right font-heading font-bold text-ris-primary whitespace-nowrap">
                                     ৳{{ number_format($structure->amount, 2) }}</td>
-                                <td class="px-4 py-3 text-gray-600 whitespace-nowrap">
-                                    {{ $structure->due_date?->format('d/m/Y') }}
-                                </td>
                                 <td class="px-4 py-3 text-gray-500 max-w-40 truncate"
                                     title="{{ $structure->description ?? '-' }}">
                                     {{ $structure->description ?? '-' }}</td>
@@ -225,18 +221,6 @@
                                 <p class="mt-1 text-xs text-red-600" x-text="createErrors.amount || 'পরিমাণ আবশ্যক।'"></p>
                             </template>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">শেষ তারিখ <span
-                                    class="text-red-500">*</span></label>
-                            <input type="date" name="due_date" x-model="createForm.due_date"
-                                @blur="validateCreateField('due_date')"
-                                class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
-                                :class="(createErrors.due_date || (createAttempted && !createForm.due_date)) ? 'border-red-400' :
-                                'border-gray-200'">
-                            <template x-if="createErrors.due_date || (createAttempted && !createForm.due_date)">
-                                <p class="mt-1 text-xs text-red-600" x-text="createErrors.due_date || 'শেষ তারিখ আবশ্যক।'"></p>
-                            </template>
-                        </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">বিবরণ</label>
                             <textarea name="description" x-model="createForm.description" rows="2"
@@ -354,18 +338,6 @@
                                     <p class="mt-1 text-xs text-red-600" x-text="editErrors.amount || 'পরিমাণ আবশ্যক।'"></p>
                                 </template>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">শেষ তারিখ <span
-                                        class="text-red-500">*</span></label>
-                                <input type="date" name="due_date" x-model="editData.due_date"
-                                    @blur="validateEditField('due_date')"
-                                    class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
-                                    :class="(editErrors.due_date || (editAttempted && !editData.due_date)) ? 'border-red-400' :
-                                    'border-gray-200'">
-                                <template x-if="editErrors.due_date || (editAttempted && !editData.due_date)">
-                                    <p class="mt-1 text-xs text-red-600" x-text="editErrors.due_date || 'শেষ তারিখ আবশ্যক।'"></p>
-                                </template>
-                            </div>
                             <div class="sm:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">বিবরণ</label>
                                 <textarea name="description" x-model="editData.description" rows="2"
@@ -401,10 +373,9 @@
 
                     createForm: {
                         class_id: '',
-                        academic_year_id: '',
+                        academic_year_id: '{{ $currentSessionYear->id }}',
                         fee_type: '',
                         amount: '',
-                        due_date: '',
                         description: ''
                     },
                     createErrors: {},
@@ -425,10 +396,9 @@
                     openCreateModal() {
                         this.createForm = {
                             class_id: '',
-                            academic_year_id: '',
+                            academic_year_id: '{{ $currentSessionYear->id }}',
                             fee_type: '',
                             amount: '',
-                            due_date: '',
                             description: ''
                         };
                         this.createErrors = {};
@@ -472,11 +442,6 @@
                             return false;
                         }
 
-                        if (field === 'due_date' && (!val || val === '')) {
-                            errors[field] = 'শেষ তারিখ আবশ্যক।';
-                            return false;
-                        }
-
                         return true;
                     },
 
@@ -492,7 +457,7 @@
                         this.createAttempted = true;
                         this.createErrors = {};
                         let valid = true;
-                        ['class_id', 'academic_year_id', 'fee_type', 'amount', 'due_date'].forEach(f => {
+                        ['class_id', 'academic_year_id', 'fee_type', 'amount'].forEach(f => {
                             if (!this.validateCreateField(f)) valid = false;
                         });
                         if (valid) this.submitForm(el, 'create');
@@ -502,7 +467,7 @@
                         this.editAttempted = true;
                         this.editErrors = {};
                         let valid = true;
-                        ['class_id', 'academic_year_id', 'fee_type', 'amount', 'due_date'].forEach(f => {
+                        ['class_id', 'academic_year_id', 'fee_type', 'amount'].forEach(f => {
                             if (!this.validateEditField(f)) valid = false;
                         });
                         if (valid) this.submitForm(el, 'edit');

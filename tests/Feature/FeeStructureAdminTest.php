@@ -42,7 +42,6 @@ class FeeStructureAdminTest extends TestCase
             'academic_year_id' => $school['year']->id,
             'fee_type' => $feeType,
             'amount' => $amount,
-            'due_date' => '2026-03-31',
         ]);
     }
 
@@ -58,7 +57,6 @@ class FeeStructureAdminTest extends TestCase
                 'academic_year_id' => $school['year']->id,
                 'fee_type' => 'tuition',
                 'amount' => 2500,
-                'due_date' => '2026-03-31',
             ])
             ->assertRedirect(route('admin.fees.structures'));
 
@@ -101,7 +99,6 @@ class FeeStructureAdminTest extends TestCase
                 'fee_type' => 'transport',
                 'amount' => 1500,
                 'description' => 'মাসিক পরিবহন ফি',
-                'due_date' => '2026-04-10',
             ])
             ->assertRedirect(route('admin.fees.structures'));
 
@@ -138,8 +135,8 @@ class FeeStructureAdminTest extends TestCase
 
         $this->get(route('academic.fees'))
             ->assertOk()
-            ->assertSee('1,111')
-            ->assertDontSee('9,999');
+            ->assertSee('১,১১১')
+            ->assertDontSee('৯,৯৯৯');
     }
 
     #[Test]
@@ -148,5 +145,137 @@ class FeeStructureAdminTest extends TestCase
         $this->get(route('academic.fees'))
             ->assertOk()
             ->assertSee('এখনো কোনো ফি কাঠামো নেই');
+    }
+
+    #[Test]
+    public function fee_structure_form_defaults_to_the_current_session(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $session = AcademicYear::currentSession();
+
+        $this->actingAs($admin)
+            ->get(route('admin.fees.structures'))
+            ->assertOk()
+            ->assertSee("academic_year_id: '{$session->id}'", false);
+    }
+
+    #[Test]
+    public function website_publishes_fees_added_to_the_current_session(): void
+    {
+        $session = AcademicYear::currentSession();
+
+        $class = ClassRoom::create([
+            'name' => '১ম',
+            'section' => 'ক',
+            'academic_year_id' => $session->id,
+        ]);
+
+        FeeStructure::create([
+            'class_id' => $class->id,
+            'academic_year_id' => $session->id,
+            'fee_type' => 'tuition',
+            'amount' => 4200,
+        ]);
+
+        $this->get(route('academic.fees'))
+            ->assertOk()
+            ->assertSee('৪,২০০')
+            ->assertDontSee('এখনো কোনো ফি কাঠামো নেই');
+    }
+
+    #[Test]
+    public function admin_can_create_fee_structure_without_a_due_date(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $school = $this->school();
+
+        $this->actingAs($admin)
+            ->post(route('admin.fees.structures.store'), [
+                'class_id' => $school['class']->id,
+                'academic_year_id' => $school['year']->id,
+                'fee_type' => 'tuition',
+                'amount' => 2500,
+            ])
+            ->assertRedirect(route('admin.fees.structures'))
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('fee_structures', [
+            'class_id' => $school['class']->id,
+            'amount' => 2500,
+            'due_date' => null,
+        ]);
+    }
+
+    #[Test]
+    public function fee_structure_pages_do_not_offer_a_due_date(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $school = $this->school();
+        $structure = $this->structure($school);
+
+        $this->actingAs($admin)
+            ->get(route('admin.fees.structures'))
+            ->assertOk()
+            ->assertDontSee('name="due_date"', false)
+            ->assertDontSee('শেষ তারিখ');
+
+        $this->actingAs($admin)
+            ->get(route('admin.fees.structures.edit', $structure))
+            ->assertOk()
+            ->assertJsonMissingPath('due_date');
+    }
+
+    #[Test]
+    public function website_class_column_shows_the_plain_class_name_without_the_section(): void
+    {
+        $session = AcademicYear::currentSession();
+
+        $class = ClassRoom::create([
+            'name' => '১০ম',
+            'section' => 'খ',
+            'academic_year_id' => $session->id,
+        ]);
+
+        FeeStructure::create([
+            'class_id' => $class->id,
+            'academic_year_id' => $session->id,
+            'fee_type' => 'tuition',
+            'amount' => 1000,
+        ]);
+
+        $this->get(route('academic.fees'))
+            ->assertOk()
+            ->assertSee('১০ম')
+            ->assertDontSee('(খ)')
+            ->assertDontSee('১০ম (খ)');
+    }
+
+    #[Test]
+    public function website_totals_are_per_class_and_never_summed_across_classes(): void
+    {
+        $session = AcademicYear::currentSession();
+
+        foreach ([['১ম', 1000], ['২য়', 2000]] as [$name, $amount]) {
+            $class = ClassRoom::create([
+                'name' => $name,
+                'section' => 'ক',
+                'academic_year_id' => $session->id,
+            ]);
+
+            FeeStructure::create([
+                'class_id' => $class->id,
+                'academic_year_id' => $session->id,
+                'fee_type' => 'tuition',
+                'amount' => $amount,
+            ]);
+        }
+
+        $this->get(route('academic.fees'))
+            ->assertOk()
+            ->assertSee('৳১,০০০')
+            ->assertSee('৳২,০০০')
+            ->assertDontSee('সর্বমোট')
+            ->assertDontSee('৳৩,০০০');
     }
 }

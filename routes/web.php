@@ -49,6 +49,8 @@ Route::middleware('track.visitor')->group(function () {
     Route::get('/about', [WebsiteController::class, 'about'])->name('about');
     Route::get('/admission', [WebsiteController::class, 'admission'])->name('admission');
     Route::post('/admission', [WebsiteController::class, 'storeAdmission'])->middleware('throttle:admission')->name('admission.store');
+    Route::post('/admission/preview', [WebsiteController::class, 'admissionPreview'])->middleware('throttle:admission-preview')->name('admission.preview');
+    Route::get('/admission/pdf/{token}', [WebsiteController::class, 'admissionPdf'])->name('admission.pdf');
     Route::get('/scholarship', [WebsiteController::class, 'scholarship'])->name('scholarship');
     Route::get('/scholarship/pdf/{registration_no}/{token}', [WebsiteController::class, 'scholarshipPdf'])->name('scholarship.pdf');
     Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');

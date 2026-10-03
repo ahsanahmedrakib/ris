@@ -44,6 +44,16 @@ class SecurityServiceProvider extends ServiceProvider
             Limit::perDay(10)->by(RateLimit::byIp($request, 'admission-day')),
         ]);
 
+        // The review step writes nothing - it only reserves a reference number
+        // in the applicant's own session - so it gets its own generous bucket.
+        // It used to share 'admission', which made one confirmed submission
+        // cost two of the three hourly attempts, and every rejected attempt
+        // spent one too, locking applicants out part way through the form.
+        RateLimiter::for('admission-preview', fn (Request $request): array => [
+            Limit::perHour(30)->by(RateLimit::byIp($request, 'admission-preview')),
+            Limit::perDay(100)->by(RateLimit::byIp($request, 'admission-preview-day')),
+        ]);
+
         RateLimiter::for('contact', fn (Request $request): Limit => Limit::perHour(5)
             ->by(RateLimit::byIp($request, 'contact')));
 

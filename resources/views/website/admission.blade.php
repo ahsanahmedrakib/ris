@@ -75,6 +75,56 @@
                         </div>
                     </div>
 
+                    {{-- Success step. Mirrors the scholarship registration screen: a
+                         centred card with the reference number, a PDF download and a
+                         "new application" reset. Kept as markup rather than built in
+                         JS so it uses the same btn-primary classes as every other
+                         success state in the project. Hidden until the store
+                         returns. --}}
+                    <div id="admissionSuccess" class="hidden bg-white rounded-2xl border shadow-card px-6 py-12 text-center">
+                        <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+
+                        <h3 class="mt-5 font-heading font-bold text-2xl text-gray-900">আবেদন সফল হয়েছে!</h3>
+                        <p class="mt-2 text-sm text-gray-500">
+                            আপনার ভর্তি আবেদন সম্পন্ন হয়েছে। আপনার আবেদন নম্বর:
+                        </p>
+
+                        <div
+                            class="mt-5 inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-ris-primary/10 border border-ris-primary/20">
+                            <svg class="w-5 h-5 text-ris-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span id="admissionSuccessNo"
+                                class="font-heading font-bold text-xl text-ris-primary tracking-wider"></span>
+                        </div>
+
+                        <p class="mt-5 text-sm text-gray-500 leading-relaxed">
+                            আবেদন নম্বরটি সংরক্ষণ করুন এবং ফরমটি ডাউনলোড করে নিন।
+                        </p>
+
+                        <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                            <a id="admissionSuccessPdf" href="#" target="_blank" rel="noopener"
+                                class="btn-primary inline-flex items-center justify-center gap-2 text-sm px-6 py-2.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                ফরম ডাউনলোড করুন
+                            </a>
+
+                            <button type="button" id="admissionNewBtn"
+                                class="btn-outline text-sm px-6 py-2.5 cursor-pointer">
+                                নতুন আবেদন
+                            </button>
+                        </div>
+                    </div>
+
                     <form id="admissionForm" action="{{ route('admission.store') }}" method="POST"
                         enctype="multipart/form-data" novalidate>
                         @csrf
@@ -452,7 +502,7 @@
                             {{-- Reference --}}
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-base pt-2">
                                 <div>
-                                    <label class="font-medium">রেফারেন্স <span class="text-red-600">*</span></label>
+                                    <label class="font-medium">রেফারেন্স(রেশমা ইন্টারন্যাশনাল স্কুল)<span class="text-red-600">*</span></label>
                                     <input type="text" name="reference" value="{{ old('reference') }}"
                                         class="form-input">
                                     @error('reference')
@@ -497,11 +547,41 @@
                             <div class="pt-4 text-center">
                                 <button type="submit" id="admissionSubmitBtn"
                                     class="bg-pink-700 hover:bg-pink-800 text-white font-semibold px-8 py-3.5 rounded shadow transition cursor-pointer">
-                                    আবেদন জমা দিন
+                                    যাচাই করে জমা দিন
                                 </button>
+                                <p class="mt-2 text-xs text-gray-500">
+                                    জমা দেওয়ার আগে তথ্য যাচাইয়ের জন্য একটি পপ-আপ দেখানো হবে।
+                                </p>
                             </div>
                         </div>
                     </form>
+
+                    {{-- Review / confirmation step --}}
+                    <div id="admissionReviewModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+                        role="dialog" aria-modal="true" aria-labelledby="admissionReviewTitle">
+                        <div class="absolute inset-0 bg-black/60" data-close-review></div>
+                        <div
+                            class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+                            <div
+                                class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl shrink-0">
+                                <h3 id="admissionReviewTitle"
+                                    class="font-heading font-bold text-white text-lg">তথ্য যাচাই করুন</h3>
+                                <button type="button" data-close-review aria-label="বন্ধ করুন"
+                                    class="text-white/80 hover:text-white text-2xl leading-none cursor-pointer">&times;</button>
+                            </div>
+                            <div id="admissionReviewBody" class="p-6 overflow-y-auto"></div>
+                            <div class="px-6 pb-6 flex flex-col sm:flex-row gap-3 shrink-0">
+                                <button type="button" data-close-review
+                                    class="px-6 py-3 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors cursor-pointer">
+                                    ফিরে যান
+                                </button>
+                                <button type="button" id="admissionConfirmBtn"
+                                    class="px-6 py-3 bg-pink-700 hover:bg-pink-800 text-white text-sm font-medium rounded-lg transition-colors shadow-sm cursor-pointer">
+                                    নিশ্চিত করে জমা দিন
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                     <script nonce="{{ $cspNonce }}">
                         document.addEventListener('DOMContentLoaded', function() {
@@ -511,6 +591,15 @@
                             const resultBox = document.getElementById('admissionResult');
                             const submitBtn = document.getElementById('admissionSubmitBtn');
                             const submitLabel = submitBtn.textContent;
+                            const successPanel = document.getElementById('admissionSuccess');
+                            const successNo = document.getElementById('admissionSuccessNo');
+                            const successPdf = document.getElementById('admissionSuccessPdf');
+                            const newBtn = document.getElementById('admissionNewBtn');
+                            const reviewModal = document.getElementById('admissionReviewModal');
+                            const reviewBody = document.getElementById('admissionReviewBody');
+                            const confirmBtn = document.getElementById('admissionConfirmBtn');
+                            const confirmLabel = confirmBtn.textContent;
+                            const previewUrl = @json(route('admission.preview'));
                             let submitted = false;
 
                             const showResult = (type, text) => {
@@ -530,6 +619,107 @@
                                     }
                                 }));
                             };
+
+                            const jsonPost = (url, body) => fetch(url, {
+                                method: 'POST',
+                                body,
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'Accept': 'application/json'
+                                },
+                            });
+
+                            const scrollToFirstError = () => {
+                                const firstError = form.querySelector('[data-field-error]');
+                                if (!firstError) return false;
+                                pushToast('error', firstError.textContent);
+                                firstError.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center'
+                                });
+                                return true;
+                            };
+
+                            const applyValidationErrors = (data) => {
+                                Object.entries(data.errors || {}).forEach(([name, messages]) => {
+                                    showFieldError(name, messages[0]);
+                                });
+
+                                return scrollToFirstError();
+                            };
+
+                            const openReview = (data) => {
+                                reviewBody.innerHTML = data.review || '';
+
+                                // The preview request drops the photo to avoid
+                                // uploading it twice, so reuse the local preview
+                                // the applicant already saw in the form.
+                                const photo = document.getElementById('photoPreview');
+                                const target = document.getElementById('admissionReviewPhoto');
+                                if (photo && target && photo.src) {
+                                    target.src = photo.src;
+                                    target.classList.remove('hidden');
+                                }
+
+                                reviewModal.classList.remove('hidden');
+                                reviewModal.classList.add('flex');
+                                reviewBody.scrollTop = 0;
+                            };
+
+                            // Swaps the form out for the success card, the same
+                            // shape the scholarship registration shows after saving.
+                            const showSuccess = (data) => {
+                                successNo.textContent = data.admission_no || '—';
+
+                                if (data.pdf_url) {
+                                    successPdf.href = data.pdf_url;
+                                    successPdf.classList.remove('hidden');
+                                } else {
+                                    successPdf.classList.add('hidden');
+                                }
+
+                                form.classList.add('hidden');
+                                successPanel.classList.remove('hidden');
+                                successPanel.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center'
+                                });
+                            };
+
+                            // "নতুন আবেদন": clear everything so the same visitor can
+                            // apply again for a sibling without reloading the page.
+                            newBtn.addEventListener('click', () => {
+                                form.reset();
+                                form.querySelectorAll('[data-field-error]').forEach(el => el.remove());
+                                form.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+                                successPdf.href = '#';
+                                successNo.textContent = '';
+                                successPanel.classList.add('hidden');
+                                form.classList.remove('hidden');
+                                photoPreview.classList.add('hidden');
+                                submitted = false;
+                                submitBtn.disabled = false;
+                                submitBtn.textContent = submitLabel;
+                                form.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+                            });
+
+                            const closeReview = () => {
+                                reviewModal.classList.remove('flex');
+                                reviewModal.classList.add('hidden');
+                            };
+
+                            reviewModal.querySelectorAll('[data-close-review]').forEach(el => {
+                                el.addEventListener('click', closeReview);
+                            });
+
+                            document.addEventListener('keydown', (event) => {
+                                if (event.key === 'Escape' && !reviewModal.classList.contains('hidden')) {
+                                    closeReview();
+                                }
+                            });
 
                             const clearErrors = () => {
                                 form.querySelectorAll('[data-field-error]').forEach(el => el.remove());
@@ -670,66 +860,75 @@
                                 });
 
                                 if (!valid) {
-                                    const firstError = form.querySelector('[data-field-error]');
-                                    if (firstError) {
-                                        pushToast('error', firstError.textContent);
-                                        firstError.scrollIntoView({
-                                            behavior: 'smooth',
-                                            block: 'center'
-                                        });
-                                    } else {
-                                        pushToast('error', 'ফরমের প্রয়োজনীয় ঘরগুলো পূরণ করুন।');
-                                    }
+                                    scrollToFirstError();
                                     return;
                                 }
 
                                 submitBtn.disabled = true;
-                                submitBtn.textContent = 'জমা হচ্ছে...';
+                                submitBtn.textContent = 'যাচাই হচ্ছে...';
 
-                                fetch(form.action, {
-                                        method: 'POST',
-                                        body: new FormData(form),
-                                        headers: {
-                                            'X-Requested-With': 'XMLHttpRequest',
-                                            'Accept': 'application/json'
-                                        },
-                                    })
+                                // Step 1: the server validates and renders the
+                                // summary. Nothing is stored yet.
+                                const reviewData = new FormData(form);
+                                reviewData.delete('student_photo');
+
+                                jsonPost(previewUrl, reviewData)
                                     .then(async response => {
                                         const data = await response.json();
 
                                         if (response.status === 422) {
-                                            Object.entries(data.errors || {}).forEach(([name, messages]) => {
-                                                showFieldError(name, messages[0]);
-                                            });
-                                            const firstError = form.querySelector('[data-field-error]');
-                                            if (firstError) {
-                                                pushToast('error', firstError.textContent);
-                                                firstError.scrollIntoView({
-                                                    behavior: 'smooth',
-                                                    block: 'center'
-                                                });
-                                            } else {
-                                                pushToast('error', data.message ||
-                                                    'ফরম জমা দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
-                                            }
+                                            applyValidationErrors(data);
+                                            return;
+                                        }
+
+                                        if (!response.ok) {
+                                            pushToast('error', data.message ||
+                                                'তথ্য যাচাই করা যায়নি। আবার চেষ্টা করুন।');
+                                            return;
+                                        }
+
+                                        openReview(data);
+                                    })
+                                    .catch(() => {
+                                        pushToast('error', 'তথ্য যাচাই করা যায়নি। আবার চেষ্টা করুন।');
+                                    })
+                                    .finally(() => {
+                                        submitBtn.disabled = false;
+                                        submitBtn.textContent = submitLabel;
+                                    });
+                            });
+
+                            confirmBtn.addEventListener('click', function() {
+                                if (confirmBtn.disabled || submitted) return;
+
+                                closeReview();
+                                confirmBtn.disabled = true;
+                                confirmBtn.textContent = 'জমা হচ্ছে...';
+                                submitBtn.disabled = true;
+                                submitBtn.textContent = 'জমা হচ্ছে...';
+
+                                // Step 2: the applicant confirmed, so store it.
+                                // This button is type="button", so no submit event
+                                // fires and the date mask never gets its turn:
+                                // dob would still be dd/mm/yyyy here, which the
+                                // date rule accepts but reads as m/d/y. Convert
+                                // it to the ISO format the server expects.
+                                window.RisDateMask?.prepare(form);
+                                jsonPost(form.action, new FormData(form))
+                                    .then(async response => {
+                                        const data = await response.json();
+
+                                        if (response.status === 422) {
+                                            applyValidationErrors(data);
                                             return;
                                         }
 
                                         if (response.ok) {
                                             submitted = true;
                                             submitBtn.textContent = 'আবেদন জমা হয়েছে';
-                                            resultBox.classList.remove('hidden');
-                                            resultBox.className =
-                                                'px-4 py-3 text-sm rounded-lg border bg-green-50 border-green-300 text-green-700';
-                                            resultBox.textContent = data.message ||
-                                                'আপনার ভর্তি আবেদন সফলভাবে জমা হয়েছে।';
+                                            showSuccess(data);
                                             pushToast('success', data.message ||
                                                 'আপনার ভর্তি আবেদন সফলভাবে জমা হয়েছে।');
-                                            form.reset();
-                                            resultBox.scrollIntoView({
-                                                behavior: 'smooth',
-                                                block: 'center'
-                                            });
                                             return;
                                         }
 
@@ -746,6 +945,8 @@
                                         // Left disabled after success so a stray
                                         // click cannot post the reset form again.
                                         if (submitted) return;
+                                        confirmBtn.disabled = false;
+                                        confirmBtn.textContent = confirmLabel;
                                         submitBtn.disabled = false;
                                         submitBtn.textContent = submitLabel;
                                     });
@@ -830,21 +1031,22 @@
                     <span class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">ফি
                         কাঠামো</span>
                     <h2 class="mt-3 font-heading font-bold text-2xl text-ris-dark">বার্ষিক ফি</h2>
-                    <div class="mt-6 space-y-4">
-                        @php
-                            $fees = [
-                                ['class' => 'প্লে', 'amount' => '১০,০০০ টাকা'],
-                                ['class' => 'নার্সারি', 'amount' => '১১,০০০ টাকা'],
-                                ['class' => 'কেজি', 'amount' => '১১,০০০ টাকা'],
-                                ['class' => 'প্রাথমিক (১ম-৫ম)', 'amount' => '১২,০০০ টাকা'],
-                            ];
-                        @endphp
-                        @foreach ($fees as $fee)
-                            <div class="card p-4 flex items-center justify-between">
-                                <span class="font-heading font-medium text-ris-dark">{{ $fee['class'] }}</span>
-                                <span class="badge">{{ $fee['amount'] }}</span>
-                            </div>
-                        @endforeach
+                    {{-- Fees are not restated here. The per class amounts come from
+                         the fee structures of whichever academic year is current,
+                         so a hardcoded copy would go stale the moment a fee or a
+                         session changed. /academic/fees is the single source. --}}
+                    <div class="card mt-6 p-6 text-center">
+                        <p class="text-gray-600 text-sm leading-relaxed">ক্লাসভিত্তিক ফি কাঠামো, ফির ধরন এবং বর্তমান পরিমাণ
+                            সব এক জায়গায় দেখুন।</p>
+                        <a href="{{ route('academic.fees') }}"
+                            class="inline-flex items-center justify-center gap-2 mt-5 px-6 py-3 bg-ris-primary hover:bg-ris-dark text-white text-sm font-medium rounded-lg transition-colors">
+                            ফি কাঠামো দেখুন
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
                         <p class="text-sm text-gray-500 mt-4">* ফি কাঠামো পরিবর্তনযোগ্য। বিস্তারিত জানতে যোগাযোগ করুন।</p>
                     </div>
                 </div>

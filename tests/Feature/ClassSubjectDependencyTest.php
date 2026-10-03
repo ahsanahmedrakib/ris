@@ -474,13 +474,12 @@ class ClassSubjectDependencyTest extends TestCase
             'academic_year_id' => $school['year']->id,
             'fee_type' => 'tuition',
             'amount' => 1500,
-            'due_date' => '2026-12-31',
         ]);
 
         $this->get(route('academic.fees'))
             ->assertOk()
             ->assertSee($school['class']->name)
             ->assertSee('বেতন')
-            ->assertSee('৳1,500');
+            ->assertSee('৳১,৫০০');
     }
 }

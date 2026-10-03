@@ -40,10 +40,11 @@ class FeeController extends Controller
     {
         $structures = FeeStructure::with(['classRoom', 'academicYear'])->latest()->get();
         $classes = ClassRoom::get();
+        $currentSessionYear = AcademicYear::currentSession();
         $academicYears = AcademicYear::forSessionDropdown();
         $feeTypes = FeeType::cases();
 
-        return view('admin.fees.structures', compact('structures', 'classes', 'academicYears', 'feeTypes'));
+        return view('admin.fees.structures', compact('structures', 'classes', 'academicYears', 'feeTypes', 'currentSessionYear'));
     }
 
     public function storeStructure(Request $request): RedirectResponse
@@ -70,7 +71,6 @@ class FeeController extends Controller
             'fee_type' => $feeStructure->fee_type,
             'amount' => $feeStructure->amount,
             'description' => $feeStructure->description,
-            'due_date' => $feeStructure->due_date?->format('Y-m-d'),
         ]);
     }
 
@@ -148,7 +148,9 @@ class FeeController extends Controller
                         'fee_structure_id' => $feeStructure->id,
                         'amount' => $feeStructure->amount,
                         'paid_amount' => 0,
-                        'due_date' => $feeStructure->due_date,
+                        'due_date' => $feeStructure->due_date
+                            ?? $feeStructure->academicYear?->end_date
+                            ?? now()->endOfYear()->toDateString(),
                         'status' => FeeStatus::Pending->value,
                     ]);
                     $count++;
@@ -253,7 +255,6 @@ class FeeController extends Controller
             'fee_type' => 'required|string|in:tuition,transport,library,exam,others',
             'amount' => 'required|numeric|min:0',
             'description' => 'nullable|string|max:500',
-            'due_date' => 'required|date',
         ];
     }
 
@@ -272,7 +273,6 @@ class FeeController extends Controller
             'amount.required' => 'পরিমাণ আবশ্যক।',
             'amount.numeric' => 'পরিমাণ অবশ্যই একটি সংখ্যা হতে হবে।',
             'amount.min' => 'পরিমাণ ০ এর বেশি হতে হবে।',
-            'due_date.required' => 'শেষ তারিখ আবশ্যক।',
         ];
     }
 }

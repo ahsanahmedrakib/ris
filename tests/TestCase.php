@@ -21,6 +21,8 @@ abstract class TestCase extends BaseTestCase
         RateLimiter::clear('api-login-ip');
         RateLimiter::clear('admission');
         RateLimiter::clear('admission-day');
+        RateLimiter::clear('admission-preview');
+        RateLimiter::clear('admission-preview-day');
         RateLimiter::clear('contact');
         RateLimiter::clear('public-form');
         RateLimiter::clear('api');
