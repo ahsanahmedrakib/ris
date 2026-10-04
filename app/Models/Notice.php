@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Core\Traits\HasSlug;
 use App\Core\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Notice extends Model
 {
-    use HasFactory, LogsActivity, SoftDeletes;
+    use HasFactory, HasSlug, LogsActivity, SoftDeletes;
 
     public const CATEGORIES = [
         'admission' => 'ভর্তি',
@@ -20,6 +21,7 @@ class Notice extends Model
 
     protected $fillable = [
         'title',
+        'slug',
         'content',
         'type',
         'category',
@@ -42,5 +44,10 @@ class Notice extends Model
     public function publisher()
     {
         return $this->belongsTo(User::class, 'published_by');
+    }
+
+    protected function slugPrefix(): string
+    {
+        return 'notice';
     }
 }

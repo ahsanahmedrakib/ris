@@ -523,17 +523,25 @@
                                         </div>
                                         <div class="p-5">
                                             <h4 class="font-heading font-semibold text-ris-dark leading-snug">
-                                                {{ $news['title'] }}</h4>
+                                                @if ($news['slug'])
+                                                    <a href="{{ route('campus-life.single', $news['slug']) }}"
+                                                        class="hover:text-ris-primary transition-colors">{{ $news['title'] }}</a>
+                                                @else
+                                                    {{ $news['title'] }}
+                                                @endif
+                                            </h4>
                                             <hr class="my-3 border-gray-100">
-                                            <a href="#"
-                                                class="inline-flex items-center gap-1 text-sm font-medium text-ris-primary hover:text-ris-dark transition-colors">
-                                                বিস্তারিত পড়ুন
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                </svg>
-                                            </a>
+                                            @if ($news['slug'])
+                                                <a href="{{ route('campus-life.single', $news['slug']) }}"
+                                                    class="inline-flex items-center gap-1 text-sm font-medium text-ris-primary hover:text-ris-dark transition-colors">
+                                                    বিস্তারিত পড়ুন
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                    </svg>
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -598,7 +606,14 @@
                                     <div class="absolute top-4 left-4 badge badge-warning">গুরুত্বপূর্ণ</div>
                                 </div>
                                 <div class="bg-white p-5 border border-t-0 border-gray-100">
-                                    <h4 class="font-heading font-semibold text-ris-dark leading-snug">{{ $notices[0]['title'] }}</h4>
+                                    <h4 class="font-heading font-semibold text-ris-dark leading-snug">
+                                        @if ($notices[0]['slug'])
+                                            <a href="{{ route('notices.single', $notices[0]['slug']) }}"
+                                                class="hover:text-ris-primary transition-colors">{{ $notices[0]['title'] }}</a>
+                                        @else
+                                            {{ $notices[0]['title'] }}
+                                        @endif
+                                    </h4>
                                     <hr class="my-3 border-gray-100">
                                     <div class="flex items-center justify-between">
                                         <span class="text-xs text-gray-500 flex items-center gap-1.5">
@@ -609,7 +624,7 @@
                                             </svg>
                                             {{ $notices[0]['date'] }}
                                         </span>
-                                        <a href="{{ route('notices') }}"
+                                        <a href="{{ $notices[0]['slug'] ? route('notices.single', $notices[0]['slug']) : route('notices') }}"
                                             class="text-xs font-heading font-semibold text-ris-primary hover:text-ris-dark transition-colors inline-flex items-center gap-1">
                                             বিস্তারিত
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
@@ -701,7 +716,12 @@
                                         </div>
                                         <h4
                                             class="mt-1.5 font-heading font-semibold text-sm sm:text-base text-ris-dark leading-snug truncate">
-                                            {{ $notice['title'] }}
+                                            @if ($notice['slug'])
+                                                <a href="{{ route('notices.single', $notice['slug']) }}"
+                                                    class="hover:text-ris-primary transition-colors">{{ $notice['title'] }}</a>
+                                            @else
+                                                {{ $notice['title'] }}
+                                            @endif
                                         </h4>
                                         <p class="mt-1 text-xs text-gray-400 flex items-center gap-1.5">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
@@ -714,7 +734,7 @@
                                     </div>
 
                                     {{-- Arrow --}}
-                                    <a href="{{ route('notices') }}"
+                                    <a href="{{ $notice['slug'] ? route('notices.single', $notice['slug']) : route('notices') }}"
                                         class="w-11 h-11 shrink-0 rounded-xl flex items-center justify-center transition-all duration-300 {{ $notice['highlight'] ?? false ? 'bg-ris-primary text-white hover:bg-ris-dark' : 'bg-gray-50 text-gray-400 hover:bg-ris-primary hover:text-white' }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

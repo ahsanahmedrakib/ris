@@ -225,6 +225,18 @@
                         </div>
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ঠিকানা (slug)</label>
+                        <input type="text" name="slug" x-model="createForm.slug"
+                            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
+                            placeholder="খালি রাখলে শিরোনাম থেকে তৈরি হবে">
+                        <p class="mt-1 text-xs text-gray-400">
+                            ওয়েবসাইটের ঠিকানা: <span x-text="'/campus-life/' + (createForm.slug || 'শিরোনাম থেকে তৈরি হবে')"></span>
+                        </p>
+                        <template x-if="createErrors.slug">
+                            <p class="mt-1 text-xs text-red-600" x-text="createErrors.slug"></p>
+                        </template>
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">বিবরণ</label>
                         <input type="hidden" name="description">
                         <div id="campusCreateQuill" class="ris-quill bg-white border border-gray-200 rounded-lg"></div>
@@ -288,7 +300,7 @@
                             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
                                 <div>
                                     <dt class="text-gray-500 mb-1">শিরোনাম</dt>
-                                    <dd class="font-medium text-gray-900 font-heading font-bold" x-text="viewData.title"></dd>
+                                    <dd class="font-medium text-gray-900 font-heading" x-text="viewData.title"></dd>
                                 </div>
                                 <div>
                                     <dt class="text-gray-500 mb-1">তারিখ</dt>
@@ -381,6 +393,19 @@
                                         <p class="mt-1 text-xs text-red-600" x-text="editErrors.date || 'তারিখ আবশ্যক'"></p>
                                     </template>
                                 </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ঠিকানা (slug)</label>
+                                <input type="text" name="slug" x-model="editData.slug"
+                                    class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
+                                    :class="editErrors.slug ? 'border-red-400' : 'border-gray-200'"
+                                    placeholder="খালি রাখলে বর্তমান ঠিকানাই থাকবে">
+                                <p class="mt-1 text-xs text-gray-400">
+                                    বর্তমান: <span x-text="'/campus-life/' + (editData.slug || '-')"></span>
+                                </p>
+                                <template x-if="editErrors.slug">
+                                    <p class="mt-1 text-xs text-red-600" x-text="editErrors.slug"></p>
+                                </template>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">বিবরণ</label>
@@ -492,6 +517,7 @@
 
                     createForm: {
                         title: '',
+                        slug: '',
                         date: '',
                         description: '',
                         sort_order: '0',
@@ -550,6 +576,7 @@
                     openCreateModal() {
                         this.createForm = {
                             title: '',
+                            slug: '',
                             date: '',
                             description: '',
                             sort_order: '0',

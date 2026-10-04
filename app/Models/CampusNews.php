@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Core\Traits\HasSlug;
 use App\Core\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,10 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CampusNews extends Model
 {
-    use HasFactory, LogsActivity, SoftDeletes;
+    use HasFactory, HasSlug, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'title',
+        'slug',
         'date',
         'image',
         'description',
@@ -27,5 +29,10 @@ class CampusNews extends Model
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    protected function slugPrefix(): string
+    {
+        return 'campus-life';
     }
 }
