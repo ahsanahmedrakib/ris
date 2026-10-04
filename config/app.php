@@ -56,6 +56,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Canonical URL
+    |--------------------------------------------------------------------------
+    |
+    | The one origin this app is meant to be reached at. The same build is
+    | deployed to more than one place, so any request that arrives on a
+    | different host is permanently redirected here, which keeps a single
+    | address for links, cookies and search engines. Leave it empty to serve
+    | whatever host the request came in on, which is what local development
+    | wants. A scheme is optional; https is assumed when one is missing.
+    |
+    */
+
+    'canonical_url' => env('CANONICAL_URL', ''),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

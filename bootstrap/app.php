@@ -2,6 +2,7 @@
 
 use App\Core\Http\Middleware\CheckRole;
 use App\Core\Http\Middleware\EnsureUserIsCurrent;
+use App\Core\Http\Middleware\ForceCanonicalHost;
 use App\Core\Http\Middleware\ForceJsonResponse;
 use App\Core\Http\Middleware\SecurityHeaders;
 use App\Core\Http\Middleware\TrackVisitor;
@@ -19,6 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Ahead of everything else, because a request on the wrong host is
+        // answered without the application ever being booted.
+        $middleware->prepend(ForceCanonicalHost::class);
+
         $middleware->alias([
             'role' => CheckRole::class,
             'force.json' => ForceJsonResponse::class,
