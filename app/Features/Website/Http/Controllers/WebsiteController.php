@@ -63,6 +63,7 @@ class WebsiteController extends Controller
             ->get()
             ->map(fn (Notice $notice, int $index): array => [
                 'title' => $notice->title,
+                'slug' => $notice->slug,
                 'date' => $this->banglaDate($notice->published_at ?? $notice->created_at),
                 'category' => $notice->category ?? 'general',
                 'category_label' => Notice::CATEGORIES[$notice->category ?? 'general'] ?? 'সাধারণ',
@@ -109,29 +110,36 @@ class WebsiteController extends Controller
         if ($news->isNotEmpty()) {
             return $news->map(fn (CampusNews $item): array => [
                 'title' => $item->title,
+                'slug' => $item->slug,
                 'date' => $this->banglaDate($item->date),
                 'image' => $item->image ? Media::images()->url($item->image) : null,
             ])->all();
         }
 
+        // Placeholder entries, shown only while no campus life has been added.
+        // They have no slug because there is no row behind them to link to.
         return [
             [
                 'title' => 'বিজ্ঞান ও প্রযুক্তি মেলা ২০২৬ অনুষ্ঠিত',
+                'slug' => null,
                 'date' => '৩১ আগস্ট, ২০২৬',
                 'image' => null,
             ],
             [
                 'title' => 'আন্তর্জাতিক ভাষা দিবস পালন',
+                'slug' => null,
                 'date' => '২৫ আগস্ট, ২০২৬',
                 'image' => null,
             ],
             [
                 'title' => 'ক্রীড়া প্রতিযোগিতা ২০২৬',
+                'slug' => null,
                 'date' => '১৭ আগস্ট, ২০২৬',
                 'image' => null,
             ],
             [
                 'title' => 'সাংস্কৃতিক অনুষ্ঠান — আমার সোনার বাংলা',
+                'slug' => null,
                 'date' => '১০ আগস্ট, ২০২৬',
                 'image' => null,
             ],
@@ -856,5 +864,41 @@ class WebsiteController extends Controller
             ->paginate(10);
 
         return view('website.notices', compact('notices'));
+    }
+
+    public function noticeSingle(string $slug): View
+    {
+        // The same conditions the notice board lists under, so a notice that is
+        // hidden there cannot be opened by guessing its address either.
+        $notice = Notice::where('slug', $slug)
+            ->where('is_active', true)
+            ->where('published_at', '<=', now())
+            ->with('publisher')
+            ->firstOrFail();
+
+        $related = Notice::where('is_active', true)
+            ->where('published_at', '<=', now())
+            ->whereKeyNot($notice->getKey())
+            ->orderByDesc('published_at')
+            ->take(4)
+            ->get();
+
+        return view('website.notice-single', compact('notice', 'related'));
+    }
+
+    public function campusLifeSingle(string $slug): View
+    {
+        $item = CampusNews::where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $related = CampusNews::where('is_active', true)
+            ->whereKeyNot($item->getKey())
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->take(4)
+            ->get();
+
+        return view('website.campus-life-single', compact('item', 'related'));
     }
 }

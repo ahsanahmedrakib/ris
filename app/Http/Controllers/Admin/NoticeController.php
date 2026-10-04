@@ -10,6 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class NoticeController extends Controller
@@ -44,8 +46,11 @@ class NoticeController extends Controller
             $request->merge(['published_at' => now()]);
         }
 
+        $this->normalizeSlugInput($request);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'slug' => ['nullable', 'string', 'max:255', Rule::unique('notices', 'slug')],
             'content' => 'required|string',
             'type' => 'required|string|in:notice,event,holiday',
             'category' => 'nullable|string|in:admission,exam,holiday,general',
@@ -60,6 +65,7 @@ class NoticeController extends Controller
             'type.required' => 'নোটিফিকেশনের ধরন আবশ্যক।',
             'type.in' => 'সঠিক নোটিফিকেশনের ধরন নির্বাচন করুন।',
             'category.in' => 'সঠিক নোটিফিকেশনের ক্যাটাগরি নির্বাচন করুন।',
+            'slug.unique' => 'এই ঠিকানাটি (slug) ইতিমধ্যে ব্যবহার করা হয়েছে।',
             'expires_at.after_or_equal' => 'মেয়াদ শেষের তারিখ প্রকাশের তারিখের পরে হতে হবে।',
         ]);
 
@@ -70,6 +76,12 @@ class NoticeController extends Controller
             $validated['published_at'] = $validated['published_at'] ?? now();
             $validated['is_active'] = $validated['is_active'] ?? true;
 
+            // The model slugifies the title itself, so an empty field here means
+            // "whatever the model decides", not "no slug at all".
+            if (blank($validated['slug'] ?? null)) {
+                unset($validated['slug']);
+            }
+
             Notice::create($validated);
 
             return redirect()->route('admin.notices.index')
@@ -78,6 +90,24 @@ class NoticeController extends Controller
             return back()->withInput()
                 ->with('error', 'নোটিফিকেশন প্রকাশ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
+    }
+
+    /**
+     * The slug is optional and normalised before validation, so what is checked
+     * for uniqueness is the address the visitor will actually land on rather
+     * than whatever case and spacing was typed into the field. An empty field
+     * becomes null rather than an empty string, because a unique index treats
+     * one empty string as a value and the second blank field would be rejected.
+     */
+    protected function normalizeSlugInput(Request $request): void
+    {
+        if (! $request->has('slug')) {
+            return;
+        }
+
+        $slug = Str::slug((string) $request->input('slug'));
+
+        $request->merge(['slug' => $slug === '' ? null : $slug]);
     }
 
     public function show(int $id): JsonResponse
@@ -110,6 +140,7 @@ class NoticeController extends Controller
         return response()->json([
             'id' => $notice->id,
             'title' => $notice->title,
+            'slug' => $notice->slug,
             'content' => $notice->content,
             'type' => $notice->type,
             'category' => $notice->category ?? 'general',
@@ -124,8 +155,11 @@ class NoticeController extends Controller
     {
         $notice = Notice::findOrFail($id);
 
+        $this->normalizeSlugInput($request);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'slug' => ['nullable', 'string', 'max:255', Rule::unique('notices', 'slug')->ignore($notice->id)],
             'content' => 'required|string',
             'type' => 'required|string|in:notice,event,holiday',
             'category' => 'nullable|string|in:admission,exam,holiday,general',
@@ -139,11 +173,19 @@ class NoticeController extends Controller
             'type.required' => 'নোটিফিকেশনের ধরন আবশ্যক।',
             'type.in' => 'সঠিক নোটিফিকেশনের ধরন নির্বাচন করুন।',
             'category.in' => 'সঠিক নোটিফিকেশনের ক্যাটাগরি নির্বাচন করুন।',
+            'slug.unique' => 'এই ঠিকানাটি (slug) ইতিমধ্যে ব্যবহার করা হয়েছে।',
         ]);
 
         try {
             $validated['category'] = $validated['category'] ?? $notice->category ?? 'general';
             $validated['content'] = HtmlSanitizer::clean($validated['content']);
+
+            // A blank field leaves the published address alone. Retyping a title
+            // must not invalidate a link that has already been shared.
+            if (blank($validated['slug'] ?? null)) {
+                unset($validated['slug']);
+            }
+
             $notice->update($validated);
 
             return redirect()->route('admin.notices.index')

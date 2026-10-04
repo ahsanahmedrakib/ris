@@ -56,6 +56,8 @@ Route::middleware('track.visitor')->group(function () {
     Route::get('/contact', [WebsiteController::class, 'contact'])->name('contact');
     Route::post('/contact', [WebsiteController::class, 'sendContact'])->middleware('throttle:contact')->name('contact.send');
     Route::get('/notices', [WebsiteController::class, 'notices'])->name('notices');
+    Route::get('/notices/{slug}', [WebsiteController::class, 'noticeSingle'])->name('notices.single');
+    Route::get('/campus-life/{slug}', [WebsiteController::class, 'campusLifeSingle'])->name('campus-life.single');
     Route::get('/teachers', [WebsiteTeacherController::class, 'index'])->name('teachers');
     Route::get('/teacher/{slug}', [WebsiteTeacherController::class, 'single'])->name('teacher.single');
     Route::get('/testimonials', [WebsiteController::class, 'testimonials'])->name('testimonials');

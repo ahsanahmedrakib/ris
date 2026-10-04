@@ -10,6 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class CampusNewsController extends Controller
@@ -43,8 +45,11 @@ class CampusNewsController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $this->normalizeSlugInput($request);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'slug' => ['nullable', 'string', 'max:255', Rule::unique('campus_news', 'slug')],
             'date' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             'description' => 'nullable|string',
@@ -57,6 +62,7 @@ class CampusNewsController extends Controller
             'image.image' => 'সঠিক ছবি আপলোড করুন।',
             'image.mimes' => 'ছবির ফরম্যাট jpeg, jpg, png বা webp হতে হবে।',
             'image.max' => 'ছবির আকার ৫ এমবির বেশি হতে পারবে না।',
+            'slug.unique' => 'এই ঠিকানাটি (slug) ইতিমধ্যে ব্যবহার করা হয়েছে।',
         ]);
 
         try {
@@ -66,6 +72,9 @@ class CampusNewsController extends Controller
 
             CampusNews::create([
                 'title' => $validated['title'],
+                // Left out when the field was blank, so the model can slug the
+                // title itself rather than storing an empty address.
+                ...(filled($validated['slug'] ?? null) ? ['slug' => $validated['slug']] : []),
                 'date' => $validated['date'],
                 'image' => $imagePath,
                 'description' => $validated['description'] ?? null,
@@ -79,6 +88,23 @@ class CampusNewsController extends Controller
             return back()->withInput()
                 ->with('error', 'ক্যাম্পাস লাইফ যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
+    }
+
+    /**
+     * Normalises the optional slug before validation, so uniqueness is checked
+     * against the address a visitor will land on rather than the raw input. An
+     * empty field becomes null because a unique index counts an empty string as
+     * a value, which would reject the second blank one.
+     */
+    protected function normalizeSlugInput(Request $request): void
+    {
+        if (! $request->has('slug')) {
+            return;
+        }
+
+        $slug = Str::slug((string) $request->input('slug'));
+
+        $request->merge(['slug' => $slug === '' ? null : $slug]);
     }
 
     public function show(int $id): JsonResponse
@@ -104,6 +130,7 @@ class CampusNewsController extends Controller
         return response()->json([
             'id' => $item->id,
             'title' => $item->title,
+            'slug' => $item->slug,
             'date' => $item->date?->format('Y-m-d'),
             'image' => $item->image ? Media::images()->url($item->image) : null,
             'description' => $item->description,
@@ -116,8 +143,11 @@ class CampusNewsController extends Controller
     {
         $item = CampusNews::findOrFail($id);
 
+        $this->normalizeSlugInput($request);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'slug' => ['nullable', 'string', 'max:255', Rule::unique('campus_news', 'slug')->ignore($item->id)],
             'date' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             'description' => 'nullable|string',
@@ -130,6 +160,7 @@ class CampusNewsController extends Controller
             'image.image' => 'সঠিক ছবি আপলোড করুন।',
             'image.mimes' => 'ছবির ফরম্যাট jpeg, jpg, png বা webp হতে হবে।',
             'image.max' => 'ছবির আকার ৫ এমবির বেশি হতে পারবে না।',
+            'slug.unique' => 'এই ঠিকানাটি (slug) ইতিমধ্যে ব্যবহার করা হয়েছে।',
         ]);
 
         try {
@@ -142,6 +173,13 @@ class CampusNewsController extends Controller
             }
 
             $validated['is_active'] = $validated['is_active'] ?? $item->is_active;
+
+            // A blank field leaves the published address alone rather than
+            // wiping a link that has already been shared.
+            if (blank($validated['slug'] ?? null)) {
+                unset($validated['slug']);
+            }
+
             $item->update($validated);
 
             return redirect()->route('admin.campus-news.index')

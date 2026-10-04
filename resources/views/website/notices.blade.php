@@ -31,7 +31,14 @@
                                     </svg>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <h3 class="font-heading font-bold text-lg text-ris-dark">{{ $notice->title }}</h3>
+                                    <h3 class="font-heading font-bold text-lg text-ris-dark">
+                                        @if ($notice->slug)
+                                            <a href="{{ route('notices.single', $notice->slug) }}"
+                                                class="hover:text-ris-primary transition-colors">{{ $notice->title }}</a>
+                                        @else
+                                            {{ $notice->title }}
+                                        @endif
+                                    </h3>
                                     <p class="mt-1 text-sm text-ris-gray">{{ $notice->created_at->format('d M, Y') }}</p>
                                     <div class="mt-3 text-gray-600 leading-relaxed prose prose-sm max-w-none">{!! \App\Support\HtmlSanitizer::clean($notice->content) !!}</div>
                                 </div>
