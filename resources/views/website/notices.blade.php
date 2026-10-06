@@ -1,7 +1,5 @@
 @extends('layouts.website')
 
-@section('title', 'নোটিশ — রেশমা ইন্টারন্যাশনাল স্কুল')
-
 @section('content')
 
     {{-- Hero --}}

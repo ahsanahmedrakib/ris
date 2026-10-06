@@ -18,6 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withCommands([
+        // Laravel discovers this directory on its own in 11 and later, but only
+        // when the directory is named here. Without it seo:og-image never
+        // registers and the social preview image cannot be regenerated after a
+        // detail in config/seo.php changes.
+        __DIR__.'/../app/Console/Commands',
+    ])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'role' => CheckRole::class,

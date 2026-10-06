@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\AcademicCalendarController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AdmissionController;
 use App\Http\Controllers\Admin\AttendanceController;
-use App\Http\Controllers\Admin\CampusNewsController;
+use App\Http\Controllers\Admin\CampusEventController;
 use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\ClassRoutineController;
 use App\Http\Controllers\Admin\ContactMessageController;
@@ -39,6 +39,7 @@ use App\Http\Controllers\Admin\TrashController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Parent\ParentController;
 use App\Http\Controllers\Website\ClassRoutineController as WebsiteClassRoutineController;
+use App\Http\Controllers\Website\SitemapController;
 use App\Http\Controllers\Website\StudentController as WebsiteStudentController;
 use App\Http\Controllers\Website\TeacherController as WebsiteTeacherController;
 use Illuminate\Support\Facades\Route;
@@ -57,7 +58,15 @@ Route::middleware('track.visitor')->group(function () {
     Route::post('/contact', [WebsiteController::class, 'sendContact'])->middleware('throttle:contact')->name('contact.send');
     Route::get('/notices', [WebsiteController::class, 'notices'])->name('notices');
     Route::get('/notices/{slug}', [WebsiteController::class, 'noticeSingle'])->name('notices.single');
-    Route::get('/campus-life/{slug}', [WebsiteController::class, 'campusLifeSingle'])->name('campus-life.single');
+    // The index must be declared before the {slug} route it shares a prefix with.
+    Route::get('/campus-events', [WebsiteController::class, 'campusEventsIndex'])->name('campus-events');
+    Route::get('/campus-events/{slug}', [WebsiteController::class, 'campusEventSingle'])->name('campus-events.single');
+
+    // The feature was renamed from "campus life" to "campus events"; old links
+    // keep working by pointing at the new address so nothing that was shared
+    // 404s and no link equity is lost.
+    Route::get('/campus-life', fn () => redirect(route('campus-events'), 301))->name('campus-life.redirect');
+    Route::get('/campus-life/{slug}', fn (string $slug) => redirect(route('campus-events.single', $slug), 301));
     Route::get('/teachers', [WebsiteTeacherController::class, 'index'])->name('teachers');
     Route::get('/teacher/{slug}', [WebsiteTeacherController::class, 'single'])->name('teacher.single');
     Route::get('/testimonials', [WebsiteController::class, 'testimonials'])->name('testimonials');
@@ -73,6 +82,12 @@ Route::middleware('track.visitor')->group(function () {
         Route::get('/facilities', [WebsiteController::class, 'academicFacilities'])->name('facilities');
     });
 });
+
+// The sitemap is outside the tracking group on purpose. It is fetched by
+// crawlers, not people, and counting a crawler as a visitor would inflate
+// the counter that is displayed in the footer.
+Route::get('/'.ltrim((string) config('seo.sitemap_path', 'sitemap.xml'), '/'), [SitemapController::class, 'index'])
+    ->name('sitemap');
 
 // Student records expose PII, so they require an authenticated, authorised user
 // rather than sitting on the public website.
@@ -179,17 +194,17 @@ Route::middleware(['auth', 'role:admin,teacher', 'cache.headers:no_store'])->pre
     Route::patch('notices/{notice}/toggle-active', [NoticeController::class, 'toggleActive'])->name('admin.notices.toggle-active');
     Route::resource('notices', NoticeController::class)->names('admin.notices');
 
-    // Admissions, scholarships and campus news carry applicant PII and belong to
-    // the office rather than to teaching staff.
+    // Admissions, scholarships and campus events carry applicant PII and belong
+    // to the office rather than to teaching staff.
     Route::middleware('role:admin')->group(function () {
-        Route::get('/campus-news', [CampusNewsController::class, 'index'])->name('admin.campus-news.index');
-        Route::post('/campus-news', [CampusNewsController::class, 'store'])->name('admin.campus-news.store');
-        Route::get('/campus-news/download', [CampusNewsController::class, 'downloadAll'])->middleware('throttle:export')->name('admin.campus-news.download');
-        Route::get('/campus-news/{campusNews}/edit', [CampusNewsController::class, 'edit'])->name('admin.campus-news.edit');
-        Route::get('/campus-news/{campusNews}/show', [CampusNewsController::class, 'show'])->name('admin.campus-news.show');
-        Route::put('/campus-news/{campusNews}', [CampusNewsController::class, 'update'])->name('admin.campus-news.update');
-        Route::patch('campus-news/{campusNews}/toggle-active', [CampusNewsController::class, 'toggleActive'])->name('admin.campus-news.toggle-active');
-        Route::delete('/campus-news/{campusNews}', [CampusNewsController::class, 'destroy'])->name('admin.campus-news.destroy');
+        Route::get('/campus-events', [CampusEventController::class, 'index'])->name('admin.campus-events.index');
+        Route::post('/campus-events', [CampusEventController::class, 'store'])->name('admin.campus-events.store');
+        Route::get('/campus-events/download', [CampusEventController::class, 'downloadAll'])->middleware('throttle:export')->name('admin.campus-events.download');
+        Route::get('/campus-events/{campusEvent}/edit', [CampusEventController::class, 'edit'])->name('admin.campus-events.edit');
+        Route::get('/campus-events/{campusEvent}/show', [CampusEventController::class, 'show'])->name('admin.campus-events.show');
+        Route::put('/campus-events/{campusEvent}', [CampusEventController::class, 'update'])->name('admin.campus-events.update');
+        Route::patch('campus-events/{campusEvent}/toggle-active', [CampusEventController::class, 'toggleActive'])->name('admin.campus-events.toggle-active');
+        Route::delete('/campus-events/{campusEvent}', [CampusEventController::class, 'destroy'])->name('admin.campus-events.destroy');
 
         Route::get('/scholarship', [ScholarshipController::class, 'index'])->name('admin.scholarship.index');
         Route::post('/scholarship', [ScholarshipController::class, 'store'])->name('admin.scholarship.store');

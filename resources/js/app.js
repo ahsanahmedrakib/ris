@@ -408,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    document.querySelectorAll('.campus-life-swiper').forEach((el) => {
+    document.querySelectorAll('.campus-events-swiper').forEach((el) => {
         new Swiper(el, {
             loop: true,
             speed: 600,

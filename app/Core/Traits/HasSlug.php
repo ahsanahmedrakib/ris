@@ -3,37 +3,34 @@
 namespace App\Core\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 /**
  * Gives a model a stable, public, URL-safe identifier.
  *
- * The slug is derived from the title once, on create, and is deliberately left
- * alone afterwards: a published link that stops working because someone fixed a
- * typo is worse than a slug that is slightly out of date. An admin can still
- * set one explicitly, and that is the only thing that changes it later.
+ * The slugs used to be built from the title through a Bangla-to-English
+ * glossary ("জাতীয় বিজ্ঞান মেলা" became "national-science-fair"). That
+ * translation was dropped: for a school's records, a plain serial that an
+ * administrator reads aloud — "notice-12", "campus-event-3" — is clearer than
+ * an English guess, and nothing a title could name is lost in the address.
  *
- * Titles here are written in Bengali, and Str::slug() drops every character it
- * cannot transliterate, which for those titles means the empty string. So when
- * the title yields nothing usable the slug falls back to the prefix and the
- * primary key, and the edit form lets a human put something readable there.
+ * A manually entered slug is respected; everything else gets the model prefix
+ * with the primary key as the serial. The slug is set once, on create, and is
+ * deliberately left alone afterwards: a published link that stops working
+ * because someone fixed a typo is worse than a slug that is slightly out of
+ * date.
  *
  * @property string|null $slug
+ *
+ * @method static void created(callable $callback)
  */
 trait HasSlug
 {
     public static function bootHasSlug(): void
     {
-        static::creating(function (Model $model): void {
-            if (blank($model->slug)) {
-                $model->slug = $model->slugFromTitle();
-            }
-        });
-
-        // The primary key only exists once the row has been inserted, so a title
-        // with nothing transliteratable in it cannot be slugged until here. The
-        // column is nullable for that reason, and this fills it in immediately
-        // after the insert rather than leaving the row unroutable.
+        // The primary key only exists once the row has been inserted, so the
+        // slug cannot be built until here. The column is nullable for that
+        // reason, and this fills it in immediately after the insert rather than
+        // leaving the row unroutable.
         static::created(function (Model $model): void {
             if (blank($model->slug)) {
                 $model->forceFill(['slug' => $model->slugFallback()])->saveQuietly();
@@ -42,23 +39,8 @@ trait HasSlug
     }
 
     /**
-     * The slug built from the title, or null when the title has no Latin
-     * characters in it to build one from.
-     */
-    protected function slugFromTitle(): ?string
-    {
-        $slug = Str::slug((string) $this->title);
-
-        if ($slug === '') {
-            return null;
-        }
-
-        return $this->uniqueSlug($slug);
-    }
-
-    /**
-     * The identifier used when there is no title to slug, unique per table
-     * because it is prefixed by the model.
+     * The serial identifier, unique per table because the primary key keeps it
+     * apart from every other row that shares the same prefix.
      */
     protected function slugFallback(): string
     {
@@ -66,26 +48,8 @@ trait HasSlug
     }
 
     /**
-     * The first free "<slug>", "<slug>-2", "<slug>-3" ... Soft deleted rows are
-     * included because their slug is still held by the unique index, so ignoring
-     * them here would hand out a value the database then rejects.
-     */
-    protected function uniqueSlug(string $slug): string
-    {
-        $candidate = $slug;
-        $suffix = 1;
-
-        while ($this->newQuery()->where('slug', $candidate)->exists()) {
-            $suffix++;
-            $candidate = $slug.'-'.$suffix;
-        }
-
-        return $candidate;
-    }
-
-    /**
-     * The word a fallback slug is built on, which also keeps the fallback from
-     * colliding with a real title slug in the same table.
+     * The word a serial slug is built on, which also keeps the serials in one
+     * table from being mistaken for those in another.
      */
     abstract protected function slugPrefix(): string;
 }

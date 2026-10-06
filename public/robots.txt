@@ -17,6 +17,12 @@ Disallow: /livewire
 Disallow: /storage
 Disallow: /*?*
 
+# The sitemap is the other half of being found: the notice board and the campus
+# news are only linked from inside the home page, so a crawler has no path to a
+# notice published last week unless this points it at them. Submitting it in
+# Google Search Console as well is what actually gets it read.
+Sitemap: https://ris.edu.bd/sitemap.xml
+
 # The gallery is public content and stays crawlable, but these folders hold
 # photographs of named people: applicants, staff and testimonial subjects.
 Disallow: /images/admissions

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\CampusNews;
+use App\Models\CampusEvent;
 use App\Support\Media;
 use App\Support\XlsxExport;
 use Illuminate\Http\JsonResponse;
@@ -14,11 +14,11 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-class CampusNewsController extends Controller
+class CampusEventController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = CampusNews::query();
+        $query = CampusEvent::query();
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -35,12 +35,12 @@ class CampusNewsController extends Controller
 
         $items = $query->orderByDesc('id')->paginate($perPage)->withQueryString();
 
-        return view('admin.campus-news.index', ['items' => $items]);
+        return view('admin.campus-events.index', ['items' => $items]);
     }
 
     public function create(): RedirectResponse
     {
-        return redirect()->route('admin.campus-news.index');
+        return redirect()->route('admin.campus-events.index');
     }
 
     public function store(Request $request): RedirectResponse
@@ -49,7 +49,7 @@ class CampusNewsController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => ['nullable', 'string', 'max:255', Rule::unique('campus_news', 'slug')],
+            'slug' => ['nullable', 'string', 'max:255', Rule::unique('campus_events', 'slug')],
             'date' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             'description' => 'nullable|string',
@@ -67,13 +67,13 @@ class CampusNewsController extends Controller
 
         try {
             $imagePath = $request->hasFile('image')
-                ? Media::storeImage($request->file('image'), 'campus-news')
+                ? Media::storeImage($request->file('image'), 'campus-events')
                 : null;
 
-            CampusNews::create([
+            CampusEvent::create([
                 'title' => $validated['title'],
-                // Left out when the field was blank, so the model can slug the
-                // title itself rather than storing an empty address.
+                // Left out when the field was blank, so the model assigns a
+                // serial address (campus-event-{id}) rather than an empty one.
                 ...(filled($validated['slug'] ?? null) ? ['slug' => $validated['slug']] : []),
                 'date' => $validated['date'],
                 'image' => $imagePath,
@@ -82,11 +82,11 @@ class CampusNewsController extends Controller
                 'is_active' => $validated['is_active'] ?? true,
             ]);
 
-            return redirect()->route('admin.campus-news.index')
-                ->with('success', 'ক্যাম্পাস লাইফ সফলভাবে যোগ করা হয়েছে।');
+            return redirect()->route('admin.campus-events.index')
+                ->with('success', 'ক্যাম্পাস ইভেন্ট সফলভাবে যোগ করা হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'ক্যাম্পাস লাইফ যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ক্যাম্পাস ইভেন্ট যোগ করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
@@ -109,7 +109,7 @@ class CampusNewsController extends Controller
 
     public function show(int $id): JsonResponse
     {
-        $item = CampusNews::findOrFail($id);
+        $item = CampusEvent::findOrFail($id);
 
         return response()->json([
             'id' => $item->id,
@@ -125,7 +125,7 @@ class CampusNewsController extends Controller
 
     public function edit(int $id): JsonResponse
     {
-        $item = CampusNews::findOrFail($id);
+        $item = CampusEvent::findOrFail($id);
 
         return response()->json([
             'id' => $item->id,
@@ -141,13 +141,13 @@ class CampusNewsController extends Controller
 
     public function update(Request $request, int $id): RedirectResponse
     {
-        $item = CampusNews::findOrFail($id);
+        $item = CampusEvent::findOrFail($id);
 
         $this->normalizeSlugInput($request);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => ['nullable', 'string', 'max:255', Rule::unique('campus_news', 'slug')->ignore($item->id)],
+            'slug' => ['nullable', 'string', 'max:255', Rule::unique('campus_events', 'slug')->ignore($item->id)],
             'date' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             'description' => 'nullable|string',
@@ -169,7 +169,7 @@ class CampusNewsController extends Controller
                     Storage::disk('public')->delete($item->image);
                 }
 
-                $validated['image'] = Media::storeImage($request->file('image'), 'campus-news');
+                $validated['image'] = Media::storeImage($request->file('image'), 'campus-events');
             }
 
             $validated['is_active'] = $validated['is_active'] ?? $item->is_active;
@@ -182,17 +182,17 @@ class CampusNewsController extends Controller
 
             $item->update($validated);
 
-            return redirect()->route('admin.campus-news.index')
-                ->with('success', 'ক্যাম্পাস লাইফ সফলভাবে আপডেট হয়েছে।');
+            return redirect()->route('admin.campus-events.index')
+                ->with('success', 'ক্যাম্পাস ইভেন্ট সফলভাবে আপডেট হয়েছে।');
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'ক্যাম্পাস লাইফ আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ক্যাম্পাস ইভেন্ট আপডেট করতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
     public function toggleActive(int $id): JsonResponse
     {
-        $item = CampusNews::findOrFail($id);
+        $item = CampusEvent::findOrFail($id);
         $item->is_active = ! $item->is_active;
         $item->save();
 
@@ -206,19 +206,19 @@ class CampusNewsController extends Controller
     public function destroy(int $id): RedirectResponse
     {
         try {
-            CampusNews::findOrFail($id)->delete();
+            CampusEvent::findOrFail($id)->delete();
 
-            return redirect()->route('admin.campus-news.index')
-                ->with('success', 'ক্যাম্পাস লাইফ সফলভাবে মুছে ফেলা হয়েছে।');
+            return redirect()->route('admin.campus-events.index')
+                ->with('success', 'ক্যাম্পাস ইভেন্ট সফলভাবে মুছে ফেলা হয়েছে।');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'ক্যাম্পাস লাইফ মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
+                ->with('error', 'ক্যাম্পাস ইভেন্ট মুছে ফেলতে সমস্যা হয়েছে। '.$e->getMessage());
         }
     }
 
     public function downloadAll(Request $request)
     {
-        $query = CampusNews::query();
+        $query = CampusEvent::query();
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -242,7 +242,7 @@ class CampusNewsController extends Controller
         return XlsxExport::download(
             ['ক্রমিক', 'শিরোনাম', 'তারিখ', 'বিবরণ', 'স্ট্যাটাস', 'তৈরির সময়'],
             $rows,
-            'campus_news_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.xlsx',
+            'campus_events_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.xlsx',
         );
     }
 }

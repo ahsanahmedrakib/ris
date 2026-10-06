@@ -1,7 +1,5 @@
 @extends('layouts.website')
 
-@section('title', 'মেধাবৃত্তি রেজিস্ট্রেশন — রেশমা ইন্টারন্যাশনাল স্কুল')
-
 @section('content')
 
     {{-- Hero --}}

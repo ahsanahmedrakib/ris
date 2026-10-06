@@ -9,7 +9,7 @@ use App\Models\AboutContent;
 use App\Models\AcademicCalendar;
 use App\Models\AcademicYear;
 use App\Models\Admission;
-use App\Models\CampusNews;
+use App\Models\CampusEvent;
 use App\Models\ClassRoom;
 use App\Models\ContactMessage;
 use App\Models\CoreValue;
@@ -26,7 +26,9 @@ use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Testimonial;
 use App\Notifications\NewSubmission;
+use App\Support\JsonLd;
 use App\Support\Media;
+use App\Support\Seo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -54,7 +56,7 @@ class WebsiteController extends Controller
 
         $heroSlides = $this->heroSlides();
 
-        $campusNews = $this->campusNews();
+        $campusEvents = $this->campusEvents();
 
         $notices = Notice::where('is_active', true)
             ->where('published_at', '<=', now())
@@ -96,19 +98,27 @@ class WebsiteController extends Controller
             ->orderBy('id')
             ->get();
 
-        return view('website.index', compact('stats', 'heroSlides', 'campusNews', 'notices', 'testimonials', 'testimonialStats', 'galleryItems', 'messages', 'faqs'));
+        // The FAQ block is the one piece of structured data on this page that can win
+        // extra space in the results, so it is declared from the same rows the
+        // template renders. A FAQPage node whose questions are not visible on the
+        // page is a manual action against the site.
+        $faqNode = $faqs->isNotEmpty() ? [JsonLd::faqPage($faqs)] : [];
+
+        $seo = Seo::forCurrentPage(['schema' => $faqNode])->withCanonical(route('home'));
+
+        return view('website.index', compact('stats', 'heroSlides', 'campusEvents', 'notices', 'testimonials', 'testimonialStats', 'galleryItems', 'messages', 'faqs', 'seo'));
     }
 
-    protected function campusNews(): array
+    protected function campusEvents(): array
     {
-        $news = CampusNews::where('is_active', true)
+        $news = CampusEvent::where('is_active', true)
             ->orderBy('sort_order')
             ->orderByDesc('id')
             ->take(8)
             ->get();
 
         if ($news->isNotEmpty()) {
-            return $news->map(fn (CampusNews $item): array => [
+            return $news->map(fn (CampusEvent $item): array => [
                 'title' => $item->title,
                 'slug' => $item->slug,
                 'date' => $this->banglaDate($item->date),
@@ -116,7 +126,7 @@ class WebsiteController extends Controller
             ])->all();
         }
 
-        // Placeholder entries, shown only while no campus life has been added.
+        // Placeholder entries, shown only while no campus event has been added.
         // They have no slug because there is no row behind them to link to.
         return [
             [
@@ -203,7 +213,9 @@ class WebsiteController extends Controller
 
         $testimonialStats = $this->testimonialStats();
 
-        return view('website.testimonials', compact('testimonials', 'testimonialStats'));
+        $seo = Seo::forCurrentPage()->withCanonical(route('testimonials'));
+
+        return view('website.testimonials', compact('testimonials', 'testimonialStats', 'seo'));
     }
 
     /**
@@ -302,7 +314,17 @@ class WebsiteController extends Controller
 
         $categories = GalleryItem::where('is_active', true)->pluck('category')->filter()->unique()->values();
 
-        return view('website.gallery', compact('items', 'categories'));
+        $seo = Seo::forCurrentPage([
+            'schema' => [
+                JsonLd::collectionPage(
+                    route('gallery'),
+                    'Photo Gallery — Resma International School, Gopalganj',
+                    'Photographs of the campus, events and academic activities at Resma International School, Gopalganj.',
+                ),
+            ],
+        ])->withCanonical(route('gallery'));
+
+        return view('website.gallery', compact('items', 'categories', 'seo'));
     }
 
     public function academicCalendar(): View
@@ -494,7 +516,20 @@ class WebsiteController extends Controller
             '9' => '৯',
         ]);
 
-        return view('website.admission', compact('classes', 'defaultAcademicYear'));
+        // "Admission 2026" is the single most searched term on a school site
+        // alongside the school's own name, so the year is put in both the title
+        // and the description rather than being left to go stale each January.
+        $admissionYear = $year;
+        $title = "Admission Form {$admissionYear} | ভর্তি | ".Seo::siteName();
+        $description = "Apply for admission to Resma International School, Gopalganj for the {$admissionYear} academic year. Fill the online admission form, see the required documents and class-wise fees.";
+
+        $seo = Seo::forCurrentPage([
+            'title' => $title,
+            'description' => $description,
+            'schema' => [JsonLd::educationalProgram()],
+        ])->withCanonical(route('admission'));
+
+        return view('website.admission', compact('classes', 'defaultAcademicYear', 'seo'));
     }
 
     public function storeAdmission(Request $request): RedirectResponse|JsonResponse
@@ -796,7 +831,23 @@ class WebsiteController extends Controller
 
     public function scholarship(): View
     {
-        return view('website.scholarship');
+        $year = now()->year;
+        $title = "Merit Scholarship {$year} | মেধাবৃত্তি | ".Seo::siteName();
+        $description = "Apply for the merit scholarship at Resma International School, Gopalganj for {$year}. Open to meritorious and financially disadvantaged students. Online registration, free to apply.";
+
+        $seo = Seo::forCurrentPage([
+            'title' => $title,
+            'description' => $description,
+            'schema' => [
+                JsonLd::collectionPage(
+                    route('scholarship'),
+                    'Merit Scholarship — Resma International School, Gopalganj',
+                    $description,
+                ),
+            ],
+        ])->withCanonical(route('scholarship'));
+
+        return view('website.scholarship', compact('seo'));
     }
 
     // admit download
@@ -815,7 +866,10 @@ class WebsiteController extends Controller
 
     public function contact(): View
     {
-        return view('website.contact');
+        return view('website.contact', [
+            'seo' => Seo::forCurrentPage(['schema' => [JsonLd::contactPage()]])
+                ->withCanonical(route('contact')),
+        ]);
     }
 
     public function sendContact(Request $request)
@@ -863,7 +917,49 @@ class WebsiteController extends Controller
             ->orderByDesc('published_at')
             ->paginate(10);
 
-        return view('website.notices', compact('notices'));
+        // The board is a list of articles, so it is declared as one. Every page
+        // of the pagination is the same page to a crawler, so the node carries
+        // only this page's notices and the canonical URL below strips the query.
+        $seo = Seo::forCurrentPage([
+            'schema' => [
+                JsonLd::collectionPage(
+                    route('notices'),
+                    'Notice Board — Resma International School, Gopalganj',
+                    'Exam schedules, holidays and admission notices from Resma International School, Gopalganj.',
+                    $notices->getCollection()->map(
+                        fn (Notice $notice): string => route('notices.single', $notice->slug)
+                    )->all(),
+                ),
+            ],
+        ])->withCanonical(route('notices'));
+
+        return view('website.notices', compact('notices', 'seo'));
+    }
+
+    public function campusEventsIndex(): View
+    {
+        $items = CampusEvent::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->paginate(9);
+
+        // The same collections page the notices board uses: this lists every
+        // campus event a visitor can reach, so it is declared as a
+        // collection and the canonical URL strips the pagination query.
+        $seo = Seo::forCurrentPage([
+            'schema' => [
+                JsonLd::collectionPage(
+                    route('campus-events'),
+                    'Campus Events — Resma International School, Gopalganj',
+                    'Events and activities at Resma International School, Gopalganj: science fairs, cultural programmes, sports days and excursions.',
+                    $items->getCollection()->map(
+                        fn (CampusEvent $item): string => route('campus-events.single', $item->slug)
+                    )->all(),
+                ),
+            ],
+        ])->withCanonical(route('campus-events'));
+
+        return view('website.campus-events', compact('items', 'seo'));
     }
 
     public function noticeSingle(string $slug): View
@@ -883,22 +979,56 @@ class WebsiteController extends Controller
             ->take(4)
             ->get();
 
-        return view('website.notice-single', compact('notice', 'related'));
+        // The notice's own title and opening become the metadata. A generic
+        // "Notice" description here would make every notice in the index read
+        // identically in the results, which is worse than no description.
+        $seo = Seo::forCurrentPage([
+            'title' => Seo::composeTitle($notice->title),
+            'description' => Seo::excerpt($notice->content, 160),
+            'type' => 'article',
+            'schema' => [
+                JsonLd::article(
+                    $notice->title,
+                    $notice->content,
+                    null,
+                    ($notice->published_at ?? $notice->created_at)?->toAtomString(),
+                ),
+            ],
+        ])->andCrumb(['name' => $notice->title]);
+
+        return view('website.notice-single', compact('notice', 'related', 'seo'));
     }
 
-    public function campusLifeSingle(string $slug): View
+    public function campusEventSingle(string $slug): View
     {
-        $item = CampusNews::where('slug', $slug)
+        $item = CampusEvent::where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
 
-        $related = CampusNews::where('is_active', true)
+        $related = CampusEvent::where('is_active', true)
             ->whereKeyNot($item->getKey())
             ->orderBy('sort_order')
             ->orderByDesc('id')
             ->take(4)
             ->get();
 
-        return view('website.campus-life-single', compact('item', 'related'));
+        $image = $item->image ? Media::images()->url($item->image) : null;
+
+        $seo = Seo::forCurrentPage([
+            'title' => Seo::composeTitle($item->title),
+            'description' => Seo::excerpt($item->description ?: $item->title, 160),
+            'type' => 'article',
+            'image' => $image,
+            'schema' => [
+                JsonLd::article(
+                    $item->title,
+                    $item->description,
+                    $image,
+                    $item->date?->toAtomString(),
+                ),
+            ],
+        ])->andCrumb(['name' => $item->title]);
+
+        return view('website.campus-events-single', compact('item', 'related', 'seo'));
     }
 }

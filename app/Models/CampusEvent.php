@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CampusNews extends Model
+class CampusEvent extends Model
 {
     use HasFactory, HasSlug, LogsActivity, SoftDeletes;
 
@@ -33,6 +33,6 @@ class CampusNews extends Model
 
     protected function slugPrefix(): string
     {
-        return 'campus-life';
+        return 'campus-event';
     }
 }

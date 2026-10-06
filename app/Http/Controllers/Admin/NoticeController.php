@@ -76,8 +76,8 @@ class NoticeController extends Controller
             $validated['published_at'] = $validated['published_at'] ?? now();
             $validated['is_active'] = $validated['is_active'] ?? true;
 
-            // The model slugifies the title itself, so an empty field here means
-            // "whatever the model decides", not "no slug at all".
+            // The model assigns a serial address (notice-{id}), so an empty
+            // field here means "whatever the model decides", not "no slug at all".
             if (blank($validated['slug'] ?? null)) {
                 unset($validated['slug']);
             }

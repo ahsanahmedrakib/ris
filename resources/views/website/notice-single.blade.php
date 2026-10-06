@@ -1,7 +1,5 @@
 @extends('layouts.website')
 
-@section('title', $notice->title.' — রেশমা ইন্টারন্যাশনাল স্কুল')
-
 @section('content')
 
     @php

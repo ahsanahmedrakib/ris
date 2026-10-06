@@ -1,7 +1,5 @@
 @extends('layouts.website')
 
-@section('title', 'গ্যালারি — রেশমা ইন্টারন্যাশনাল স্কুল')
-
 @section('content')
 
     {{-- Hero --}}
@@ -41,7 +39,7 @@
                             data-category="{{ $item->category ?? '' }}"
                             data-title="{{ $item->title }}"
                             data-caption="{{ $item->description ?? '' }}">
-                            <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}"
+                            <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}" loading="lazy" decoding="async"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-5">

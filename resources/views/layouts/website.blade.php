@@ -6,12 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <title>@yield('title', 'রেশমা ইন্টারন্যাশনাল স্কুল')</title>
+    <link rel="apple-touch-icon" href="{{ asset('logo.png') }}">
+
+    {{-- Every public page gets its metadata from config/seo.php through the Seo
+         object, so no page can ship without a title, a description and a
+         canonical URL. A controller may hand the view its own instance to
+         override any of it. --}}
+
+    <title>{{ $seo->title() }}</title>
+    {!! $seo !!}
+
+    {{-- Pages that have something extra to declare: an FAQ list, a notice's
+         Article node, the ItemList on a paginated board. Anything added here is
+         a complete schema.org document, not a fragment. --}}
+    @yield('schema')
+
+    @if ($googleVerification = config('seo.google_site_verification'))
+        <meta name="google-site-verification" content="{{ $googleVerification }}">
+    @endif
+
+    @if ($bingVerification = config('seo.bing_site_verification'))
+        <meta name="msvalidate.01" content="{{ $bingVerification }}">
+    @endif
 
     {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    {{-- The same Poppins weights as a woff2 preload, so the browser starts the
+         font download at the same moment it discovers the stylesheet instead of
+         waiting a round trip to learn that it needs one. Crossorigin is required:
+         fonts are fetched anonymously, and without it the response is discarded
+         and fetched twice. --}}
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="https://fonts.gstatic.com/s/poppins/v24/pxiEyp8kv8JHgFVrJJfecg.woff2">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -265,6 +294,8 @@
             </div>
         </div>
     </header>
+
+    @include('website.partials.breadcrumbs')
 
     {{-- ═══ Main Content ═══ --}}
     <main>

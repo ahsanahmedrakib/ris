@@ -1,7 +1,5 @@
 @extends('layouts.website')
 
-@section('title', 'ক্লাশ রুটিন — রেশমা ইন্টারন্যাশনাল স্কুল')
-
 @section('content')
     <section class="bg-linear-to-r from-ris-dark via-ris-accent to-ris-light py-16 sm:py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

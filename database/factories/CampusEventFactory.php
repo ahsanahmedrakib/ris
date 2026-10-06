@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\CampusNews;
+use App\Models\CampusEvent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<CampusNews>
+ * @extends Factory<CampusEvent>
  */
-class CampusNewsFactory extends Factory
+class CampusEventFactory extends Factory
 {
     /**
      * Define the model's default state.

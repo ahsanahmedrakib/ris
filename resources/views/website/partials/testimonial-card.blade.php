@@ -22,7 +22,7 @@
     <div
         class="absolute -top-6 right-6 w-16 h-16 rounded-full {{ $accent['bg'] }} border-4 border-white flex items-center justify-center shadow-md overflow-hidden">
         @if ($testimonial->photo)
-            <img src="{{ \App\Support\Media::images()->url($testimonial->photo) }}" alt="{{ $testimonial->name }}"
+            <img src="{{ \App\Support\Media::images()->url($testimonial->photo) }}" alt="{{ $testimonial->name }}" loading="lazy" decoding="async"
                 class="w-full h-full rounded-full object-cover">
         @else
             <svg class="w-8 h-8 text-white fill-current" viewBox="0 0 24 24">

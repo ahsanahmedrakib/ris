@@ -1,13 +1,11 @@
 @extends('layouts.website')
 
-@section('title', $item->title.' — রেশমা ইন্টারন্যাশনাল স্কুল')
-
 @section('content')
 
     {{-- Hero --}}
     <section class="bg-linear-to-r from-ris-dark via-ris-accent to-ris-light py-16 sm:py-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
-            <span class="badge badge-warning">ক্যাম্পাস লাইফ</span>
+            <span class="badge badge-warning">ক্যাম্পাস ইভেন্ট</span>
             <h1 class="mt-4 font-heading font-bold text-2xl sm:text-3xl text-white leading-snug">{{ $item->title }}</h1>
             @if ($item->date)
                 <p class="mt-3 text-white/70">{{ $item->date->format('d M, Y') }}</p>
@@ -41,14 +39,14 @@
 
             @if ($related->isNotEmpty())
                 <div class="mt-14">
-                    <h2 class="font-heading font-bold text-xl text-ris-dark mb-5">আরও ক্যাম্পাস লাইফ</h2>
+                    <h2 class="font-heading font-bold text-xl text-ris-dark mb-5">আরও ক্যাম্পাস ইভেন্ট</h2>
                     <div class="grid sm:grid-cols-2 gap-5 reveal-stagger">
                         @foreach ($related as $other)
-                            <a href="{{ route('campus-life.single', $other->slug) }}"
+                            <a href="{{ route('campus-events.single', $other->slug) }}"
                                 class="bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 border border-gray-100 hover:border-ris-primary/20 reveal">
                                 <div class="h-40 relative flex items-center justify-center">
                                     @if ($other->image)
-                                        <img src="{{ \App\Support\Media::images()->url($other->image) }}"
+                                        <img src="{{ \App\Support\Media::images()->url($other->image) }}" loading="lazy" decoding="async"
                                             alt="{{ $other->title }}"
                                             class="absolute inset-0 w-full h-full object-cover">
                                     @else

@@ -1,7 +1,5 @@
 @extends('layouts.website')
 
-@section('title', 'রেশমা ইন্টারন্যাশনাল স্কুল')
-
 @section('content')
 
     {{-- ═══ Hero Banner (green.edu.bd style) ═══ --}}
@@ -10,7 +8,18 @@
             <div class="swiper-wrapper">
                 @foreach ($heroSlides as $slide)
                     <div class="swiper-slide relative">
+                        {{-- The first slide is the Largest Contentful Paint element
+                             of the page, so it is fetched eagerly and told to be
+                             prioritised. Every later slide is below the fold and
+                             lazy: a carousel preloading all four photographs before
+                             the first one paints is the single slowest thing on the
+                             home page. --}}
                         <img src="{{ $slide['image'] }}" alt="{{ $slide['title'] }}"
+                            @if ($loop->first)
+                                fetchpriority="high" loading="eager"
+                            @else
+                                loading="lazy" decoding="async"
+                            @endif
                             class="absolute inset-0 w-full h-full object-cover">
                         <div class="hero-overlay absolute inset-0 flex items-end sm:pb-12 md:pb-16 lg:pb-24 pb-0">
                             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-4 sm:pb-0">
@@ -234,7 +243,7 @@
                                 <div class="flex flex-col sm:flex-row h-full">
                                     <div class="sm:w-1/3 bg-ris-primary/5 flex items-center justify-center p-8">
                                         @if ($msg->photo_url)
-                                            <img src="{{ $msg->photo_url }}" alt="{{ $msg->name }}"
+                                            <img src="{{ $msg->photo_url }}" alt="{{ $msg->name }}" loading="lazy" decoding="async"
                                                 class="w-32 h-32 rounded-full object-cover">
                                         @else
                                             <div
@@ -470,21 +479,21 @@
         </div>
     </section>
 
-    {{-- ═══ Campus Life Section (green.edu.bd style) ═══ --}}
-    <section class="py-16 sm:py-20 campus-life-section">
+    {{-- ═══ Campus Events Section ═══ --}}
+    <section class="py-16 sm:py-20 campus-events-section">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="mb-8 reveal">
                         <span
                             class="text-ris-primary font-heading font-semibold text-sm uppercase tracking-wider">ক্যাম্পাস
                             কার্যক্রম</span>
-                        <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">ক্যাম্পাস লাইফ</h2>
+                        <h2 class="mt-3 font-heading font-bold text-2xl sm:text-3xl text-ris-dark">ক্যাম্পাস ইভেন্ট</h2>
                     </div>
 
             <div class="grid lg:grid-cols-12 gap-6 md:gap-10 items-stretch">
                 {{-- Left: Campus image --}}
                 <div class="lg:col-span-5 min-w-0">
                     <div class="relative h-64 sm:h-80 lg:h-full rounded-2xl overflow-hidden shadow-card group">
-                        <img src="{{ asset('assets/home/campus.jpg') }}" alt="Campus Life"
+                        <img src="{{ asset('assets/home/campus.jpg') }}" alt="Campus Events" loading="lazy" decoding="async"
                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         <div class="absolute inset-0 bg-linear-to-t from-ris-dark/70 via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4 right-4">
@@ -497,15 +506,20 @@
 
                 {{-- Right: News carousel --}}
                 <div class="lg:col-span-7 min-w-0">
-                    <div class="swiper campus-life-swiper reveal">
+                    <div class="swiper campus-events-swiper reveal">
                         <div class="swiper-wrapper">
-                            @foreach ($campusNews as $news)
+                            @foreach ($campusEvents as $news)
                                 <div class="swiper-slide">
-                                    <div
-                                        class="campus-life-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
+                                    @if ($news['slug'])
+                                        <a href="{{ route('campus-events.single', $news['slug']) }}"
+                                            class="campus-events-card block bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full group">
+                                    @else
+                                        <div
+                                            class="campus-events-card bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 h-full">
+                                    @endif
                                         <div class="h-48 relative flex items-center justify-center">
                                             @if ($news['image'])
-                                                <img src="{{ $news['image'] }}" alt="{{ $news['title'] }}"
+                                                <img src="{{ $news['image'] }}" alt="{{ $news['title'] }}" loading="lazy" decoding="async"
                                                     class="absolute inset-0 w-full h-full object-cover">
                                             @else
                                                 <div
@@ -522,32 +536,39 @@
                                             @endif
                                         </div>
                                         <div class="p-5">
-                                            <h4 class="font-heading font-semibold text-ris-dark leading-snug">
-                                                @if ($news['slug'])
-                                                    <a href="{{ route('campus-life.single', $news['slug']) }}"
-                                                        class="hover:text-ris-primary transition-colors">{{ $news['title'] }}</a>
-                                                @else
-                                                    {{ $news['title'] }}
-                                                @endif
-                                            </h4>
+                                            <h4 class="font-heading font-semibold text-ris-dark leading-snug">{{ $news['title'] }}</h4>
                                             <hr class="my-3 border-gray-100">
                                             @if ($news['slug'])
-                                                <a href="{{ route('campus-life.single', $news['slug']) }}"
-                                                    class="inline-flex items-center gap-1 text-sm font-medium text-ris-primary hover:text-ris-dark transition-colors">
+                                                <span
+                                                    class="inline-flex items-center gap-1 text-sm font-medium text-ris-primary">
                                                     বিস্তারিত পড়ুন
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                                     </svg>
-                                                </a>
+                                                </span>
                                             @endif
                                         </div>
-                                    </div>
+                                    @if ($news['slug'])
+                                        </a>
+                                    @else
+                                        </div>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
                         <div class="swiper-pagination mt-6"></div>
+                        <div class="mt-8 text-center">
+                            <a href="{{ route('campus-events') }}"
+                                class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-ris-primary text-white font-heading font-medium text-sm hover:bg-ris-dark shadow-lg shadow-ris-primary/25 transition-all duration-300 hover:-translate-y-0.5">
+                                সব ক্যাম্পাস ইভেন্ট দেখুন
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -788,7 +809,7 @@
                                     data-title="{{ $item->title }}"
                                     data-category="{{ $item->category ?? '' }}"
                                     data-caption="{{ $item->description ?? '' }}">
-                                    <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}"
+                                    <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}" loading="lazy" decoding="async"
                                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                     <div
                                         class="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300 flex items-end">

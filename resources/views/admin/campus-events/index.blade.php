@@ -1,18 +1,18 @@
 @extends('layouts.admin')
 
-@section('title', 'ক্যাম্পাস লাইফ তালিকা')
+@section('title', 'ক্যাম্পাস ইভেন্ট তালিকা')
 
 @section('content')
-    <div class="space-y-6" x-data="campusNewsApp()">
+    <div class="space-y-6" x-data="campusEventApp()">
 
         {{-- Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-heading font-bold text-gray-900">ক্যাম্পাস লাইফ</h1>
-                <p class="text-sm text-gray-500 mt-1">হোমপেজের ক্যাম্পাস লাইফ সেকশন পরিচালনা করুন</p>
+                <h1 class="text-2xl font-heading font-bold text-gray-900">ক্যাম্পাস ইভেন্ট</h1>
+                <p class="text-sm text-gray-500 mt-1">হোমপেজের ক্যাম্পাস ইভেন্ট সেকশন পরিচালনা করুন</p>
             </div>
             <div class="flex items-center gap-2">
-                <a href="{{ route('admin.campus-news.download', request()->query()) }}"
+                <a href="{{ route('admin.campus-events.download', request()->query()) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors shadow-sm cursor-pointer">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     Excel ডাউনলোড
@@ -36,13 +36,13 @@
 
         @if ($items->isEmpty())
             <div class="bg-amber-50 border border-amber-200 text-amber-700 px-5 py-4 rounded-xl text-sm font-medium">
-                বর্তমানে কোনো ক্যাম্পাস লাইফ আইটেম যোগ করা হয়নি। হোমপেজে ডিফল্ট কনটেন্ট প্রদর্শিত হচ্ছে। আইটেম যোগ করলে সেগুলো দেখানো হবে।
+                বর্তমানে কোনো ক্যাম্পাস ইভেন্ট আইটেম যোগ করা হয়নি। হোমপেজে ডিফল্ট কনটেন্ট প্রদর্শিত হচ্ছে। আইটেম যোগ করলে সেগুলো দেখানো হবে।
             </div>
         @endif
 
         {{-- Filters --}}
         <div class="bg-white rounded-xl border border-gray-200 p-4">
-            <form method="GET" action="{{ route('admin.campus-news.index') }}">
+            <form method="GET" action="{{ route('admin.campus-events.index') }}">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">অনুসন্ধান</label>
@@ -58,7 +58,7 @@
                             class="px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors cursor-pointer">
                             ফিল্টার করুন
                         </button>
-                        <a href="{{ route('admin.campus-news.index') }}"
+                        <a href="{{ route('admin.campus-events.index') }}"
                             class="px-4 py-2.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center">
                             রিসেট
                         </a>
@@ -84,7 +84,7 @@
                     <tbody class="divide-y divide-gray-50" data-table-body>
                         @forelse($items as $item)
                             <tr class="hover:bg-gray-50 transition-colors"
-                                x-data="activeRow('{{ url('admin/campus-news') }}', {{ $item->id }}, {{ $item->is_active ? 'true' : 'false' }})">
+                                x-data="activeRow('{{ url('admin/campus-events') }}', {{ $item->id }}, {{ $item->is_active ? 'true' : 'false' }})">
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     @if ($item->image)
                                         <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}"
@@ -145,7 +145,7 @@
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
-                                        <form method="POST" action="{{ route('admin.campus-news.destroy', $item->id) }}"
+                                        <form method="POST" action="{{ route('admin.campus-events.destroy', $item->id) }}"
                                             @submit="if (! confirm('আপনি কি নিশ্চিত এই আইটেমটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
@@ -187,7 +187,7 @@
             <div
                 class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
-                    <h3 class="font-heading font-bold text-white text-lg">নতুন ক্যাম্পাস লাইফ</h3>
+                    <h3 class="font-heading font-bold text-white text-lg">নতুন ক্যাম্পাস ইভেন্ট</h3>
                     <button @click="showCreateModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -195,7 +195,7 @@
                         </svg>
                     </button>
                 </div>
-                <form action="{{ route('admin.campus-news.store') }}" method="POST" enctype="multipart/form-data"
+                <form action="{{ route('admin.campus-events.store') }}" method="POST" enctype="multipart/form-data"
                     class="p-6 space-y-5" @submit.prevent="validateCreateForm($el)">
                     @csrf
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -230,7 +230,7 @@
                             class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
                             placeholder="খালি রাখলে শিরোনাম থেকে তৈরি হবে">
                         <p class="mt-1 text-xs text-gray-400">
-                            ওয়েবসাইটের ঠিকানা: <span x-text="'/campus-life/' + (createForm.slug || 'শিরোনাম থেকে তৈরি হবে')"></span>
+                            ওয়েবসাইটের ঠিকানা: <span x-text="'/campus-events/' + (createForm.slug || 'শিরোনাম থেকে তৈরি হবে')"></span>
                         </p>
                         <template x-if="createErrors.slug">
                             <p class="mt-1 text-xs text-red-600" x-text="createErrors.slug"></p>
@@ -283,7 +283,7 @@
             <div
                 class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
-                    <h3 class="font-heading font-bold text-white text-lg">ক্যাম্পাস লাইফের তথ্য</h3>
+                    <h3 class="font-heading font-bold text-white text-lg">ক্যাম্পাস ইভেন্টের তথ্য</h3>
                     <button @click="showViewModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -354,7 +354,7 @@
             <div
                 class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
-                    <h3 class="font-heading font-bold text-white text-lg">ক্যাম্পাস লাইফ সম্পাদনা</h3>
+                    <h3 class="font-heading font-bold text-white text-lg">ক্যাম্পাস ইভেন্ট সম্পাদনা</h3>
                     <button @click="showEditModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -364,7 +364,7 @@
                 </div>
                 <div class="p-6">
                     <template x-if="editData">
-                        <form :action="'{{ url('admin/campus-news') }}/' + editData.id" method="POST"
+                        <form :action="'{{ url('admin/campus-events') }}/' + editData.id" method="POST"
                             enctype="multipart/form-data" class="space-y-5" @submit.prevent="validateEditForm($el)">
                             @csrf
                             @method('PUT')
@@ -401,7 +401,7 @@
                                     :class="editErrors.slug ? 'border-red-400' : 'border-gray-200'"
                                     placeholder="খালি রাখলে বর্তমান ঠিকানাই থাকবে">
                                 <p class="mt-1 text-xs text-gray-400">
-                                    বর্তমান: <span x-text="'/campus-life/' + (editData.slug || '-')"></span>
+                                    বর্তমান: <span x-text="'/campus-events/' + (editData.slug || '-')"></span>
                                 </p>
                                 <template x-if="editErrors.slug">
                                     <p class="mt-1 text-xs text-red-600" x-text="editErrors.slug"></p>
@@ -505,7 +505,7 @@
                 }
             }
 
-            function campusNewsApp() {
+            function campusEventApp() {
                 return {
                     showCreateModal: false,
                     showViewModal: false,
@@ -597,7 +597,7 @@
                         this.viewLoading = true;
                         this.viewData = null;
                         try {
-                            const res = await fetch(`{{ url('admin/campus-news') }}/${id}/show`);
+                            const res = await fetch(`{{ url('admin/campus-events') }}/${id}/show`);
                             this.viewData = await res.json();
                         } catch (e) {
                             this.showViewModal = false;
@@ -616,7 +616,7 @@
                         this.editAttempted = false;
                         this.quillEdit = null;
                         try {
-                            const res = await fetch(`{{ url('admin/campus-news') }}/${id}/edit`);
+                            const res = await fetch(`{{ url('admin/campus-events') }}/${id}/edit`);
                             this.editData = await res.json();
                             this.$nextTick(() => {
                                 this.initEditQuill();

@@ -1,7 +1,5 @@
 @extends('layouts.website')
 
-@section('title', $teacher->name . ' — রেশমা ইন্টারন্যাশনাল স্কুল')
-
 @section('content')
     {{-- Hero --}}
     <section class="bg-linear-to-r from-ris-dark via-ris-accent to-ris-light py-16 sm:py-20">
