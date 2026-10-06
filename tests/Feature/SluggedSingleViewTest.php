@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\CampusNews;
+use App\Models\CampusEvent;
 use App\Models\Notice;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -34,22 +34,48 @@ class SluggedSingleViewTest extends TestCase
     }
 
     #[Test]
-    public function a_notice_gets_a_slug_from_its_title(): void
+    public function a_notice_gets_a_serial_slug(): void
     {
-        $notice = $this->createNotice();
+        $notice = $this->createNotice(['title' => 'জাতীয় বিজ্ঞান মেলা ২০২৫']);
 
-        $this->assertSame('annual-exam-schedule', $notice->slug);
+        // Title translations were dropped; every row is addressed by the
+        // model prefix plus its primary key.
+        $this->assertSame('notice-'.$notice->id, $notice->slug);
     }
 
     #[Test]
-    public function a_title_with_nothing_to_transliterate_falls_back_to_the_identifier(): void
+    public function a_campus_event_gets_a_serial_slug(): void
     {
-        // Bengali titles transliterate to something usable, but a title of
-        // nothing but punctuation and symbols slugifies to an empty string, and
-        // that case still has to produce a routable address.
-        $notice = $this->createNotice(['title' => '★']);
+        $item = CampusEvent::factory()->create(['title' => 'বিজ্ঞান ও প্রযুক্তি মেলা', 'date' => now()]);
 
-        $this->assertSame('notice-'.$notice->id, $notice->slug);
+        $this->assertSame('campus-event-'.$item->id, $item->slug);
+    }
+
+    #[Test]
+    public function an_explicit_slug_is_left_alone_by_serial_generation(): void
+    {
+        $item = CampusEvent::create([
+            'title' => 'Science Fair',
+            'slug' => 'science-fair-2026',
+            'date' => now(),
+        ]);
+
+        $this->assertSame('science-fair-2026', $item->slug);
+    }
+
+    #[Test]
+    public function the_slug_of_a_soft_deleted_row_is_not_reused(): void
+    {
+        $first = $this->createNotice();
+        $first->delete();
+
+        // The row is gone from the listing but its slug still sits in the
+        // unique index. The serial is bound to the primary key, so the next
+        // record steps to its own id instead of reusing the freed one.
+        $second = $this->createNotice();
+
+        $this->assertNotSame($first->slug, $second->slug);
+        $this->assertSame('notice-'.$second->id, $second->slug);
     }
 
     #[Test]
@@ -59,7 +85,7 @@ class SluggedSingleViewTest extends TestCase
         $second = $this->createNotice();
 
         $this->assertNotSame($first->slug, $second->slug);
-        $this->assertSame('annual-exam-schedule-2', $second->slug);
+        $this->assertSame('notice-'.$second->id, $second->slug);
     }
 
     #[Test]
@@ -110,21 +136,62 @@ class SluggedSingleViewTest extends TestCase
     }
 
     #[Test]
-    public function campus_life_is_reachable_by_its_slug(): void
+    public function campus_event_is_reachable_by_its_slug(): void
     {
-        $item = CampusNews::factory()->create(['title' => 'Science Fair 2026']);
+        $item = CampusEvent::factory()->create(['title' => 'Science Fair 2026']);
 
-        $this->get('/campus-life/'.$item->slug)
+        $this->get('/campus-events/'.$item->slug)
             ->assertOk()
             ->assertSee('Science Fair 2026');
     }
 
     #[Test]
-    public function an_inactive_campus_life_item_cannot_be_opened_by_its_slug(): void
+    public function campus_events_have_an_index_page_that_lists_every_item(): void
     {
-        $item = CampusNews::factory()->create(['is_active' => false]);
+        $item = CampusEvent::factory()->create(['title' => 'Science Fair 2026', 'is_active' => true]);
 
-        $this->get('/campus-life/'.$item->slug)->assertNotFound();
+        $this->get('/campus-events')
+            ->assertOk()
+            ->assertSee('Science Fair 2026')
+            ->assertSee(route('campus-events.single', $item->slug), escape: false);
+    }
+
+    #[Test]
+    public function the_index_page_has_a_canonical_and_collection_schema(): void
+    {
+        CampusEvent::factory()->create(['title' => 'Science Fair 2026', 'is_active' => true]);
+
+        $this->get('/campus-events')
+            ->assertOk()
+            ->assertSee('<link rel="canonical" href="'.route('campus-events').'">', escape: false)
+            ->assertSee('CollectionPage', escape: false);
+    }
+
+    #[Test]
+    public function the_homepage_campus_card_links_to_the_single_view(): void
+    {
+        $item = CampusEvent::factory()->create(['title' => 'Science Fair 2026', 'is_active' => true]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee(route('campus-events.single', $item->slug), escape: false);
+    }
+
+    #[Test]
+    public function an_inactive_campus_event_cannot_be_opened_by_its_slug(): void
+    {
+        $item = CampusEvent::factory()->create(['is_active' => false]);
+
+        $this->get('/campus-events/'.$item->slug)->assertNotFound();
+    }
+
+    #[Test]
+    public function old_campus_life_urls_permanently_redirect_to_campus_events(): void
+    {
+        $item = CampusEvent::factory()->create(['title' => 'Science Fair 2026', 'is_active' => true]);
+
+        $this->get('/campus-life')->assertRedirect(route('campus-events'));
+        $this->get('/campus-life/'.$item->slug)->assertRedirect(route('campus-events.single', $item->slug));
     }
 
     #[Test]
@@ -178,6 +245,6 @@ class SluggedSingleViewTest extends TestCase
             ])
             ->assertRedirect(route('admin.notices.index'));
 
-        $this->assertSame('annual-exam-schedule', $notice->fresh()->slug);
+        $this->assertSame($notice->fresh()->slug, $notice->slug);
     }
 }
