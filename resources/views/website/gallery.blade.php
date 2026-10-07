@@ -43,7 +43,7 @@
                             data-caption="{{ $item->description ?? '' }}">
                             <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}" loading="lazy" decoding="async"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
                                     @if ($item->category)
                                         <span class="inline-block px-2.5 py-0.5 bg-ris-primary text-white text-xs font-medium rounded-full mb-2">{{ $item->category }}</span>
