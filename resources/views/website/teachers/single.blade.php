@@ -2,8 +2,10 @@
 
 @section('content')
     {{-- Hero --}}
-    <section class="bg-linear-to-r from-ris-dark via-ris-accent to-ris-light py-16 sm:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section class="relative bg-cover bg-center overflow-hidden py-16 sm:py-20"
+        style="background-image: url('{{ asset('assets/banner.png') }}')">
+        <div class="absolute inset-0 bg-linear-to-r from-ris-dark via-ris-accent to-ris-light opacity-90"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="font-heading font-bold text-3xl sm:text-4xl text-white">{{ $teacher->name }}</h1>
             <p class="mt-3 text-white/70 text-lg">{{ $teacher->teacherProfile?->designation ?? 'শিক্ষক' }}</p>
         </div>

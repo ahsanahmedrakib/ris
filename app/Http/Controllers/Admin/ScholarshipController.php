@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ScholarshipRegistration;
+use App\Models\ScholarshipSetting;
 use App\Support\XlsxExport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -41,6 +42,12 @@ class ScholarshipController extends Controller
             });
         }
 
+        if ($request->filled('year')) {
+            $query->whereYear('created_at', (int) $request->year);
+        } else {
+            $query->whereYear('created_at', now()->year);
+        }
+
         $perPage = (int) $request->input('per_page', 10);
         if (! in_array($perPage, [10, 25, 50, 100])) {
             $perPage = 10;
@@ -52,8 +59,42 @@ class ScholarshipController extends Controller
             'registrations' => $registrations,
             'classes' => ScholarshipRegistration::CLASSES,
             'statuses' => self::STATUSES,
+            'setting' => ScholarshipSetting::current(),
+            'years' => $this->availableYears(),
             'breadcrumbs' => ['মেধাবৃত্তি' => null],
         ]);
+    }
+
+    public function updateSettings(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'is_open' => 'required|boolean',
+            'open_from' => 'nullable|date',
+            'open_to' => 'nullable|date|after_or_equal:open_from',
+        ], [
+            'is_open.required' => 'রেজিস্ট্রেশন অবস্থা নির্ধারণ করুন।',
+            'open_from.date' => 'সঠিক শুরুর তারিখ দিন।',
+            'open_to.date' => 'সঠিক শেষ তারিখ দিন।',
+            'open_to.after_or_equal' => 'শেষ তারিখ শুরুর তারিখের আগে হতে পারবে না।',
+        ]);
+
+        $setting = ScholarshipSetting::current();
+        $setting->update([
+            'is_open' => (bool) $validated['is_open'],
+            'open_from' => $validated['open_from'] ?: null,
+            'open_to' => $validated['open_to'] ?: null,
+            'updated_by' => Auth::id(),
+        ]);
+
+        if ($setting->isOpenToday()) {
+            $message = 'মেধাবৃত্তি রেজিস্ট্রেশন চালু করা হয়েছে।';
+        } elseif ($validated['is_open']) {
+            $message = 'নির্ধারিত তারিখসীমার বাইরে বলে রেজিস্ট্রেশন বন্ধ থাকবে।';
+        } else {
+            $message = 'মেধাবৃত্তি রেজিস্ট্রেশন বন্ধ করা হয়েছে।';
+        }
+
+        return back()->with('success', $message);
     }
 
     public function nextNumber(Request $request): JsonResponse
@@ -255,6 +296,12 @@ class ScholarshipController extends Controller
             });
         }
 
+        if ($request->filled('year')) {
+            $query->whereYear('created_at', (int) $request->year);
+        } else {
+            $query->whereYear('created_at', now()->year);
+        }
+
         $registrations = $query->latest()->get();
 
         $rows = $registrations->map(fn ($reg, $index) => [
@@ -276,6 +323,19 @@ class ScholarshipController extends Controller
             ['ক্রমিক', 'রেজি নং', 'শিক্ষার্থীর নাম', 'পিতার নাম', 'মাতার নাম', 'স্কুল', 'শ্রেণি', 'রোল', 'মোবাইল', 'পেমেন্ট', 'স্ট্যাটাস', 'তারিখ'],
             $rows,
             'scholarship_registrations_'.now('Asia/Dhaka')->format('Y-m-d_H-i').'.xlsx',
+        );
+    }
+
+    /**
+     * Every year from when online registration started up to the current year,
+     * newest first, so the select grows automatically as the years advance.
+     *
+     * @return list<int>
+     */
+    private function availableYears(): array
+    {
+        return array_reverse(
+            range(ScholarshipRegistration::REGISTRATION_START_YEAR, now()->year)
         );
     }
 

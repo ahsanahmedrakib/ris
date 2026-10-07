@@ -14,12 +14,17 @@
             <div class="flex items-center gap-2">
                 <a href="{{ route('admin.campus-events.download', request()->query()) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors shadow-sm cursor-pointer">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
                     Excel ডাউনলোড
                 </a>
                 <button @click="openCreateModal()"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm cursor-pointer">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
                     নতুন আইটেম
                 </button>
             </div>
@@ -36,7 +41,8 @@
 
         @if ($items->isEmpty())
             <div class="bg-amber-50 border border-amber-200 text-amber-700 px-5 py-4 rounded-xl text-sm font-medium">
-                বর্তমানে কোনো ক্যাম্পাস ইভেন্ট আইটেম যোগ করা হয়নি। হোমপেজে ডিফল্ট কনটেন্ট প্রদর্শিত হচ্ছে। আইটেম যোগ করলে সেগুলো দেখানো হবে।
+                বর্তমানে কোনো ক্যাম্পাস ইভেন্ট আইটেম যোগ করা হয়নি। হোমপেজে ডিফল্ট কনটেন্ট প্রদর্শিত হচ্ছে। আইটেম যোগ করলে
+                সেগুলো দেখানো হবে।
             </div>
         @endif
 
@@ -47,7 +53,11 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">অনুসন্ধান</label>
                         <div class="relative">
-                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
                             <input type="text" name="search" value="{{ request('search') }}"
                                 placeholder="শিরোনাম দিয়ে খুঁজুন..."
                                 class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors">
@@ -77,21 +87,26 @@
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">শিরোনাম</th>
                             <th class="text-left px-4 py-3.5 font-medium text-white whitespace-nowrap">তারিখ</th>
                             <th class="text-center px-4 py-3.5 font-medium text-white whitespace-nowrap">স্ট্যাটাস</th>
-                            <th class="text-center px-4 py-3.5 font-medium text-white whitespace-nowrap sticky right-0 bg-linear-to-r from-ris-light to-ris-dark z-10">
+                            <th
+                                class="text-center px-4 py-3.5 font-medium text-white whitespace-nowrap sticky right-0 bg-linear-to-r from-ris-light to-ris-dark z-10">
                                 অ্যাকশন</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50" data-table-body>
                         @forelse($items as $item)
-                            <tr class="hover:bg-gray-50 transition-colors"
-                                x-data="activeRow('{{ url('admin/campus-events') }}', {{ $item->id }}, {{ $item->is_active ? 'true' : 'false' }})">
+                            <tr class="hover:bg-gray-50 transition-colors" x-data="activeRow('{{ url('admin/campus-events') }}', {{ $item->id }}, {{ $item->is_active ? 'true' : 'false' }})">
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     @if ($item->image)
-                                        <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}"
-                                            class="w-24 h-12 rounded-lg object-cover">
+                                        <img src="{{ \App\Support\Media::images()->url($item->image) }}"
+                                            alt="{{ $item->title }}" class="w-24 h-12 rounded-lg object-cover">
                                     @else
-                                        <div class="w-24 h-12 rounded-lg bg-ris-primary/10 flex items-center justify-center">
-                                            <svg class="w-6 h-6 text-ris-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        <div
+                                            class="w-24 h-12 rounded-lg bg-ris-primary/10 flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-ris-primary/40" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
                                         </div>
                                     @endif
                                 </td>
@@ -101,15 +116,17 @@
                                         {{ $item->title }}
                                     </button>
                                     @if ($item->description)
-                                        <p class="text-xs text-gray-400 mt-0.5 line-clamp-1">{{ Str::limit(strip_tags($item->description), 80) }}</p>
+                                        <p class="text-xs text-gray-400 mt-0.5 line-clamp-1">
+                                            {{ Str::limit(strip_tags($item->description), 80) }}</p>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $item->date?->format('d/m/Y') ?? '-' }}</td>
+                                <td class="px-4 py-3 text-gray-600 whitespace-nowrap">
+                                    {{ $item->date?->format('d/m/Y') ?? '-' }}</td>
                                 <td class="px-4 py-3 text-center whitespace-nowrap">
                                     <span class="px-2.5 py-1 rounded-full text-xs font-medium"
-                                            :class="active ? 'bg-emerald-100 text-emerald-700' :
+                                        :class="active ? 'bg-emerald-100 text-emerald-700' :
                                             'bg-gray-100 text-gray-600'"
-                                            x-text="active ? 'সক্রিয়' : 'নিষ্ক্রিয়'">{{ $item->is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়' }}</span>
+                                        x-text="active ? 'সক্রিয়' : 'নিষ্ক্রিয়'">{{ $item->is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়' }}</span>
                                 </td>
                                 <td class="px-4 py-3 sticky right-0 bg-white z-10">
                                     <div class="flex items-center justify-center gap-1">
@@ -117,20 +134,24 @@
                                             class="p-1.5 rounded-lg text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors cursor-pointer"
                                             :disabled="busy">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </button>
                                         <button x-show="active" @click="toggle()" title="নিষ্ক্রিয় করুন"
                                             class="p-1.5 rounded-lg text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
                                             :disabled="busy">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
                                             </svg>
                                         </button>
                                         <button @click="openViewModal({{ $item->id }})"
                                             class="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors cursor-pointer"
                                             title="দেখুন">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -140,19 +161,22 @@
                                         <button @click="openEditModal({{ $item->id }})"
                                             class="p-1.5 rounded-lg text-amber-600 bg-amber-50 hover:bg-amber-100 transition-colors cursor-pointer"
                                             title="সম্পাদনা">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
-                                        <form method="POST" action="{{ route('admin.campus-events.destroy', $item->id) }}"
+                                        <form method="POST"
+                                            action="{{ route('admin.campus-events.destroy', $item->id) }}"
                                             @submit="if (! confirm('আপনি কি নিশ্চিত এই আইটেমটি মুছে ফেলতে চান?')) $event.preventDefault()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
                                                 class="p-1.5 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors cursor-pointer"
                                                 title="মুছুন">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
@@ -185,10 +209,11 @@
         <div x-show="showCreateModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/60" @click="showCreateModal = false"></div>
             <div
-                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
+                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">নতুন ক্যাম্পাস ইভেন্ট</h3>
-                    <button @click="showCreateModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
+                    <button @click="showCreateModal = false"
+                        class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -230,7 +255,8 @@
                             class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors"
                             placeholder="খালি রাখলে শিরোনাম থেকে তৈরি হবে">
                         <p class="mt-1 text-xs text-gray-400">
-                            ওয়েবসাইটের ঠিকানা: <span x-text="'/campus-events/' + (createForm.slug || 'শিরোনাম থেকে তৈরি হবে')"></span>
+                            ওয়েবসাইটের ঠিকানা: <span
+                                x-text="'/campus-events/' + (createForm.slug || 'শিরোনাম থেকে তৈরি হবে')"></span>
                         </p>
                         <template x-if="createErrors.slug">
                             <p class="mt-1 text-xs text-red-600" x-text="createErrors.slug"></p>
@@ -242,13 +268,59 @@
                         <div id="campusCreateQuill" class="ris-quill bg-white border border-gray-200 rounded-lg"></div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ছবি</label>
-                        <img x-show="createImagePreview" :src="createImagePreview"
-                            class="max-h-52 w-auto rounded-lg border border-gray-200 shadow-sm mb-3">
-                        <input type="file" name="image" accept="image/*" id="create_image"
-                            @change="createImagePreview = URL.createObjectURL($event.target.files[0])"
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ছবি <span
+                                class="text-red-500">*</span></label>
+                        <div class="flex flex-wrap gap-3 mb-3">
+                            <template x-for="(img, index) in createImages" :key="img.key">
+                                <div class="relative w-32 h-20">
+                                    <img :src="img.url" alt=""
+                                        class="w-full h-full object-cover rounded-lg border border-gray-200 shadow-sm">
+                                    <span x-show="index === 0"
+                                        class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/60 text-white text-[10px] leading-none">কার্ড
+                                        ছবি</span>
+                                    <button type="button" @click="removeCreateImage(index)" title="ছবি সরান"
+                                        class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center shadow-md hover:bg-red-700 cursor-pointer">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                        <input type="file" name="images[]" accept="image/*" multiple
+                            @change="pickCreateImages($event.target)"
                             class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
-                        <p class="mt-1 text-xs text-gray-400">JPG, PNG, WEBP — সর্বোচ্চ 5MB। ছবি না দিলে ডিফল্ট আইকন দেখাবে।</p>
+                        <p class="mt-1 text-xs text-gray-400">JPG, PNG, WEBP — প্রতিটি সর্বোচ্চ 5MB, সর্বোচ্চ ১০টি।
+                            প্রথম ছবিই কার্ড ও কভার হিসেবে দেখানো হবে।</p>
+                        <template x-if="createErrors.images">
+                            <p class="mt-1 text-xs text-red-600" x-text="createErrors.images"></p>
+                        </template>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ভিডিও <span
+                                class="text-gray-400 font-normal">(ঐচ্ছিক)</span></label>
+                        <template x-if="createVideo">
+                            <div class="relative mb-3 w-56 rounded-lg overflow-hidden border border-gray-200 bg-black">
+                                <video :src="createVideo.url" controls preload="metadata"
+                                    class="w-full h-32 object-contain"></video>
+                                <button type="button" @click="removeCreateVideo()" title="ভিডিও সরান"
+                                    class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center shadow-md hover:bg-red-700 cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </template>
+                        <input type="file" name="video" accept="video/*" @change="pickCreateVideo($event.target)"
+                            class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
+                        <p class="mt-1 text-xs text-gray-400">MP4, WEBM, OGG — সর্বোচ্চ 100MB। ভিডিও থাকলে সিঙ্গেল
+                            ভিউয়ের শুরুতে দেখানো হবে।</p>
+                        <template x-if="createErrors.video">
+                            <p class="mt-1 text-xs text-red-600" x-text="createErrors.video"></p>
+                        </template>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -269,9 +341,18 @@
                     <div class="flex justify-end gap-3 pt-2">
                         <button type="button" @click="showCreateModal = false"
                             class="px-5 py-2.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors cursor-pointer">বাতিল</button>
-                        <button type="submit"
-                            class="px-6 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm cursor-pointer">তৈরি
-                            করুন</button>
+                        <button type="submit" :disabled="formSubmitting"
+                            class="px-6 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm inline-flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer">
+                            <template x-if="formSubmitting">
+                                <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                        stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                </svg>
+                            </template>
+                            <span x-text="formSubmitting ? 'সংরক্ষণ হচ্ছে...' : 'তৈরি করুন'">তৈরি করুন</span>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -281,10 +362,11 @@
         <div x-show="showViewModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/60" @click="showViewModal = false"></div>
             <div
-                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
+                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">ক্যাম্পাস ইভেন্টের তথ্য</h3>
-                    <button @click="showViewModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
+                    <button @click="showViewModal = false"
+                        class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -297,6 +379,19 @@
                             <div class="mb-5 rounded-xl overflow-hidden" x-show="viewData.image">
                                 <img :src="viewData.image" class="w-full max-h-72 object-cover">
                             </div>
+                            <div class="mb-5" x-show="viewData.images && viewData.images.length > 1">
+                                <p class="text-xs font-medium text-gray-500 mb-2">গ্যালারি ছবি</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="(src, i) in viewData.images" :key="i">
+                                        <img :src="src"
+                                            class="w-24 h-16 rounded-lg object-cover border border-gray-200">
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="mb-5 rounded-xl overflow-hidden" x-show="viewData.video">
+                                <video :src="viewData.video" controls preload="metadata"
+                                    class="w-full max-h-72 bg-black"></video>
+                            </div>
                             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
                                 <div>
                                     <dt class="text-gray-500 mb-1">শিরোনাম</dt>
@@ -308,7 +403,8 @@
                                 </div>
                                 <div class="sm:col-span-2" x-show="viewData.description">
                                     <dt class="text-gray-500 mb-1">বিবরণ</dt>
-                                    <dd class="font-medium text-gray-900 prose prose-sm max-w-none" x-html="viewData.description"></dd>
+                                    <dd class="font-medium text-gray-900 prose prose-sm max-w-none"
+                                        x-html="viewData.description"></dd>
                                 </div>
                                 <div>
                                     <dt class="text-gray-500 mb-1">স্ট্যাটাস</dt>
@@ -316,7 +412,8 @@
                                         <span
                                             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                                             :class="viewData.is_active ? 'bg-emerald-100 text-emerald-700' :
-                                            'bg-gray-100 text-gray-600'" x-text="viewData.status_label"></span>
+                                                'bg-gray-100 text-gray-600'"
+                                            x-text="viewData.status_label"></span>
                                     </dd>
                                 </div>
                                 <div>
@@ -335,7 +432,8 @@
                     </template>
                     <template x-if="viewLoading">
                         <div class="py-12 text-center">
-                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-3 animate-spin" fill="none"
+                                viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                     stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor"
@@ -352,10 +450,11 @@
         <div x-show="showEditModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/60" @click="showEditModal = false"></div>
             <div
-                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
+                class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slide-up">
                 <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                     <h3 class="font-heading font-bold text-white text-lg">ক্যাম্পাস ইভেন্ট সম্পাদনা</h3>
-                    <button @click="showEditModal = false" class="text-white/80 hover:text-white transition-colors cursor-pointer">
+                    <button @click="showEditModal = false"
+                        class="text-white/80 hover:text-white transition-colors cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -378,7 +477,8 @@
                                         :class="(editErrors.title || (editAttempted && !editData.title)) ? 'border-red-400' :
                                         'border-gray-200'">
                                     <template x-if="editErrors.title || (editAttempted && !editData.title)">
-                                        <p class="mt-1 text-xs text-red-600" x-text="editErrors.title || 'শিরোনাম আবশ্যক'"></p>
+                                        <p class="mt-1 text-xs text-red-600"
+                                            x-text="editErrors.title || 'শিরোনাম আবশ্যক'"></p>
                                     </template>
                                 </div>
                                 <div>
@@ -390,7 +490,8 @@
                                         :class="(editErrors.date || (editAttempted && !editData.date)) ? 'border-red-400' :
                                         'border-gray-200'">
                                     <template x-if="editErrors.date || (editAttempted && !editData.date)">
-                                        <p class="mt-1 text-xs text-red-600" x-text="editErrors.date || 'তারিখ আবশ্যক'"></p>
+                                        <p class="mt-1 text-xs text-red-600" x-text="editErrors.date || 'তারিখ আবশ্যক'">
+                                        </p>
                                     </template>
                                 </div>
                             </div>
@@ -410,25 +511,119 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">বিবরণ</label>
                                 <input type="hidden" name="description">
-                                <div id="campusEditQuill" class="ris-quill bg-white border border-gray-200 rounded-lg"></div>
+                                <div id="campusEditQuill" class="ris-quill bg-white border border-gray-200 rounded-lg">
+                                </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">নতুন ছবি</label>
-                                <input type="file" name="image" accept="image/*"
-                                    @change="editImagePreview = URL.createObjectURL($event.target.files[0])"
-                                    class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
-                                <p class="mt-1 text-xs text-gray-400">JPG, PNG, WEBP — সর্বোচ্চ 5MB। ফাইল নির্বাচন না করলে
-                                    পুরাতন থাকবে।</p>
-                                <div class="mt-3 flex items-center gap-3">
-                                    <div class="flex items-center gap-3" x-show="editData.image">
-                                        <img :src="editImagePreview || editData.image"
-                                            class="w-40 h-20 rounded-lg object-cover border border-gray-200">
-                                        <span class="text-sm text-gray-500" x-text="editImagePreview ? 'নতুন ছবি' : 'বর্তমান ছবি'"></span>
-                                    </div>
-                                    <div class="w-40 h-20 rounded-lg bg-ris-primary/10 flex items-center justify-center" x-show="!editData.image">
-                                        <svg class="w-8 h-8 text-ris-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                    </div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ছবি <span
+                                        class="text-red-500">*</span></label>
+                                <div class="flex flex-wrap gap-3 mb-3">
+                                    <template x-for="(img, index) in editExistingImages" :key="img.path">
+                                        <div class="relative w-32 h-20">
+                                            <img :src="img.url" alt=""
+                                                class="w-full h-full object-cover rounded-lg border border-gray-200 shadow-sm">
+                                            <span x-show="index === 0 && editNewImages.length === 0"
+                                                class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/60 text-white text-[10px] leading-none">কার্ড
+                                                ছবি</span>
+                                            <button type="button" @click="removeExistingImage(index)" title="ছবি সরান"
+                                                class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center shadow-md hover:bg-red-700 cursor-pointer">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </template>
+                                    <template x-for="(img, index) in editNewImages" :key="img.key">
+                                        <div class="relative w-32 h-20">
+                                            <img :src="img.url" alt=""
+                                                class="w-full h-full object-cover rounded-lg border border-gray-200 shadow-sm">
+                                            <span
+                                                class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-emerald-600 text-white text-[10px] leading-none">নতুন</span>
+                                            <span x-show="index === 0 && editExistingImages.length === 0"
+                                                class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/60 text-white text-[10px] leading-none">কার্ড
+                                                ছবি</span>
+                                            <button type="button" @click="removeEditNewImage(index)" title="ছবি সরান"
+                                                class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center shadow-md hover:bg-red-700 cursor-pointer">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </template>
                                 </div>
+                                <input type="file" name="images[]" accept="image/*" multiple
+                                    @change="pickEditImages($event.target)"
+                                    class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
+                                <p class="mt-1 text-xs text-gray-400">নতুন ছবি যোগ করুন — JPG, PNG, WEBP, প্রতিটি সর্বোচ্চ
+                                    5MB। বর্তমান ও নতুন মিলিয়ে সর্বোচ্চ ১০টি, প্রথম ছবিই কার্ড ও কভার হিসেবে থাকবে।</p>
+                                <template x-if="editErrors.images">
+                                    <p class="mt-1 text-xs text-red-600" x-text="editErrors.images"></p>
+                                </template>
+                                <template x-for="path in editRemovedPaths" :key="path">
+                                    <input type="hidden" name="remove_images[]" :value="path">
+                                </template>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ভিডিও <span
+                                        class="text-gray-400 font-normal">(ঐচ্ছিক)</span></label>
+                                <template x-if="editVideo && !editVideoRemoved">
+                                    <div
+                                        class="relative mb-3 w-56 rounded-lg overflow-hidden border border-gray-200 bg-black">
+                                        <video :src="editVideo.url" controls preload="metadata"
+                                            class="w-full h-32 object-contain"></video>
+                                        <button type="button" @click="removeEditVideo()" title="ভিডিও সরান"
+                                            class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center shadow-md hover:bg-red-700 cursor-pointer">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </template>
+                                <template x-if="editNewVideo">
+                                    <div
+                                        class="relative mb-3 w-56 rounded-lg overflow-hidden border border-gray-200 bg-black">
+                                        <video :src="editNewVideo.url" controls preload="metadata"
+                                            class="w-full h-32 object-contain"></video>
+                                        <span
+                                            class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-emerald-600 text-white text-[10px] leading-none">নতুন
+                                            ভিডিও</span>
+                                        <button type="button" @click="removeEditNewVideo()" title="ভিডিও সরান"
+                                            class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center shadow-md hover:bg-red-700 cursor-pointer">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </template>
+                                <template x-if="editVideo && editVideoRemoved && !editNewVideo">
+                                    <div
+                                        class="mb-3 flex items-center justify-between gap-3 rounded-lg border border-dashed border-red-200 bg-red-50 px-3 py-2">
+                                        <span class="text-xs text-red-600">বর্তমান ভিডিও সরানো হয়েছে — আপডেট করলে মুছে
+                                            যাবে।</span>
+                                        <div class="flex items-center gap-3 shrink-0">
+                                            <button type="button" @click="editVideoRemoved = false"
+                                                class="text-xs text-red-700 underline cursor-pointer">ফিরিয়ে
+                                                আনুন</button>
+                                            <input type="hidden" name="remove_video" value="1">
+                                        </div>
+                                    </div>
+                                </template>
+                                <input type="file" name="video" accept="video/*"
+                                    @change="pickEditVideo($event.target)"
+                                    class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ris-primary/20 focus:border-ris-primary outline-none transition-colors bg-white">
+                                <p class="mt-1 text-xs text-gray-400">MP4, WEBM, OGG — সর্বোচ্চ 100MB। নতুন ফাইল
+                                    না দিলে পুরাতন ভিডিওই থাকবে।</p>
+                                <template x-if="editErrors.video">
+                                    <p class="mt-1 text-xs text-red-600" x-text="editErrors.video"></p>
+                                </template>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
@@ -438,7 +633,8 @@
                                         placeholder="0">
                                 </div>
                                 <div class="flex items-end">
-                                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                                    <label
+                                        class="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
                                         <input type="checkbox" name="is_active" value="1"
                                             class="w-4 h-4 rounded border-gray-300 text-ris-primary focus:ring-ris-primary"
                                             x-model="editData.is_active">
@@ -449,15 +645,25 @@
                             <div class="flex justify-end gap-3 pt-2">
                                 <button type="button" @click="showEditModal = false"
                                     class="px-5 py-2.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors cursor-pointer">বাতিল</button>
-                                <button type="submit"
-                                    class="px-6 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm cursor-pointer">আপডেট
-                                    করুন</button>
+                                <button type="submit" :disabled="formSubmitting"
+                                    class="px-6 py-2.5 bg-ris-primary text-white text-sm font-medium rounded-lg hover:bg-ris-dark transition-colors shadow-sm inline-flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer">
+                                    <template x-if="formSubmitting">
+                                        <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                        </svg>
+                                    </template>
+                                    <span x-text="formSubmitting ? 'আপডেট হচ্ছে...' : 'আপডেট করুন'">আপডেট করুন</span>
+                                </button>
                             </div>
                         </form>
                     </template>
                     <template x-if="editLoading">
                         <div class="py-12 text-center">
-                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-3 animate-spin" fill="none"
+                                viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                     stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor"
@@ -525,11 +731,22 @@
                     },
                     createErrors: {},
                     createAttempted: false,
-                    createImagePreview: null,
+
+                    // Files picked in the create form, kept as objects so a
+                    // preview can be drawn before anything is uploaded and a
+                    // single file can be dropped with its cross button.
+                    createImages: [],
+                    createVideo: null,
+                    mediaKey: 0,
 
                     editErrors: {},
                     editAttempted: false,
-                    editImagePreview: null,
+                    editExistingImages: [],
+                    editNewImages: [],
+                    editRemovedPaths: [],
+                    editVideo: null,
+                    editNewVideo: null,
+                    editVideoRemoved: false,
                     quillCreate: null,
                     quillEdit: null,
 
@@ -543,9 +760,17 @@
                             modules: {
                                 toolbar: [
                                     ['bold', 'italic', 'underline', 'strike'],
-                                    [{ 'header': [2, 3, false] }],
-                                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                    [{ 'align': [] }],
+                                    [{
+                                        'header': [2, 3, false]
+                                    }],
+                                    [{
+                                        'list': 'ordered'
+                                    }, {
+                                        'list': 'bullet'
+                                    }],
+                                    [{
+                                        'align': []
+                                    }],
                                     ['link'],
                                     ['clean']
                                 ]
@@ -563,14 +788,151 @@
                             modules: {
                                 toolbar: [
                                     ['bold', 'italic', 'underline', 'strike'],
-                                    [{ 'header': [2, 3, false] }],
-                                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                    [{ 'align': [] }],
+                                    [{
+                                        'header': [2, 3, false]
+                                    }],
+                                    [{
+                                        'list': 'ordered'
+                                    }, {
+                                        'list': 'bullet'
+                                    }],
+                                    [{
+                                        'align': []
+                                    }],
                                     ['link'],
                                     ['clean']
                                 ]
                             }
                         });
+                    },
+
+                    /**
+                     * Add picked images to a preview list, rejecting anything
+                     * the server would reject anyway so a bad file never
+                     * travels. The input is emptied so the same name can be
+                     * picked again after a change.
+                     */
+                    addImages(input, list, errors) {
+                        errors.images = null;
+                        for (const file of Array.from(input.files || [])) {
+                            if (!file.type.startsWith('image/')) {
+                                errors.images = 'সঠিক ছবি আপলোড করুন।';
+                                continue;
+                            }
+                            if (file.size > 5 * 1024 * 1024) {
+                                errors.images = 'প্রতিটি ছবির সর্বোচ্চ আকার ৫ এমবি।';
+                                continue;
+                            }
+                            if (list.length >= 10) {
+                                errors.images = 'সর্বোচ্চ ১০টি ছবি যোগ করা যাবে।';
+                                continue;
+                            }
+                            list.push({
+                                key: ++this.mediaKey,
+                                file,
+                                url: URL.createObjectURL(file)
+                            });
+                        }
+                        input.value = '';
+                    },
+
+                    dropPicked(item) {
+                        if (item && item.file && item.url) URL.revokeObjectURL(item.url);
+                    },
+
+                    pickCreateImages(input) {
+                        this.addImages(input, this.createImages, this.createErrors);
+                    },
+
+                    removeCreateImage(index) {
+                        this.dropPicked(this.createImages.splice(index, 1)[0]);
+                    },
+
+                    pickEditImages(input) {
+                        this.addImages(input, this.editNewImages, this.editErrors);
+                    },
+
+                    removeEditNewImage(index) {
+                        this.dropPicked(this.editNewImages.splice(index, 1)[0]);
+                    },
+
+                    removeExistingImage(index) {
+                        const [image] = this.editExistingImages.splice(index, 1);
+                        if (image) this.editRemovedPaths.push(image.path);
+                    },
+
+                    pickVideo(input, assign, errors) {
+                        const file = input.files && input.files[0];
+                        input.value = '';
+                        if (!file) return;
+                        errors.video = null;
+                        if (!file.type.startsWith('video/')) {
+                            errors.video = 'সঠিক ভিডিও ফাইল আপলোড করুন।';
+                            return;
+                        }
+                        if (file.size > 100 * 1024 * 1024) {
+                            errors.video = 'ভিডিওর আকার ১০০ এমবির বেশি হতে পারবে না।';
+                            return;
+                        }
+                        assign({
+                            file,
+                            url: URL.createObjectURL(file)
+                        });
+                    },
+
+                    pickCreateVideo(input) {
+                        this.pickVideo(input, (video) => {
+                            this.createVideo = video;
+                        }, this.createErrors);
+                    },
+
+                    removeCreateVideo() {
+                        this.dropPicked(this.createVideo);
+                        this.createVideo = null;
+                    },
+
+                    pickEditVideo(input) {
+                        this.pickVideo(input, (video) => {
+                            this.dropPicked(this.editNewVideo);
+                            this.editNewVideo = video;
+                            this.editVideoRemoved = false;
+                        }, this.editErrors);
+                    },
+
+                    removeEditNewVideo() {
+                        this.dropPicked(this.editNewVideo);
+                        this.editNewVideo = null;
+                    },
+
+                    removeEditVideo() {
+                        this.editVideoRemoved = true;
+                    },
+
+                    /**
+                     * The previews live in Alpine state, so the chosen files
+                     * have to be written back onto the inputs at submit time;
+                     * crossing an item out must not leave it in the upload.
+                     */
+                    syncFiles(el, selector, files) {
+                        const input = el.querySelector(selector);
+                        if (!input || typeof DataTransfer === 'undefined') return;
+                        const transfer = new DataTransfer();
+                        files.filter(Boolean).forEach((file) => transfer.items.add(file));
+                        input.files = transfer.files;
+                    },
+
+                    /**
+                     * A rejected upload is reported as `images.0` / `video.1`,
+                     * while the space under the field only looks for `images`
+                     * or `video`.
+                     */
+                    collapseErrors(errors) {
+                        const collapsed = {};
+                        Object.entries(errors || {}).forEach(([key, message]) => {
+                            const field = key.includes('.') ? key.split('.')[0] : key;
+                            if (!collapsed[field]) collapsed[field] = message;
+                        });
+                        return collapsed;
                     },
 
                     openCreateModal() {
@@ -584,7 +946,8 @@
                         };
                         this.createErrors = {};
                         this.createAttempted = false;
-                        this.createImagePreview = null;
+                        this.createImages = [];
+                        this.createVideo = null;
                         this.showCreateModal = true;
                         this.$nextTick(() => {
                             this.initCreateQuill();
@@ -611,13 +974,20 @@
                         this.showEditModal = true;
                         this.editLoading = true;
                         this.editData = null;
-                        this.editImagePreview = null;
                         this.editErrors = {};
                         this.editAttempted = false;
+                        this.editExistingImages = [];
+                        this.editNewImages = [];
+                        this.editRemovedPaths = [];
+                        this.editVideo = null;
+                        this.editNewVideo = null;
+                        this.editVideoRemoved = false;
                         this.quillEdit = null;
                         try {
                             const res = await fetch(`{{ url('admin/campus-events') }}/${id}/edit`);
                             this.editData = await res.json();
+                            this.editExistingImages = this.editData.images || [];
+                            this.editVideo = this.editData.video;
                             this.$nextTick(() => {
                                 this.initEditQuill();
                                 if (this.quillEdit) this.quillEdit.root.innerHTML = this.editData.description || '';
@@ -659,10 +1029,17 @@
                         ['title', 'date'].forEach(f => {
                             if (!this.validateCreateField(f)) valid = false;
                         });
+                        if (this.createImages.length < 1) {
+                            this.createErrors.images = 'কমপক্ষে একটি ছবি আবশ্যক।';
+                            valid = false;
+                        }
                         if (this.quillCreate) {
                             el.querySelector('input[name="description"]').value = this.quillCreate.root.innerHTML;
                         }
-                        if (valid) this.submitForm(el, 'create');
+                        if (!valid) return;
+                        this.syncFiles(el, 'input[name="images[]"]', this.createImages.map(img => img.file));
+                        this.syncFiles(el, 'input[name="video"]', this.createVideo ? [this.createVideo.file] : []);
+                        this.submitForm(el, 'create');
                     },
 
                     validateEditForm(el) {
@@ -672,20 +1049,38 @@
                         ['title', 'date'].forEach(f => {
                             if (!this.validateEditField(f)) valid = false;
                         });
+                        if (this.editExistingImages.length + this.editNewImages.length < 1) {
+                            this.editErrors.images = 'কমপক্ষে একটি ছবি আবশ্যক।';
+                            valid = false;
+                        }
                         if (this.quillEdit) {
                             el.querySelector('input[name="description"]').value = this.quillEdit.root.innerHTML;
                         }
-                        if (valid) this.submitForm(el, 'edit');
+                        if (!valid) return;
+                        this.syncFiles(el, 'input[name="images[]"]', this.editNewImages.map(img => img.file));
+                        this.syncFiles(el, 'input[name="video"]', this.editNewVideo ? [this.editNewVideo.file] : []);
+                        this.submitForm(el, 'edit');
                     },
 
                     async submitForm(el, mode) {
                         if (this.formSubmitting) return;
                         this.formSubmitting = true;
                         try {
-                            const { ok, status, data } = await RisAdmin.submitForm(el);
+                            const {
+                                ok,
+                                status,
+                                data
+                            } = await RisAdmin.submitForm(el);
                             if (status === 422 && data.errors) {
-                                if (mode === 'edit') this.editErrors = { ...this.editErrors, ...data.errors };
-                                else this.createErrors = { ...this.createErrors, ...data.errors };
+                                const errors = this.collapseErrors(data.errors);
+                                if (mode === 'edit') this.editErrors = {
+                                    ...this.editErrors,
+                                    ...errors
+                                };
+                                else this.createErrors = {
+                                    ...this.createErrors,
+                                    ...errors
+                                };
                                 return;
                             }
                             if (!ok) {

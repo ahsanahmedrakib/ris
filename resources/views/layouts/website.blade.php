@@ -143,6 +143,7 @@
                 {{-- Desktop Navigation --}}
                 <nav class="hidden lg:flex items-center gap-1">
                     @php
+                        $scholarshipOpen = \App\Models\ScholarshipSetting::isOpen();
                         $navItems = [
                             ['label' => 'আমাদের সম্পর্কে', 'route' => 'about'],
                             [
@@ -155,7 +156,7 @@
                                     ['label' => 'ক্লাশ রুটিন', 'route' => 'class-routine'],
                                 ],
                             ],
-                            ['label' => 'মেধাবৃত্তি', 'route' => 'scholarship'],
+                            ...($scholarshipOpen ? [['label' => 'মেধাবৃত্তি', 'route' => 'scholarship']] : []),
                             ['label' => 'নোটিশ', 'route' => 'notices'],
                             ['label' => 'শিক্ষক', 'route' => 'teachers'],
                             ['label' => 'গ্যালারি', 'route' => 'gallery'],
@@ -295,8 +296,6 @@
         </div>
     </header>
 
-    @include('website.partials.breadcrumbs')
-
     {{-- ═══ Main Content ═══ --}}
     <main>
         @yield('content')
@@ -335,9 +334,11 @@
                             <li><a href="{{ route('academic.results') }}"
                                     class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">ফলাফল</a></li>
                         @endauth
-                        <li><a href="{{ route('scholarship') }}"
-                                class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">মেধাবৃত্তি</a>
-                        </li>
+                        @if ($scholarshipOpen)
+                            <li><a href="{{ route('scholarship') }}"
+                                    class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">মেধাবৃত্তি</a>
+                            </li>
+                        @endif
                         <li><a href="{{ route('gallery') }}"
                                 class="text-sm text-gray-400 hover:text-white hover:pl-1 transition-all">গ্যালারি</a>
                         </li>

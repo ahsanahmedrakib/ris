@@ -496,6 +496,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Gallery of a single campus event: the nav lives beside the slides, not
+    // inside them, so it is resolved from the shared wrapper.
+    document.querySelectorAll('.event-gallery-swiper').forEach((el) => {
+        const host = el.parentElement;
+        new Swiper(el, {
+            loop: true,
+            speed: 600,
+            navigation: {
+                nextEl: host.querySelector('.event-gallery-btn-next'),
+                prevEl: host.querySelector('.event-gallery-btn-prev'),
+            },
+            pagination: {
+                el: host.querySelector('.swiper-pagination'),
+                clickable: true,
+            },
+            breakpoints: {
+                0: { slidesPerView: 1, spaceBetween: 16 },
+                640: { slidesPerView: 2, spaceBetween: 20 },
+            },
+        });
+    });
+
     document.querySelectorAll('.gallery-swiper').forEach((el) => {
         const host = el.parentElement;
         new Swiper(el, {

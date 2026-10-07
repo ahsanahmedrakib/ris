@@ -21,9 +21,9 @@ use App\Models\HeroSlide;
 use App\Models\Message;
 use App\Models\Notice;
 use App\Models\ScholarshipRegistration;
+use App\Models\ScholarshipSetting;
 use App\Models\SchoolStatistic;
 use App\Models\Student;
-use App\Models\Subject;
 use App\Models\Testimonial;
 use App\Notifications\NewSubmission;
 use App\Support\JsonLd;
@@ -186,22 +186,28 @@ class WebsiteController extends Controller
             ->get();
 
         if ($slides->isEmpty()) {
-            return array_map(fn (array $slide): array => [
+            $slides = collect(array_map(fn (array $slide): array => [
                 'image' => asset($slide['image']),
                 'title' => $slide['title'],
                 'subtitle' => $slide['subtitle'],
                 'btn_text' => $slide['btn_text'],
                 'link' => $slide['link'],
-            ], HeroSlide::defaults());
+            ], HeroSlide::defaults()));
+        } else {
+            $slides = $slides->map(fn (HeroSlide $slide): array => [
+                'image' => Media::images()->url($slide->image),
+                'title' => $slide->title,
+                'subtitle' => $slide->subtitle,
+                'btn_text' => $slide->btn_text,
+                'link' => $slide->link,
+            ]);
         }
 
-        return $slides->map(fn (HeroSlide $slide): array => [
-            'image' => Media::images()->url($slide->image),
-            'title' => $slide->title,
-            'subtitle' => $slide->subtitle,
-            'btn_text' => $slide->btn_text,
-            'link' => $slide->link,
-        ])->all();
+        if (! ScholarshipSetting::isOpen()) {
+            $slides = $slides->reject(fn (array $slide): bool => $slide['link'] === 'scholarship');
+        }
+
+        return array_values($slides->all());
     }
 
     public function testimonials(): View
@@ -429,36 +435,30 @@ class WebsiteController extends Controller
 
             $allResults = $resultQuery->orderBy('exam_id')->orderBy('subject_id')->get();
 
-            $examGroups = $allResults->groupBy('exam_id')->map(function ($rows) use ($students) {
+            $examGroups = $allResults->groupBy('exam_id')->map(function ($rows) {
                 $exam = $rows->first()->exam;
-                $subjectIds = $rows->pluck('subject_id')->unique();
 
-                $rowsByStudent = $rows->groupBy('student_id')
-                    ->map(fn ($studentRows) => $studentRows->keyBy('subject_id'));
+                // Subjects that actually have results in this exam, ordered by
+                // name so subject-wise tables follow the syllabus order.
+                $subjects = $rows->map(fn ($result) => $result->subject)
+                    ->filter()
+                    ->unique('id')
+                    ->sortBy('name')
+                    ->values();
 
-                $studentTotals = $students->mapWithKeys(function ($student) use ($rowsByStudent) {
-                    $studentRows = $rowsByStudent->get($student->id, collect());
-                    $total = $studentRows->sum('marks_obtained');
+                // subject_id => student_id => result
+                $rowsBySubject = $rows->groupBy('subject_id')
+                    ->map(fn ($subjectRows) => $subjectRows->keyBy('student_id'));
 
-                    return [$student->id => $total];
-                });
-
-                return compact('exam', 'subjectIds', 'rowsByStudent', 'studentTotals');
+                return compact('exam', 'subjects', 'rowsBySubject');
             })->values();
         }
-
-        $staffViewingClass = in_array($role, [UserRole::Admin->value, UserRole::Teacher->value], true);
-
-        $subjects = ($selectedClass && $staffViewingClass)
-            ? Subject::where('class_id', $selectedClass)->orderBy('name')->get()
-            : collect();
 
         return view('website.academic.results', compact(
             'classes',
             'exams',
             'students',
             'examGroups',
-            'subjects',
             'selectedClass',
             'search',
             'examId'
@@ -520,8 +520,8 @@ class WebsiteController extends Controller
         // alongside the school's own name, so the year is put in both the title
         // and the description rather than being left to go stale each January.
         $admissionYear = $year;
-        $title = "Admission Form {$admissionYear} | ভর্তি | ".Seo::siteName();
-        $description = "Apply for admission to Resma International School, Gopalganj for the {$admissionYear} academic year. Fill the online admission form, see the required documents and class-wise fees.";
+        $title = ' ভর্তি | Admission Form | '.Seo::siteName();
+        $description = 'Apply for admission to Resma International School, Gopalganj for the academic year. Fill the online admission form, see the required documents and class-wise fees.';
 
         $seo = Seo::forCurrentPage([
             'title' => $title,
@@ -832,7 +832,8 @@ class WebsiteController extends Controller
     public function scholarship(): View
     {
         $year = now()->year;
-        $title = "Merit Scholarship {$year} | মেধাবৃত্তি | ".Seo::siteName();
+        $setting = ScholarshipSetting::current();
+        $title = "মেধাবৃত্তি | Merit Scholarship {$year} | ".Seo::siteName();
         $description = "Apply for the merit scholarship at Resma International School, Gopalganj for {$year}. Open to meritorious and financially disadvantaged students. Online registration, free to apply.";
 
         $seo = Seo::forCurrentPage([
@@ -847,7 +848,7 @@ class WebsiteController extends Controller
             ],
         ])->withCanonical(route('scholarship'));
 
-        return view('website.scholarship', compact('seo'));
+        return view('website.scholarship', compact('seo', 'setting', 'year'));
     }
 
     // admit download

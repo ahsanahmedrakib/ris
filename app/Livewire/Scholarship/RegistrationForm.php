@@ -3,6 +3,7 @@
 namespace App\Livewire\Scholarship;
 
 use App\Models\ScholarshipRegistration;
+use App\Models\ScholarshipSetting;
 use App\Notifications\NewSubmission;
 use App\Support\RateLimit;
 use App\Support\UniqueConstraintViolation;
@@ -79,6 +80,10 @@ class RegistrationForm extends Component
 
     public function submit(): void
     {
+        if ($this->registrationIsClosed()) {
+            return;
+        }
+
         $this->validate();
 
         $this->confirming = true;
@@ -92,6 +97,15 @@ class RegistrationForm extends Component
     public function confirm(): ?RedirectResponse
     {
         $this->validate();
+
+        if ($this->registrationIsClosed()) {
+            $this->confirming = false;
+
+            $this->dispatch('toast', type: 'error', message: 'মেধাবৃত্তি রেজিস্ট্রেশন বর্তমানে বন্ধ আছে।');
+            $this->addError('classNo', 'মেধাবৃত্তি রেজিস্ট্রেশন বর্তমানে বন্ধ আছে।');
+
+            return null;
+        }
 
         // Livewire posts to a single shared update endpoint, so route level
         // throttles never run for this form. Without a check here the public
@@ -202,6 +216,11 @@ class RegistrationForm extends Component
     /**
      * Whether this client has already used up its public form allowance.
      */
+    private function registrationIsClosed(): bool
+    {
+        return ! $this->adminMode && ! ScholarshipSetting::isOpen();
+    }
+
     private function submitterHasReachedTheLimit(): bool
     {
         $key = RateLimit::byIp(request(), 'scholarship');

@@ -76,7 +76,7 @@
                         <button type="submit" :disabled="submitting"
                             :class="submitting && 'opacity-60 cursor-not-allowed'"
                             class="w-full btn-primary py-3 text-center justify-center cursor-pointer">
-                            <span x-show="submitting" class="inline-flex items-center gap-2">
+                            <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
                                 <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor"

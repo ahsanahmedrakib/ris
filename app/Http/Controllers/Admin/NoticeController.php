@@ -71,6 +71,7 @@ class NoticeController extends Controller
 
         try {
             $validated['category'] = $validated['category'] ?? 'general';
+            $validated['target_role'] = $validated['target_role'] ?? 'all';
             $validated['content'] = HtmlSanitizer::clean($validated['content']);
             $validated['published_by'] = Auth::id();
             $validated['published_at'] = $validated['published_at'] ?? now();

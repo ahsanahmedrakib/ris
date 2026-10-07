@@ -7,8 +7,10 @@
     @endphp
 
     {{-- Hero --}}
-    <section class="bg-linear-to-r from-ris-dark via-ris-accent to-ris-light py-16 sm:py-20">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+    <section class="relative bg-cover bg-center overflow-hidden py-16 sm:py-20"
+        style="background-image: url('{{ asset('assets/banner.png') }}')">
+        <div class="absolute inset-0 bg-linear-to-r from-ris-dark via-ris-accent to-ris-light opacity-90"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
             <span class="badge badge-warning">{{ $categoryLabel }}</span>
             <h1 class="mt-4 font-heading font-bold text-2xl sm:text-3xl text-white leading-snug">{{ $notice->title }}</h1>
             <p class="mt-3 text-white/70">{{ ($notice->published_at ?? $notice->created_at)->format('d M, Y') }}</p>
@@ -18,7 +20,7 @@
     {{-- Notice --}}
     <section class="py-16 sm:py-20 bg-white section-pattern-grid relative overflow-hidden">
         <div class="absolute top-10 left-10 w-40 h-40 bg-ris-primary/5 rounded-full pointer-events-none"></div>
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="card p-6 sm:p-10 reveal">
                 <div class="flex items-start gap-4">
                     <div

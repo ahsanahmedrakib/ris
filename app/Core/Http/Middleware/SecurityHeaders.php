@@ -107,6 +107,9 @@ class SecurityHeaders
             "style-src {$styleSrc}",
             "img-src {$imageSrc}",
             "font-src {$fontSrc}",
+            // Uploaded event videos are served from this origin, and the admin
+            // previews a picked file from a blob URL before it is uploaded.
+            "media-src 'self' blob:",
             "connect-src 'self'",
             "frame-src 'self'",
         ];

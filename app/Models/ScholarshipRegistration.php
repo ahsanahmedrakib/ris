@@ -24,6 +24,12 @@ class ScholarshipRegistration extends Model
 
     public const BKASH_NUMBER = '01618197972';
 
+    /**
+     * First year online registration was offered; the year filter select grows
+     * automatically from here up to the current year.
+     */
+    public const REGISTRATION_START_YEAR = 2026;
+
     protected $fillable = [
         'registration_no',
         'student_name',

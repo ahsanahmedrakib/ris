@@ -730,7 +730,9 @@ html {
     height: auto;
     display: flex;
 }
-.campus-events-swiper .swiper-slide > div {
+/* The card can be an <a> (when the event has a slug) or a fallback <div>,
+so target any direct child, not just divs. */
+.campus-events-swiper .swiper-slide > * {
     width: 100%;
 }
 .campus-events-swiper .swiper-pagination {

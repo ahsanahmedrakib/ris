@@ -157,7 +157,7 @@
     {{-- ═══════════════ CREATE MODAL ═══════════════ --}}
     <div x-show="showCreateModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/60" @click="showCreateModal = false"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slide-up">
             <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                 <h3 class="font-heading font-bold text-white text-lg">নতুন ভর্তি আবেদন</h3>
                 <button @click="showCreateModal = false" class="text-white/80 hover:text-white transition-colors">
@@ -465,7 +465,7 @@
     {{-- ═══════════════ VIEW MODAL ═══════════════ --}}
     <div x-show="showViewModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/60" @click="showViewModal = false"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slide-up">
             <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                 <h3 class="font-heading font-bold text-white text-lg">ভর্তি আবেদনের তথ্য</h3>
                 <button @click="showViewModal = false" class="text-white/80 hover:text-white transition-colors">
@@ -636,7 +636,7 @@
     {{-- ═══════════════ EDIT MODAL ═══════════════ --}}
     <div x-show="showEditModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/60" @click="showEditModal = false"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slide-up">
             <div class="gradient-logo px-6 py-4 flex items-center justify-between rounded-t-2xl">
                 <h3 class="font-heading font-bold text-white text-lg">ভর্তি আবেদন সম্পাদনা</h3>
                 <button @click="showEditModal = false" class="text-white/80 hover:text-white transition-colors">

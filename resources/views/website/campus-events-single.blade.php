@@ -3,8 +3,10 @@
 @section('content')
 
     {{-- Hero --}}
-    <section class="bg-linear-to-r from-ris-dark via-ris-accent to-ris-light py-16 sm:py-20">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+    <section class="relative bg-cover bg-center overflow-hidden py-16 sm:py-20"
+        style="background-image: url('{{ asset('assets/banner.png') }}')">
+        <div class="absolute inset-0 bg-linear-to-r from-ris-dark via-ris-accent to-ris-light opacity-90"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
             <span class="badge badge-warning">ক্যাম্পাস ইভেন্ট</span>
             <h1 class="mt-4 font-heading font-bold text-2xl sm:text-3xl text-white leading-snug">{{ $item->title }}</h1>
             @if ($item->date)
@@ -15,10 +17,57 @@
 
     {{-- Item --}}
     <section class="py-16 sm:py-20 bg-white section-pattern-grid relative overflow-hidden">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            @if ($item->image)
-                <img src="{{ \App\Support\Media::images()->url($item->image) }}" alt="{{ $item->title }}"
-                    class="w-full h-64 sm:h-80 object-cover rounded-2xl shadow-card mb-8 reveal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            @php
+                $gallery = $item->galleryImages();
+                $cover = $gallery[0] ?? null;
+            @endphp
+
+            {{-- The video leads the page when there is one, with the cover as
+                 its poster so the frame is never blank before playback. --}}
+            @if ($item->video)
+                <div class="mb-8 reveal">
+                    <video class="w-full rounded-2xl shadow-card bg-black" controls preload="metadata" playsinline
+                        @if ($cover) poster="{{ \App\Support\Media::images()->url($cover) }}" @endif>
+                        <source src="{{ \App\Support\Media::files()->url($item->video) }}">
+                        আপনার ব্রাউজার ভিডিও চালাতে পারে না।
+                    </video>
+                </div>
+            @endif
+
+            @if (count($gallery) > 1)
+                <div class="mb-8 reveal">
+                    <div class="swiper event-gallery-swiper">
+                        <div class="swiper-wrapper">
+                            @foreach ($gallery as $path)
+                                <div class="swiper-slide">
+                                    <img src="{{ \App\Support\Media::images()->url($path) }}" alt="{{ $item->title }}"
+                                        class="w-full h-96 object-cover rounded-2xl shadow-card">
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="mt-5 flex items-center justify-center gap-4 ris-swiper-nav">
+                        <button type="button" class="event-gallery-btn-prev ris-swiper-btn cursor-pointer"
+                            aria-label="পূর্ববর্তী ছবি">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="rotate-180">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </button>
+                        <div class="swiper-pagination"></div>
+                        <button type="button" class="event-gallery-btn-next ris-swiper-btn cursor-pointer"
+                            aria-label="পরবর্তী ছবি">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            @elseif ($cover)
+                <img src="{{ \App\Support\Media::images()->url($cover) }}" alt="{{ $item->title }}"
+                    class="w-full h-96 object-cover rounded-2xl shadow-card mb-8 reveal">
             @endif
 
             @if ($item->description)
@@ -31,7 +80,8 @@
                 <a href="{{ route('home') }}"
                     class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ris-primary text-white font-heading font-medium text-sm hover:bg-ris-dark shadow-lg shadow-ris-primary/25 transition-all duration-300 hover:-translate-y-0.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
                     হোমপেজে ফিরে যান
                 </a>
@@ -46,8 +96,8 @@
                                 class="bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 border border-gray-100 hover:border-ris-primary/20 reveal">
                                 <div class="h-40 relative flex items-center justify-center">
                                     @if ($other->image)
-                                        <img src="{{ \App\Support\Media::images()->url($other->image) }}" loading="lazy" decoding="async"
-                                            alt="{{ $other->title }}"
+                                        <img src="{{ \App\Support\Media::images()->url($other->image) }}" loading="lazy"
+                                            decoding="async" alt="{{ $other->title }}"
                                             class="absolute inset-0 w-full h-full object-cover">
                                     @else
                                         <div
@@ -61,7 +111,8 @@
                                     @endif
                                 </div>
                                 <div class="p-5">
-                                    <h3 class="font-heading font-semibold text-ris-dark leading-snug">{{ $other->title }}</h3>
+                                    <h3 class="font-heading font-semibold text-ris-dark leading-snug">{{ $other->title }}
+                                    </h3>
                                     @if ($other->date)
                                         <p class="mt-1 text-xs text-gray-400">{{ $other->date->format('d M, Y') }}</p>
                                     @endif

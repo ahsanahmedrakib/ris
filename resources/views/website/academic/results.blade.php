@@ -3,8 +3,10 @@
 @section('content')
 
     {{-- Hero --}}
-    <section class="bg-linear-to-r from-ris-dark via-ris-accent to-ris-light py-16 sm:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+    <section class="relative bg-cover bg-center overflow-hidden py-16 sm:py-20"
+        style="background-image: url('{{ asset('assets/banner.png') }}')">
+        <div class="absolute inset-0 bg-linear-to-r from-ris-dark via-ris-accent to-ris-light opacity-90"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
             <h1 class="font-heading font-bold text-3xl sm:text-4xl text-white">পরীক্ষার ফলাফল</h1>
             <p class="mt-3 text-white/70 text-lg">নাম, রোল ও শ্রেণি দিয়ে ফলাফল অনুসন্ধান করুন</p>
         </div>
@@ -65,69 +67,72 @@
             @if ($students->isNotEmpty() && $examGroups->isNotEmpty())
                 <div class="space-y-8 mb-8">
                     @foreach ($examGroups as $group)
-                        @php
-                            $exam = $group['exam'];
-                            $displaySubjects = $subjects->filter(fn ($s) => $group['subjectIds']->contains($s->id));
-                        @endphp
+                        @php $exam = $group['exam']; @endphp
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-card overflow-hidden reveal">
-                            <div class="bg-ris-primary/5 px-6 py-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-4">
-                                <div>
-                                    <h4 class="font-heading font-bold text-ris-dark text-lg">{{ $exam->name }}</h4>
-                                    <p class="text-sm text-gray-500">
-                                        পূর্ণমান: {{ $exam->total_marks }} | পাস নম্বর: {{ $exam->passing_marks }}
-                                    </p>
-                                </div>
+                            <div class="bg-ris-primary/5 px-6 py-4 border-b border-gray-100">
+                                <h4 class="font-heading font-bold text-ris-dark text-lg">{{ $exam->name }}</h4>
+                                <p class="text-sm text-gray-500">
+                                    পূর্ণমান: {{ $exam->total_marks }} | পাস নম্বর: {{ $exam->passing_marks }}
+                                </p>
                             </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-sm">
-                                    <thead>
-                                        <tr class="bg-gray-50">
-                                            <th class="text-left px-4 py-3 text-gray-500 font-medium">রোল</th>
-                                            <th class="text-left px-4 py-3 text-gray-500 font-medium">শিক্ষার্থীর নাম</th>
-                                            @foreach ($displaySubjects as $subject)
-                                                <th class="text-center px-4 py-3 text-gray-500 font-medium min-w-24">
-                                                    {{ $subject->name }}</th>
-                                            @endforeach
-                                            <th class="text-center px-4 py-3 text-gray-500 font-medium">মোট</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($students as $student)
-                                            @php
-                                                $studentRows = $group['rowsByStudent']->get($student->id, collect());
-                                            @endphp
-                                            <tr class="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
-                                                <td class="px-4 py-3 text-gray-500">{{ $student->roll_no ?? '-' }}</td>
-                                                <td class="px-4 py-3 font-medium text-ris-dark">{{ $student->user->name }}</td>
-                                                @foreach ($displaySubjects as $subject)
-                                                    @php
-                                                        $result = $studentRows->get($subject->id);
-                                                        $marks = $result?->marks_obtained;
-                                                        $gradeColor = match ($result?->grade) {
-                                                            'A+', 'A' => 'bg-green-100 text-green-700',
-                                                            'B+', 'B' => 'bg-blue-100 text-blue-700',
-                                                            'C+', 'C' => 'bg-amber-100 text-amber-700',
-                                                            default => 'bg-gray-100 text-gray-700',
-                                                        };
-                                                    @endphp
-                                                    <td class="px-4 py-3 text-center">
-                                                        @if ($marks !== null)
-                                                            <span class="font-semibold text-ris-dark">{{ number_format($marks, 1) }}</span>
-                                                            <span class="ml-1 inline-block px-2 py-0.5 text-xs font-semibold rounded-full align-middle {{ $gradeColor }}">
-                                                                {{ $result->grade }}
-                                                            </span>
-                                                        @else
-                                                            <span class="text-gray-300">-</span>
-                                                        @endif
-                                                    </td>
-                                                @endforeach
-                                                <td class="px-4 py-3 text-center">
-                                                    <span class="font-bold text-ris-primary">{{ number_format($group['studentTotals'][$student->id] ?? 0, 1) }}</span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+
+                            {{-- Subject-wise tables --}}
+                            <div class="grid lg:grid-cols-2 gap-6 p-6">
+                                @foreach ($group['subjects'] as $subject)
+                                    @php
+                                        $rowsForSubject = $group['rowsBySubject']->get($subject->id, collect());
+                                    @endphp
+                                    <div class="rounded-xl border border-gray-100 overflow-hidden">
+                                        <div class="px-4 py-3 bg-gray-50 border-b border-gray-100">
+                                            <h5 class="font-heading font-semibold text-ris-dark">{{ $subject->name }}</h5>
+                                        </div>
+                                        <div class="overflow-x-auto">
+                                            <table class="w-full text-sm">
+                                                <thead>
+                                                    <tr class="bg-white border-b border-gray-50">
+                                                        <th class="text-left px-4 py-2.5 text-gray-500 font-medium">রোল</th>
+                                                        <th class="text-left px-4 py-2.5 text-gray-500 font-medium">শিক্ষার্থীর নাম</th>
+                                                        <th class="text-center px-4 py-2.5 text-gray-500 font-medium">প্রাপ্ত নম্বর</th>
+                                                        <th class="text-center px-4 py-2.5 text-gray-500 font-medium">গ্রেড</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($students as $student)
+                                                        @php
+                                                            $result = $rowsForSubject->get($student->id);
+                                                            $gradeColor = match ($result?->grade) {
+                                                                'A+', 'A' => 'bg-green-100 text-green-700',
+                                                                'B+', 'B' => 'bg-blue-100 text-blue-700',
+                                                                'C+', 'C' => 'bg-amber-100 text-amber-700',
+                                                                default => 'bg-gray-100 text-gray-700',
+                                                            };
+                                                        @endphp
+                                                        <tr class="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
+                                                            <td class="px-4 py-2.5 text-gray-500">{{ $student->roll_no ?? '-' }}</td>
+                                                            <td class="px-4 py-2.5 font-medium text-ris-dark">{{ $student->user->name }}</td>
+                                                            <td class="px-4 py-2.5 text-center">
+                                                                @if ($result)
+                                                                    <span
+                                                                        class="font-semibold text-ris-dark">{{ number_format($result->marks_obtained, 1) }}</span>
+                                                                @else
+                                                                    <span class="text-gray-300">-</span>
+                                                                @endif
+                                                            </td>
+                                                            <td class="px-4 py-2.5 text-center">
+                                                                @if ($result)
+                                                                    <span
+                                                                        class="inline-block px-2 py-0.5 text-xs font-semibold rounded-full align-middle {{ $gradeColor }}">{{ $result->grade }}</span>
+                                                                @else
+                                                                    <span class="text-gray-300">-</span>
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     @endforeach
