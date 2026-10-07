@@ -194,43 +194,43 @@ return [
     'pages' => [
 
         'home' => [
-            'title' => 'রেশমা ইন্ট্রান্যাশনাল স্কুল - Resma International School',
+            'title' => 'রেশমা ইন্টারন্যাশনাল স্কুল - Resma International School',
             'description' => 'Resma International School is a school in Gopalganj offering admission from nursery to secondary level, merit scholarships, a digital classroom and a science laboratory.',
             'breadcrumbs' => [],
         ],
 
         'about' => [
-            'title' => 'About Us | আমাদের সম্পর্কে | Resma International School',
+            'title' => 'আমাদের সম্পর্কে । About Us | Resma International School',
             'description' => 'Our mission, vision and core values: how Resma International School in Gopalganj builds confident, curious students through quality education.',
             'breadcrumbs' => ['About Us'],
         ],
 
         'admission' => [
-            'title' => 'Admission Form 2026 | ভর্তি | Resma International School',
+            'title' => 'ভর্তি । Admission | Resma International School',
             'description' => 'Apply for admission to Resma International School, Gopalganj. Fill the online admission form, see the required documents and class-wise fees for the 2026 academic year.',
             'breadcrumbs' => ['Admission'],
         ],
 
         'scholarship' => [
-            'title' => 'Merit Scholarship 2026 | মেধাবৃত্তি | Resma International School',
+            'title' => 'মেধাবৃত্তি । Merit Scholarship | Resma International School',
             'description' => 'Apply for the merit scholarship at Resma International School, Gopalganj. Open to meritorious and financially disadvantaged students. Online registration, no cost.',
             'breadcrumbs' => ['Scholarship'],
         ],
 
         'contact' => [
-            'title' => 'Contact Us | যোগাযোগ | Resma International School',
+            'title' => 'যোগাযোগ | Contact Us | Resma International School',
             'description' => 'Address, phone number and email of Resma International School, 439 Ghullibari Mor, Gopalganj 8100, Bangladesh. Send us a message or call to arrange a visit.',
             'breadcrumbs' => ['Contact'],
         ],
 
         'notices' => [
-            'title' => 'Notice Board | নোটিশ | Resma International School',
+            'title' => 'নোটিশ | Notice Board | Resma International School',
             'description' => 'Exam schedules, holidays, admission dates and school notices from the administration of Resma International School, Gopalganj.',
             'breadcrumbs' => ['Notices'],
         ],
 
         'campus-events' => [
-            'title' => 'Campus Events | ক্যাম্পাস ইভেন্ট | Resma International School',
+            'title' => 'ক্যাম্পাস ইভেন্ট | Campus Events | Resma International School',
             'description' => 'Events, activities and memorable moments from Resma International School, Gopalganj: science fairs, cultural programmes, sports days and excursions.',
             'breadcrumbs' => ['Campus Events'],
         ],
@@ -256,7 +256,7 @@ return [
         ],
 
         'teachers' => [
-            'title' => 'Our Teachers | আমাদের শিক্ষকবৃন্দ | Resma International School',
+            'title' => 'আমাদের শিক্ষক-শিক্ষিকাবৃন্দ | Our Teachers | Resma International School',
             'description' => 'Meet the teachers of Resma International School, Gopalganj: their qualifications, subjects taught and years of classroom experience.',
             'breadcrumbs' => ['Teachers'],
         ],
@@ -269,43 +269,43 @@ return [
         ],
 
         'testimonials' => [
-            'title' => 'Testimonials | শুভকামনা | Resma International School',
+            'title' => 'শুভকামনা | Testimonials | Resma International School',
             'description' => 'What parents and students say about Resma International School, Gopalganj. Leave a review about the school, the teachers or admission.',
             'breadcrumbs' => ['Testimonials'],
         ],
 
         'gallery' => [
-            'title' => 'Photo Gallery | গ্যালারি | Resma International School',
+            'title' => 'গ্যালারি | Photo Gallery | Resma International School',
             'description' => 'Photographs of Resma International School, Gopalganj: the campus, annual events, sports day, science fair and academic activities.',
             'breadcrumbs' => ['Gallery'],
         ],
 
         'class-routine' => [
-            'title' => 'Class Routine | ক্লাশ রুটিন | Resma International School',
+            'title' => 'ক্লাশ রুটিন | Class Routine | Resma International School',
             'description' => 'Weekly class routine for every class at Resma International School, Gopalganj, with subject timings and teacher names.',
             'breadcrumbs' => ['Class Routine'],
         ],
 
         'class-routine.grid' => [
-            'title' => 'Class Routine | ক্লাশ রুটিন | Resma International School',
+            'title' => 'ক্লাশ রুটিন | Class Routine | Resma International School',
             'description' => 'Weekly class routine with subject timings and teacher names for every class at Resma International School, Gopalganj.',
             'breadcrumbs' => ['Class Routine'],
         ],
 
         'academic.calendar' => [
-            'title' => 'Academic Calendar | একাডেমিক ক্যালেন্ডার | Resma International School',
+            'title' => 'একাডেমিক ক্যালেন্ডার | Academic Calendar | Resma International School',
             'description' => 'The 2026 academic calendar for Resma International School, Gopalganj: term dates, exam schedules, holidays and result publication days.',
             'breadcrumbs' => ['Academic Calendar'],
         ],
 
         'academic.fees' => [
-            'title' => 'Tuition Fees | টিউশন ফি | Resma International School',
+            'title' => 'টিউশন ফি | Tuition Fees | Resma International School',
             'description' => 'Class-wise tuition fees and session charges for Resma International School, Gopalganj for the current academic year.',
             'breadcrumbs' => ['Tuition Fees'],
         ],
 
         'academic.facilities' => [
-            'title' => 'School Facilities | স্কুলের সুবিধা | Resma International School',
+            'title' => 'স্কুলের সুবিধা | School Facilities | Resma International School',
             'description' => 'Facilities at Resma International School, Gopalganj: digital classroom, science laboratory, library, computer lab, playground and transport.',
             'breadcrumbs' => ['Facilities'],
         ],
@@ -316,7 +316,7 @@ return [
         | the Disallow in robots.txt alone only asks the crawler not to look.
         */
         'academic.results' => [
-            'title' => 'Examination Results | পরীক্ষার ফলাফল',
+            'title' => 'পরীক্ষার ফলাফল | Examination Results | Resma International School',
             'description' => '',
             'breadcrumbs' => ['Results'],
             'noindex' => true,
