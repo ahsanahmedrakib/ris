@@ -38,10 +38,14 @@ return [
             'report' => false,
         ],
 
+        // Upload URLs are kept relative to the current host: an absolute
+        // APP_URL bakes one domain into every generated media link, which
+        // breaks as soon as the app runs under another domain (stale .env on
+        // a live server, a local environment, a preview deployment).
         'public' => [
             'driver' => 'local',
             'root' => public_path('images'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/images',
+            'url' => '/images',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -50,7 +54,7 @@ return [
         'public_files' => [
             'driver' => 'local',
             'root' => public_path('files'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/files',
+            'url' => '/files',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
