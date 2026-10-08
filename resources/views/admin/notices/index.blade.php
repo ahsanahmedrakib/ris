@@ -612,6 +612,8 @@
         }
 
         function noticeApp() {
+            const quills = { create: null, edit: null };
+
             return {
                 showCreateModal: false,
                 showViewModal: false,
@@ -620,8 +622,6 @@
                 editData: null,
                 viewLoading: false,
                 editLoading: false,
-                quillCreate: null,
-                quillEdit: null,
 
                 createForm: {
                     title: '',
@@ -642,15 +642,15 @@
                 formSubmitting: false,
 
                 get createContentText() {
-                    return (this.quillCreate?.getText() || '').trim();
+                    return (quills.create?.getText() || '').trim();
                 },
                 get editContentText() {
-                    return (this.quillEdit?.getText() || '').trim();
+                    return (quills.edit?.getText() || '').trim();
                 },
 
                 initCreateQuill() {
-                    if (this.quillCreate || typeof window.Quill === 'undefined') return;
-                    this.quillCreate = new window.Quill('#noticeCreateQuill', {
+                    if (quills.create || typeof window.Quill === 'undefined') return;
+                    quills.create = new window.Quill('#noticeCreateQuill', {
                         theme: 'snow',
                         placeholder: 'নোটিশের বিস্তারিত বিবরণ লিখুন...',
                         modules: {
@@ -675,10 +675,10 @@
                 },
 
                 initEditQuill() {
-                    if (this.quillEdit || typeof window.Quill === 'undefined') return;
+                    if (quills.edit || typeof window.Quill === 'undefined') return;
                     const el = document.getElementById('noticeEditQuill');
                     if (!el) return;
-                    this.quillEdit = new window.Quill(el, {
+                    quills.edit = new window.Quill(el, {
                         theme: 'snow',
                         placeholder: 'নোটিশের বিস্তারিত বিবরণ লিখুন...',
                         modules: {
@@ -718,7 +718,7 @@
                     this.showCreateModal = true;
                     this.$nextTick(() => {
                         this.initCreateQuill();
-                        if (this.quillCreate) this.quillCreate.setContents([]);
+                        if (quills.create) quills.create.setContents([]);
                     });
                 },
 
@@ -743,7 +743,7 @@
                     this.editData = null;
                     this.editErrors = {};
                     this.editAttempted = false;
-                    this.quillEdit = null;
+                    quills.edit = null;
                     try {
                         const res = await fetch(`{{ url('admin/notices') }}/${id}/edit`);
                         this.editData = await res.json();
@@ -754,7 +754,11 @@
                                 window.RisDateMask.init(form);
                             }
                             this.initEditQuill();
-                            if (this.quillEdit) this.quillEdit.root.innerHTML = this.editData.content || '';
+                            if (quills.edit) {
+                                const html = this.editData.content || '';
+                                const delta = quills.edit.clipboard.convert({ html: html });
+                                quills.edit.setContents(delta, 'silent');
+                            }
                         });
                     } catch (e) {
                         this.showEditModal = false;
@@ -790,8 +794,8 @@
                     ['title', 'type', 'category'].forEach(f => {
                         if (!this.validateCreateField(f)) valid = false;
                     });
-                    if (this.quillCreate) {
-                        const html = this.quillCreate.root.innerHTML;
+                    if (quills.create) {
+                        const html = quills.create.root.innerHTML;
                         el.querySelector('input[name="content"]').value = html;
                         if (this.createContentText === '') {
                             this.createErrors.content = 'বিবরণ আবশ্যক।';
@@ -808,8 +812,8 @@
                     ['title', 'type', 'category'].forEach(f => {
                         if (!this.validateEditField(f)) valid = false;
                     });
-                    if (this.quillEdit) {
-                        const html = this.quillEdit.root.innerHTML;
+                    if (quills.edit) {
+                        const html = quills.edit.getSemanticHTML();
                         el.querySelector('input[name="content"]').value = html;
                         if (this.editContentText === '') {
                             this.editErrors.content = 'বিবরণ আবশ্যক।';

@@ -83,7 +83,7 @@
                         </div>
 
                         {{-- Remember + Forgot --}}
-                        <div class="flex items-center justify-between">
+                        {{-- <div class="flex items-center justify-between">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" name="remember"
                                     class="w-4 h-4 rounded border-gray-300 text-ris-primary focus:ring-ris-primary/30">
@@ -93,7 +93,7 @@
                                 class="text-sm text-ris-primary hover:text-ris-dark transition-colors">
                                 পাসওয়ার্ড ভুলে গেছেন?
                             </a>
-                        </div>
+                        </div> --}}
 
                         {{-- Submit --}}
                         <button type="submit" :disabled="submitting"

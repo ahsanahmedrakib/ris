@@ -711,7 +711,15 @@
                 }
             }
 
+            // Quill instances live outside Alpine's reactive state on purpose.
+            // Alpine wraps object-typed component data in a deep reactive Proxy,
+            // and Quill keys its blot registry by exact DOM node references, so
+            // a proxied node misses the lookup and selection breaks: the cursor
+            // jumps to the start after the first keystroke and Quill throws
+            // "Cannot read properties of null (reading 'offset')".
             function campusEventApp() {
+                const quills = { create: null, edit: null };
+
                 return {
                     showCreateModal: false,
                     showViewModal: false,
@@ -747,14 +755,11 @@
                     editVideo: null,
                     editNewVideo: null,
                     editVideoRemoved: false,
-                    quillCreate: null,
-                    quillEdit: null,
-
                     formSubmitting: false,
 
                     initCreateQuill() {
-                        if (this.quillCreate || typeof window.Quill === 'undefined') return;
-                        this.quillCreate = new window.Quill('#campusCreateQuill', {
+                        if (quills.create || typeof window.Quill === 'undefined') return;
+                        quills.create = new window.Quill('#campusCreateQuill', {
                             theme: 'snow',
                             placeholder: 'স্বল্প বিবরণ (ঐচ্ছিক)...',
                             modules: {
@@ -779,10 +784,10 @@
                     },
 
                     initEditQuill() {
-                        if (this.quillEdit || typeof window.Quill === 'undefined') return;
+                        if (quills.edit || typeof window.Quill === 'undefined') return;
                         const el = document.getElementById('campusEditQuill');
                         if (!el) return;
-                        this.quillEdit = new window.Quill(el, {
+                        quills.edit = new window.Quill(el, {
                             theme: 'snow',
                             placeholder: 'স্বল্প বিবরণ (ঐচ্ছিক)...',
                             modules: {
@@ -951,7 +956,7 @@
                         this.showCreateModal = true;
                         this.$nextTick(() => {
                             this.initCreateQuill();
-                            if (this.quillCreate) this.quillCreate.setContents([]);
+                            if (quills.create) quills.create.setContents([]);
                         });
                     },
 
@@ -982,7 +987,7 @@
                         this.editVideo = null;
                         this.editNewVideo = null;
                         this.editVideoRemoved = false;
-                        this.quillEdit = null;
+                        quills.edit = null;
                         try {
                             const res = await fetch(`{{ url('admin/campus-events') }}/${id}/edit`);
                             this.editData = await res.json();
@@ -990,7 +995,11 @@
                             this.editVideo = this.editData.video;
                             this.$nextTick(() => {
                                 this.initEditQuill();
-                                if (this.quillEdit) this.quillEdit.root.innerHTML = this.editData.description || '';
+                                if (quills.edit) {
+                                    const html = this.editData.description || '';
+                                    const delta = quills.edit.clipboard.convert({ html: html });
+                                    quills.edit.setContents(delta, 'silent');
+                                }
                             });
                         } catch (e) {
                             this.showEditModal = false;
@@ -1033,8 +1042,8 @@
                             this.createErrors.images = 'কমপক্ষে একটি ছবি আবশ্যক।';
                             valid = false;
                         }
-                        if (this.quillCreate) {
-                            el.querySelector('input[name="description"]').value = this.quillCreate.root.innerHTML;
+                        if (quills.create) {
+                            el.querySelector('input[name="description"]').value = quills.create.root.innerHTML;
                         }
                         if (!valid) return;
                         this.syncFiles(el, 'input[name="images[]"]', this.createImages.map(img => img.file));
@@ -1053,8 +1062,8 @@
                             this.editErrors.images = 'কমপক্ষে একটি ছবি আবশ্যক।';
                             valid = false;
                         }
-                        if (this.quillEdit) {
-                            el.querySelector('input[name="description"]').value = this.quillEdit.root.innerHTML;
+                        if (quills.edit) {
+                            el.querySelector('input[name="description"]').value = quills.edit.getSemanticHTML();
                         }
                         if (!valid) return;
                         this.syncFiles(el, 'input[name="images[]"]', this.editNewImages.map(img => img.file));
